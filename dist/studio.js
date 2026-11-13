@@ -54,7 +54,7 @@ function decorateGrid(){
   if(currentProfileTab==='reels'){const views=dom('span','reel-views');views.innerHTML=svgLine('<path d="m7 3 14 9-14 9z"/>');views.append(document.createTextNode(t.views||'0'));cell.append(views)}
 
  });filterProfileGrid();renderPostsEditor();
- const count=document.querySelector('[data-f=posts]');if(count)count.textContent=profile.autoPosts?String(filled().length):profile.posts;
+ const count=document.querySelector('[data-f=posts]');if(count&&document.activeElement!==count)count.textContent=profile.autoPosts?String(filled().length):profile.posts;
 }
 function syncEditor(){
  document.querySelectorAll('[data-edit]').forEach(el=>{if(document.activeElement===el)return;const field=el.dataset.edit;let value=profile[field];if(field==='contacts')value=(value||[]).join(', ');if(field==='extraLinks')value=(value||[]).join('\n');if(el.type==='checkbox')el.checked=!!value;else el.value=value??''});

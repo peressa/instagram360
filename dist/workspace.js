@@ -30,11 +30,23 @@ function syncDeviceSwitch(){}
 function initDirectEditing(){
  const phone=document.querySelector('.phone');
  const bind=(el,section,field,label)=>{if(!el)return;el.tabIndex=0;el.setAttribute('role','button');el.setAttribute('aria-label',label);el.title=label;el.dataset.directEdit='true';const open=e=>{e.preventDefault();e.stopImmediatePropagation();openProfileContext(section,field)};el.addEventListener('click',open,true);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')open(e)})};
- ['handle','name'].forEach(f=>phone.querySelectorAll('[data-f="'+f+'"]').forEach(el=>bind(el,0,f,'Cambiar '+(f==='handle'?'usuario':'nombre'))));
- phone.querySelectorAll('[data-f="bio"],[data-f="link"],.prof-address,.prof-mutual').forEach(el=>bind(el,2,el.dataset.f||'bio','Cambiar biografía y enlaces'));
- ['posts','followers','following'].forEach(f=>phone.querySelectorAll('[data-f="'+f+'"]').forEach(el=>bind(el.closest('.stat')||el,1,f,'Cambiar cifras del perfil')));
+ const labels={handle:'Usuario',name:'Nombre',bio:'Biografía',link:'Enlace',posts:'Publicaciones',followers:'Seguidores',following:'Seguidos'};
+ Object.entries(labels).forEach(([field,label])=>phone.querySelectorAll('[data-f="'+field+'"]').forEach(el=>{
+  el.dataset.inlineEdit=field;el.dataset.placeholder=['posts','followers','following'].includes(field)?'0':label;el.contentEditable='plaintext-only';el.tabIndex=0;el.setAttribute('role','textbox');el.setAttribute('aria-label',label);el.setAttribute('aria-multiline',String(field==='bio'));el.setAttribute('enterkeyhint',field==='bio'?'enter':'done');el.spellcheck=['name','bio'].includes(field);el.title='Tocá y escribí. Se guarda automáticamente.';
+  if(['posts','followers','following'].includes(field)){el.setAttribute('inputmode','decimal');const stat=el.closest('.stat');stat?.addEventListener('click',e=>{if(!el.contains(e.target))el.focus()})}
+ }));
+ phone.querySelectorAll('.prof-address,.prof-mutual').forEach(el=>bind(el,2,'address','Cambiar ubicación y enlaces'));
  bind(phone.querySelector('.profile-options'),-1,null,'Opciones del perfil y proyecto');
  bind($('avatar'),0,'avatar','Cambiar foto del perfil');
+}
+function normalizeInlineProfileValue(field,value){
+ const text=String(value??'').replace(/\r\n?/g,'\n').replace(/\u00a0/g,' ');
+ return (field==='bio'?text:text.replace(/\n+/g,' ')).slice(0,field==='bio'?2200:200);
+}
+function readInlineProfileField(el){return normalizeInlineProfileValue(el.dataset.f,el.innerText??el.textContent);}
+function insertInlinePlainText(el,text){
+ const selection=window.getSelection();if(!selection?.rangeCount)return;const range=selection.getRangeAt(0);if(!el.contains(range.commonAncestorContainer))return;
+ range.deleteContents();const node=document.createTextNode(text);range.insertNode(node);range.setStartAfter(node);range.collapse(true);selection.removeAllRanges();selection.addRange(range);el.dispatchEvent(new Event('input',{bubbles:true}));
 }
 function openProfileContext(section=0,field){
  document.body.dataset.panel='profile';$('openPhotos').setAttribute('aria-expanded','false');
