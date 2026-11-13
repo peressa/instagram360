@@ -8,7 +8,9 @@ Aplicación estática independiente: no requiere ChatGPT, inicio de sesión, API
 
 Dominio de producción: https://instagram.rio360.com.ar
 
-En Cloudflare Pages, conectar este repositorio, seleccionar la rama de producción, usar el preset «None», dejar vacío el comando de compilación y configurar `dist` como directorio de salida. Agregar `instagram.rio360.com.ar` en Custom domains y usar el registro DNS que indique Cloudflare.
+El alojamiento de producción usa Cloudflare Workers con archivos estáticos de `dist/`. Para publicar desde una computadora autorizada, instalar Wrangler, ejecutar `npx wrangler login` y luego `npx wrangler deploy`. La configuración está en `wrangler.jsonc`. También se puede cargar un ZIP con el contenido de `dist/` desde Workers & Pages en el panel de Cloudflare.
+
+El repositorio de GitHub conserva el código. Los cambios subidos a GitHub requieren un despliegue explícito; no hay integración automática ni secretos de Cloudflare almacenados en el repositorio.
 
 Para usar Dokploy u otro alojamiento con Docker, construir el `Dockerfile` incluido y dirigir el dominio al puerto 80 del contenedor. No necesita volúmenes: las fotos y propuestas permanecen en el navegador de cada visitante.
 
