@@ -1,6 +1,6 @@
 # RIO360 · Instagram Studio
 
-Planificador de perfiles de Instagram para preparar y presentar propuestas. Adaptación de mkgrid (Chris Vrakas, MIT; ver LICENSE). Incluye html2canvas 1.4.1, MIT, en dist/vendor.
+Planificador de perfiles de Instagram para preparar y presentar propuestas. Adaptación de mkgrid (Chris Vrakas, MIT; ver LICENSE). Incluye html2canvas 1.4.1, MIT, en dist/vendor. La tipografía Manrope se sirve localmente; su licencia SIL OFL está en dist/fonts/OFL-Manrope.txt.
 
 Aplicación estática independiente: no requiere ChatGPT, inicio de sesión, API, servidor de aplicación ni secretos. Todos los recursos de ejecución están incluidos en `dist/`.
 

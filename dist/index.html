@@ -641,15 +641,18 @@ function clampPan(t, a) {
 }
 function applyImg(img, t, a, d) { const p = place(t, a, d.w, d.h, GAP); img.style.width = p.w + 'px'; img.style.height = p.h + 'px'; img.style.left = p.left + 'px'; img.style.top = p.top + 'px'; }
 
-/* ---------- size the grid to fill the viewport — the grid is the product ---------- */
+/* ---------- fit the Instagram mockup to the workspace ---------- */
 function fitStage() {
  const phone=document.querySelector('.phone'),stage=document.querySelector('.stage');
  phone.style.paddingRight='';
  const selected=$('canvasWidth')?.value||'auto';const device=phone.dataset.device;
  const defaultWidth={ios:390,android:412,mobileweb:390,desktop:Math.max(768,stage.clientWidth-48),tablet:768}[device];
  const available=Math.max(240,stage.clientWidth-(innerWidth<=700?24:48));
- const width=selected==='auto'?Math.min(defaultWidth,available):Number(selected);
- phone.style.height=Math.max(320,Math.min(({ios:844,android:915,mobileweb:844,tablet:1024,desktop:900}[device]),stage.clientHeight-32))+'px';
+ const width=selected==='auto'?defaultWidth:Number(selected);
+ const height=({ios:844,android:915,mobileweb:844,tablet:1024,desktop:900}[device]);
+ const room=Math.max(240,stage.clientHeight-(innerWidth<=700?42:62));
+ phone.style.zoom=String(Math.min(1,room/height,available/width));
+ phone.style.height=height+'px';
  phone.style.width=width+'px'; phone.style.maxWidth='none';
  const web=['desktop','tablet','mobileweb'].includes(device);phone.dataset.webMobile=String(web&&width<768);phone.classList.toggle('web-layout',web&&width>=768);phone.classList.toggle('mobile-layout',!web||width<768);
  const inner=phone.querySelector('.ig-main').clientWidth||width-2;
@@ -899,14 +902,16 @@ function wireCell(cell, i) {
       const p = [...g.pts.values()]; const bz = clamp(g.z * distp(p[0], p[1]) / (g.dist || 1), 1, ZMAX);
       setBanner(g.row, { bz }); refreshBannerRow(g.row); syncZoom(); e.preventDefault();
     } else if (g.mode === 'bpan') {
-      const bwpx = 3 * d.w + 2 * GAP, dx = e.clientX - g.sx, dy = e.clientY - g.sy;
+      const scale=cell.getBoundingClientRect().width/d.w||1;
+      const bwpx = 3 * d.w + 2 * GAP, dx = (e.clientX - g.sx)/scale, dy = (e.clientY - g.sy)/scale;
       if (Math.abs(dx) > 2 || Math.abs(dy) > 2) g.moved = true;
       setBanner(g.row, { panX: g.pX + dx / bwpx, panY: g.pY + dy / d.h }); refreshBannerRow(g.row); e.preventDefault();
     } else if (g.mode === 'pinch' && g.pts.size >= 2) {
       const p = [...g.pts.values()]; t.z = clamp(g.z * distp(p[0], p[1]) / (g.dist || 1), ZMIN, ZMAX);
       clampPan(t, a); const im = cell.querySelector('img'); if (im) applyImg(im, t, a, d); syncZoom(); e.preventDefault();
     } else if (g.mode === 'pan') {
-      const dx = e.clientX - g.sx, dy = e.clientY - g.sy;
+      const scale=cell.getBoundingClientRect().width/d.w||1;
+      const dx = (e.clientX - g.sx)/scale, dy = (e.clientY - g.sy)/scale;
       if (Math.abs(dx) > 2 || Math.abs(dy) > 2) g.moved = true;
       t.panX = g.pX + dx / d.w; t.panY = g.pY + dy / d.h; clampPan(t, a);
       const im = cell.querySelector('img'); if (im) applyImg(im, t, a, d); e.preventDefault();
