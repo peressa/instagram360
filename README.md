@@ -18,7 +18,7 @@ Los perfiles anteriores se conservan. Cada propuesta usa una base IndexedDB inde
 
 Se consultó directamente instagram.com/instagram el 13 de noviembre de 2026 con Chrome. `references/` conserva medidas de escritorio (1920, 1280 y 768 px) y web móvil (390 px de viewport, 375 px útiles por la barra de desplazamiento de Chrome). Se copiaron las formas SVG observadas de la interfaz y se reprodujeron tipografías, colores, medidas, columnas adaptables y distribución mediante CSS.
 
-La geometría se contrastó con el mismo texto de referencia: en web móvil coinciden avatar (16, 87.5; 77×77), estadísticas (121, 121; 254×54), botones (16, 277; 343×32), destacados (y=337), pestañas (y=446) y grilla (y=491). Las pruebas se hicieron con un perfil local de prueba; ese contenido no se distribuye en el sitio.
+Las medidas de referencia se conservan en `references/`. La vista móvil predeterminada es App · iPhone. Las etiquetas de estadísticas se mantienen en una sola línea en iPhone, Android y la alternativa web móvil, en los anchos de 375, 390 y 412 px. Los perfiles guardados con la antigua vista web móvil pasan una sola vez a la vista de app; las elecciones posteriores se conservan.
 
 Las vistas nativas de iPhone y Android están disponibles como variantes de presentación. Sin capturas de una versión concreta de las apps no puede certificarse igualdad de píxeles con ellas ni con todos los experimentos de interfaz de Instagram.
 

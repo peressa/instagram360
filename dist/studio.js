@@ -139,7 +139,9 @@ function validExtendedProfile(p){
  for(const key of ['contacts','extraLinks'])if(p[key]!==undefined&&(!Array.isArray(p[key])||p[key].length>20||!p[key].every(v=>typeof v==='string')))return false;
  for(const h of p.highlights){if(h.stories!==undefined&&(!Array.isArray(h.stories)||h.stories.length>100||!h.stories.every(s=>typeof s.id==='string'&&typeof s.src==='string'&&/^data:image\/(png|jpeg|webp|gif|avif|bmp|svg\+xml);base64,/.test(s.src))))return false}return true;
 }
-function saveViewSettings(){if(ok)put('state',{key:'view',data:{device:$('deviceView').value,theme:$('themeView').value,audience:$('audienceView').value,width:$('canvasWidth').value}});buildNavigation();applyProfile()}
+function currentViewSettings(){return {device:$('deviceView').value,theme:$('themeView').value,audience:$('audienceView').value,width:$('canvasWidth').value,mobileLayoutVersion:1};}
+function normalizeSavedView(view){if(!view)return null;return view.device==='mobileweb'&&Number(view.mobileLayoutVersion||0)<1?{...view,device:'ios',width:'auto',mobileLayoutVersion:1}:{...view,mobileLayoutVersion:1};}
+function saveViewSettings(){if(ok)put('state',{key:'view',data:currentViewSettings()});buildNavigation();applyProfile()}
 async function captureProfile(){
  const button=$('exportScreen');button.disabled=true;button.textContent='Generando…';
  try{const c=await renderProfileCanvas();downloadProfileCanvas(c)}catch(e){alert('No se pudo generar la captura. '+e.message)}finally{button.disabled=false;button.textContent='↓ Capturar perfil'}
@@ -147,8 +149,9 @@ async function captureProfile(){
 async function initStudio(){
  buildProfileEditor();buildNavigation();$('canvasWidth').addEventListener('change',()=>{render();applyProfile();saveViewSettings()});$('exportScreen').addEventListener('click',captureProfile);
 
- const view=(await all('state')).find(s=>s.key==='view')?.data;if(view){for(const [id,key] of [['deviceView','device'],['themeView','theme'],['audienceView','audience'],['canvasWidth','width']]){if([...$(id).options].some(o=>o.value===view[key]))$(id).value=view[key]}const p=document.querySelector('.phone');p.dataset.device=$('deviceView').value;p.dataset.theme=$('themeView').value;p.dataset.audience=$('audienceView').value}
+ const view=normalizeSavedView((await all('state')).find(s=>s.key==='view')?.data);if(view){for(const [id,key] of [['deviceView','device'],['themeView','theme'],['audienceView','audience'],['canvasWidth','width']]){if([...$(id).options].some(o=>o.value===view[key]))$(id).value=view[key]}const p=document.querySelector('.phone');p.dataset.device=$('deviceView').value;p.dataset.theme=$('themeView').value;p.dataset.audience=$('audienceView').value}
  render();applyProfile();buildNavigation();renderProfileExtras();
+ if(ok)await put('state',{key:'view',data:currentViewSettings()});
  ['deviceView','themeView','audienceView','previewToggle'].forEach(id=>$(id).disabled=false);
 }
 

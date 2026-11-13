@@ -27,3 +27,11 @@ body.client-preview .projectbar,body.client-preview .sidebar,body.client-preview
 .phone.web-layout .ig-actions .ig-follow{flex:none;width:calc((100% - 60px)/2 - 2.25px)}.phone.web-layout .ig-owner-actions>span:first-child{flex:none;width:calc((100% - 8px)/2 + 1.78125px)}.phone.web-layout[data-audience=owner] .phone-bar{min-height:56px}.phone.web-layout[data-audience=owner] .profile-options{width:40px;height:40px;justify-content:center;align-items:center;padding:8px}.phone.web-layout[data-audience=owner] .profile-options svg{width:24px;height:24px}.phone.web-layout[data-audience=owner] .name-line{margin-top:4px}.phone.web-layout[data-audience=owner] .bio-block{margin-top:16px}
 
 .pb-handle{min-width:0}
+
+/* Keep profile statistics readable as complete words in every mobile preview. */
+.phone.mobile-layout .stats{gap:8px;min-width:0}
+.phone.mobile-layout .stat{flex:1 0 auto;min-width:max-content;white-space:nowrap}
+.phone.mobile-layout .stat span{white-space:nowrap;overflow-wrap:normal;word-break:normal;font-size:12px;line-height:16px}
+.phone[data-web-mobile=true] .stats{width:100%;gap:8px;justify-content:space-between}
+.phone[data-web-mobile=true] .stat{display:flex;flex-direction:column;align-items:center;flex:1 0 auto;min-width:max-content}
+.phone[data-web-mobile=true] .stat span{white-space:nowrap;overflow-wrap:normal;word-break:normal;font-size:12px;line-height:16px;text-align:center}
