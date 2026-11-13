@@ -2,6 +2,18 @@
 
 Planificador de perfiles de Instagram para preparar y presentar propuestas. Adaptación de mkgrid (Chris Vrakas, MIT; ver LICENSE). Incluye html2canvas 1.4.1, MIT, en dist/vendor.
 
+Aplicación estática independiente: no requiere ChatGPT, inicio de sesión, API, servidor de aplicación ni secretos. Todos los recursos de ejecución están incluidos en `dist/`.
+
+## Publicación
+
+Dominio de producción: https://instagram.rio360.com.ar
+
+En Cloudflare Pages, conectar este repositorio, seleccionar la rama de producción, usar el preset «None», dejar vacío el comando de compilación y configurar `dist` como directorio de salida. Agregar `instagram.rio360.com.ar` en Custom domains y usar el registro DNS que indique Cloudflare.
+
+Para usar Dokploy u otro alojamiento con Docker, construir el `Dockerfile` incluido y dirigir el dominio al puerto 80 del contenedor. No necesita volúmenes: las fotos y propuestas permanecen en el navegador de cada visitante.
+
+Mantener el mismo dominio HTTPS conserva el almacenamiento local existente. Para cambiar de dominio o computadora, descargar e importar un respaldo JSON.
+
 ## Uso
 
 Servir `dist/` con un servidor estático. No requiere instalación ni compilación. El panel permite editar usuario, nombre, verificación visual, seguidores, seguidos, publicaciones (manual o automático), avatar y recorte, bio, pronombres, categoría, enlaces, ubicación, contacto, privacidad y textos de botones. Las cifras son de la propuesta y no modifican ninguna cuenta real.
@@ -25,3 +37,5 @@ Las vistas nativas de iPhone y Android están disponibles como variantes de pres
 ## Verificación
 
 `node tests/backup.cjs` comprueba compatibilidad con respaldos anteriores y validación de los campos añadidos. La prueba de navegador cubre edición, recarga, portadas, historias, orden, pestañas, publicaciones y exportación. No usa la API de Instagram ni publica contenido.
+
+`node tests/grid-resize.cjs` verifica que reducir la grilla conserve las fotos, el orden, los recortes y panoramas, y rechace una reducción cuando el contenido no entra.
