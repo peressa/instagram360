@@ -28,3 +28,28 @@ body.exporting .sim-screen{display:none!important}
 .phone.web-layout .sim-screen,.phone.web-layout[data-narrow=false] .sim-screen{left:var(--sim-nav-width,72px)}.phone.web-layout .ig-desktop-nav{height:100%!important;bottom:0;padding:20px 14px;gap:10px}.phone.web-layout .ig-desktop-nav .nav-logo{margin-bottom:36px}.phone .ig-desktop-nav .nav-secondary{margin-top:auto;gap:8px}.phone .ig-desktop-nav .sim-nav{flex:none;min-height:40px}
 
 .sidebar .dropzone{display:none!important}
+
+/* An immersive canvas keeps device controls floating and the editor one click away. */
+#canvasExpand{white-space:nowrap}
+body.canvas-expanded .app{height:100dvh}
+body.canvas-expanded .footer{display:none}
+body.canvas-expanded .shell{padding:0}
+body.canvas-expanded .main{position:relative;gap:0;border:0;border-radius:0;max-width:none}
+body.canvas-expanded .main>.sidebar{display:none!important}
+body.canvas-expanded .canvas-column{gap:0}
+body.canvas-expanded .stage{border:0;border-radius:0;padding:12px 16px}
+body.canvas-expanded .canvas-toolbar{position:absolute;top:16px;right:18px;left:auto;z-index:60;flex-direction:column;align-items:flex-end;gap:8px;padding:0;pointer-events:none}
+body.canvas-expanded .canvas-toolbar .device-switch,body.canvas-expanded #canvasExpand{pointer-events:auto;box-shadow:0 5px 24px #674b4b1f}
+body.canvas-expanded .canvas-tools>.btn:not(#canvasExpand){display:none!important}
+body.canvas-expanded .canvas-tools{order:2}
+body.canvas-expanded .device-switch{background:#ffffffee;backdrop-filter:blur(12px)}
+body.canvas-expanded #canvasExpand{background:#ffffffee;border-color:#ddd0c9}
+@media(max-width:700px){
+ .canvas-tools{flex-wrap:wrap}.canvas-tools #canvasExpand{font-size:10px;padding:5px 9px}
+ body.canvas-expanded .stage{padding:66px 6px 6px}
+ body.canvas-expanded .canvas-toolbar{left:8px;right:8px;top:8px;flex-direction:row;justify-content:space-between;align-items:center;gap:6px}
+ body.canvas-expanded .device-switch{align-self:auto;gap:0;padding:3px}
+ body.canvas-expanded .device-switch .btn{padding:6px 10px;font-size:10px;min-height:31px}
+ body.canvas-expanded .canvas-tools #canvasExpand{font-size:10px;min-height:37px;padding:7px 9px}
+}
+@media(max-width:360px){body.canvas-expanded .device-switch .btn{padding:6px 7px}}
