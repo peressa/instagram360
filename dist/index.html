@@ -388,7 +388,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css">
+</style><link rel="stylesheet" href="studio.css"><link rel="stylesheet" href="workspace.css">
 </head>
 <body>
 <div class="app">
@@ -534,7 +534,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 <dialog id="nameDialog" style="margin:auto;padding:28px;border:1px solid #43503e;border-radius:12px;background:#181c18;color:#fff;max-width:420px;width:90%"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required style="display:block;width:100%;padding:12px;margin:18px 0;background:#242a23;border:1px solid #43503e;color:#fff;border-radius:7px"><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="studio.js"></script><script>
+<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="studio.js"></script><script src="persistence.js"></script><script src="workspace.js"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
@@ -566,12 +566,14 @@ function openDB() {
     r.onsuccess = () => res(r.result); r.onerror = () => res(null);
   });
 }
-const put = (s, v) => new Promise(res => { if (!db) return res(); try { const t = db.transaction(s, 'readwrite'); t.objectStore(s).put(v); t.oncomplete = res; t.onerror = () => { storageFailed=true; $('saved').textContent='⚠ No se pudo guardar. Descargá un respaldo.'; res(); }; } catch (e) { console.error('mkgrid: save error', e); res(); } });
-const del = (s, k) => new Promise(res => { if (!db) return res(); try { const t = db.transaction(s, 'readwrite'); t.objectStore(s).delete(k); t.oncomplete = res; t.onerror = res; } catch (e) { res(); } });
-const all = s => new Promise(res => { if (!db) return res([]); try { const t = db.transaction(s, 'readonly'); const q = t.objectStore(s).getAll(); q.onsuccess = () => res(q.result || []); q.onerror = () => res([]); } catch (e) { res([]); } });
+const persistence = createLocalPersistence({getDatabase:()=>db,getNamespace:()=>activeProfile,storage:{getItem:key=>localStorage.getItem(key),setItem:(key,value)=>localStorage.setItem(key,value),removeItem:key=>localStorage.removeItem(key)},onStatus:showSaveStatus});
+const put = (s, v) => persistence.put(s, v);
+const del = (s, k) => new Promise(res => { if (!db) return res(); try { const t = db.transaction(s, 'readwrite'); t.objectStore(s).delete(k); t.oncomplete = res; t.onerror = t.onabort = () => { persistence.markError(); res(); }; } catch (e) { persistence.markError(); res(); } });
+const readAll = s => new Promise(res => { if (!db) return res([]); try { const t = db.transaction(s, 'readonly'); const q = t.objectStore(s).getAll(); q.onsuccess = () => res(q.result || []); q.onerror = () => res([]); } catch (e) { res([]); } });
+const all = async s => { const records=await readAll(s); if(s!=='state')return records;const merged=new Map(records.map(record=>[record.key,record]));for(const draft of persistence.drafts())merged.set(draft.key,draft);return [...merged.values()]; };
 let storageFailed=false; let saveT = null;
-function save() { if (!ok) return; clearTimeout(saveT); saveT = setTimeout(() => { put('state', { key: 'layout', rows, RW, RH, tiles }).then(flashSaved); }, 300); }
-function flashSaved() { if(storageFailed)return; const el = $('saved'); el.style.opacity = '1'; clearTimeout(flashSaved._t); flashSaved._t = setTimeout(() => el.style.opacity = '.35', 1100); }
+function save() { if (!ok) { persistence.markError(); return Promise.resolve(false); } clearTimeout(saveT); return put('state', { key: 'layout', rows, RW, RH, tiles }); }
+function flashSaved() { /* The transaction completion callback owns the save indicator. */ }
 
 /* ---------- history ---------- */
 /* FIX (session 11): snap() now captures rows/RW/RH alongside tiles, and restore()
@@ -601,7 +603,7 @@ function restore(s) {
 function undo() { if (pos > 0) { pos--; restore(hist[pos]); updateHistUI(); save(); } }
 function redo() { if (pos < hist.length - 1) { pos++; restore(hist[pos]); updateHistUI(); save(); } }
 function updateHistUI() { undoBtn.disabled = pos <= 0; redoBtn.disabled = pos >= hist.length - 1; }
-let histT = null; const debHist = () => { clearTimeout(histT); histT = setTimeout(commit, 250); };
+let histT = null; const debHist = () => { save(); clearTimeout(histT); histT = setTimeout(commit, 250); };
 
 /* ---------- geometry (proven WYSIWYG: same math for tile, preview, export) ---------- */
 function dims() { if (stageTile) return { w: stageTile, h: stageTile * previewTileHeightRatio() }; const w = grid.clientWidth; const tw = (w && w > 50) ? (w - 2 * GAP) / 3 : 130; return { w: tw, h: tw * RH / RW }; }
@@ -642,6 +644,11 @@ function applyImg(img, t, a, d) { const p = place(t, a, d.w, d.h, GAP); img.styl
 /* ---------- size the grid to fill the viewport — the grid is the product ---------- */
 function fitStage() {
  const phone=document.querySelector('.phone'),stage=document.querySelector('.stage');
+ if(document.body.dataset.canvas==='feed'&&!document.body.classList.contains('client-preview')&&!document.body.classList.contains('exporting')){
+   const width=Math.max(180,Math.min(720,stage.clientWidth-(innerWidth<=700?24:80)));
+   phone.style.width=width+'px';phone.style.paddingRight='0';grid.style.width=width+'px';grid.style.gridTemplateColumns='repeat(3,1fr)';phone.style.setProperty('--ratio',RW+' / '+RH);stageTile=(width-2*GAP)/3;return;
+ }
+ phone.style.paddingRight='';
  const selected=$('canvasWidth')?.value||'auto';const device=phone.dataset.device;
  const defaultWidth={ios:390,android:412,mobileweb:390,desktop:Math.max(768,stage.clientWidth-48),tablet:768}[device];
  const width=selected==='auto'?defaultWidth:Number(selected);
@@ -655,6 +662,7 @@ function fitStage() {
 
 /* ---------- render ---------- */
 function render() {
+  updateWorkspaceCount();
   fitStage();
   const d = dims();
   grid.innerHTML = '';
@@ -1071,7 +1079,7 @@ function addFileToCell(file, cellIdx) {
   r.readAsDataURL(file);
 }
 
-window.addEventListener('beforeunload', () => { Object.keys(blobCache).forEach(revokeBlobURL); });
+window.addEventListener('beforeunload', e => { if(persistence.unsaved){e.preventDefault();e.returnValue='';} });
 window.addEventListener('pagehide', () => { Object.keys(blobCache).forEach(revokeBlobURL); });
 /* FIX (session 11): pagehide revokes all blob URLs (mobile Safari fires this on tab-switch,
    not just true navigation-away). Without a pageshow recovery, returning to a bfcache'd page
@@ -1088,10 +1096,11 @@ function renderTray() {
   lib.forEach(a => {
     const el = document.createElement('div'); el.className = 'chip';
     const img = document.createElement('img'); img.alt = a.name ? `Photo: ${a.name}` : 'Uploaded photo'; img.title = a.name || ''; setImgSrc(img, a);
+    const add = mkBtn('Agregar al feed', () => { const index=nextEmptyCell(-1); if(index<0){alert('La grilla está completa. Elegí más filas o reemplazá una publicación.');return;}placeAsset(index,a.id);if(innerWidth<=700)switchWorkspace('feed'); });add.className='btn add-asset';add.addEventListener('pointerdown',e=>e.stopPropagation());
     const nm = document.createElement('span'); nm.className = 'name'; nm.textContent = a.name.length > 22 ? a.name.slice(0, 19) + '…' : a.name;
     const x = document.createElement('button'); x.className = 'del'; x.textContent = '✕';
     x.addEventListener('click', e => { e.stopPropagation(); lib = lib.filter(l => l.id !== a.id); del('assets', a.id); revokeBlobURL(a.id); let touched = false; for (let j = 0; j < tiles.length; j++) if (tiles[j] && tiles[j].imgId === a.id) { tiles[j] = null; sel.delete(j); touched = true; } if (touched) normalizeBanners(); render(); renderTray(); updateExportUI(); if (touched) commit(); });
-    el.append(img, nm, x); wireChip(el, a); tray.appendChild(el);
+    el.append(img, nm, x, add); wireChip(el, a); tray.appendChild(el);
   });
   /* FIX (session 11): scroll-hint listener was re-added on every renderTray() call
      (every addFile/placeAsset/removal), accumulating duplicate listeners over a session.
@@ -1551,8 +1560,12 @@ function wrapLines(ctx, text, maxW) {
 function roundRectPath(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 
 async function renderProfileCanvas(){
- const phone=document.querySelector('.phone');await Promise.all([...phone.querySelectorAll('img')].filter(i=>i.getAttribute('src')).map(i=>i.decode().catch(()=>{})));
- return html2canvas(phone,{scale:2,backgroundColor:null,logging:false,useCORS:false,onclone:doc=>{doc.body.classList.add('client-preview','exporting');const p=doc.querySelector('.phone');p.style.margin='0';p.querySelectorAll('.cell:not(.has)').forEach(c=>c.remove());p.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));}});
+ const stage=document.querySelector('.stage'),previous=document.body.dataset.canvas,top=stage.scrollTop,left=stage.scrollLeft;
+ document.body.dataset.canvas='profile';document.body.classList.add('exporting');render();applyProfile();
+ try {
+   const phone=document.querySelector('.phone');await Promise.all([...phone.querySelectorAll('img')].filter(i=>i.getAttribute('src')).map(i=>i.decode().catch(()=>{})));
+   return await html2canvas(phone,{height:Math.ceil(phone.scrollHeight),scale:2,backgroundColor:null,logging:false,useCORS:false,onclone:doc=>{doc.body.classList.add('client-preview','exporting');const p=doc.querySelector('.phone');p.style.margin='0';const nav=p.querySelector('.ig-bottom');if(nav)nav.style.position='static';p.querySelectorAll('.cell:not(.has)').forEach(c=>c.remove());p.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));}});
+ } finally {document.body.classList.remove('exporting');document.body.dataset.canvas=previous;render();applyProfile();stage.scrollTop=top;stage.scrollLeft=left;}
 }
 function downloadProfileCanvas(c) { c.toBlob(blob => { const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `${(profile.handle || 'profile').replace(/[^\w.-]/g, '_')}_profile.png`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1500); }, 'image/png'); }
 async function downloadProfile() { const c = await renderProfileCanvas(); downloadProfileCanvas(c); }
@@ -1566,7 +1579,7 @@ async function showFeedPreview() {
 /* ---------- editable profile ---------- */
 let profile = { verified:false,autoPosts:false,category:'',pronouns:'',address:'',extraLinks:[],mutual:'',private:false,storyRing:'none',followLabel:'Seguir',messageLabel:'Mensaje',ownerEditLabel:'Editar perfil',ownerShareLabel:'Compartir perfil',ownerWebSecondaryLabel:'Ver archivo',contacts:[],showVideo:true,showReposts:true,showTagged:true,handle: 'rio360', name: 'RIO360', bio: 'Tu marca, desde todos los ángulos.\nEditá esta biografía para probar tu propuesta.', link: 'rio360.com', posts: '0', followers: '0', following: '0', avatar: null, hlOpen: true, highlights: [{id:'servicios',label:'Servicios',cover:null},{id:'proyectos',label:'Proyectos',cover:null},{id:'equipo',label:'Equipo',cover:null}] };
 let profSaveT = null;
-function saveProfile() { if (!ok) return; clearTimeout(profSaveT); profSaveT = setTimeout(() => { put('state', { key: 'profile', data: profile }).then(flashSaved); }, 300); }
+function saveProfile() { if (!ok) { persistence.markError(); return Promise.resolve(false); } clearTimeout(profSaveT); return put('state', { key: 'profile', data: profile }); }
 const TEXT_FIELDS = ['handle', 'name', 'bio', 'link', 'posts', 'following', 'followers'];
 
 /* normalise avatar/cover to {src, panX, panY, z} — handles old string-only format */
@@ -1635,6 +1648,7 @@ function wireProfile() {
     /* FIX (session 11): read textContent on save (was innerText), matching what
        applyProfile() writes back on restore. innerText/textContent divergence could
        corrupt whitespace/line-break representation in contenteditable fields. */
+    el.addEventListener('input', () => { profile[f] = el.textContent.replace(/\s+$/, ''); if(f==='posts')profile.autoPosts=false; saveProfile(); syncEditor(); });
     el.addEventListener('blur', () => { profile[f] = el.textContent.replace(/\s+$/, ''); if(f==='posts')profile.autoPosts=false; saveProfile(); renderProfileExtras(); syncEditor(); });
     el.addEventListener('keydown', e => { if (e.key === 'Enter' && f !== 'bio') { e.preventDefault(); el.blur(); } });
   });
@@ -1705,8 +1719,8 @@ async function flushProfile(){
   document.querySelectorAll('[data-f]').forEach(el=>profile[el.dataset.f]=el.textContent.replace(/\s+$/,''));
   clearTimeout(saveT);clearTimeout(profSaveT);clearTimeout(histT);
   if(!ok)throw new Error('El guardado local no está disponible. Descargá un respaldo.');
-  storageFailed=false;
   await put('state',{key:'layout',rows,RW,RH,tiles});await put('state',{key:'profile',data:profile});
+  await persistence.settled();
   if(storageFailed)throw new Error('No se pudo guardar. Descargá un respaldo antes de cambiar de perfil.');
 }
 function nextProfileId(){return crypto.randomUUID();}
@@ -1746,13 +1760,14 @@ function initProfiles(){
  $('backupProfile').addEventListener('click',()=>{document.activeElement?.blur();dl(new Blob([JSON.stringify(backupData())],{type:'application/json'}),'RIO360-'+(profile.handle||'perfil').replace(/[^\w.-]/g,'_')+'.json')});
  $('importProfile').addEventListener('click',()=>$('backupInput').click());
  $('backupInput').addEventListener('change',guarded(async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;if(file.size>150*1024*1024)throw new Error('El respaldo supera los 150 MB.');const data=JSON.parse(await file.text());if(!validBackup(data))throw new Error('El archivo no es un respaldo válido de RIO360.');await addSavedProfile(String(data.name||'Perfil importado'),data)}));
- if(!ok){storageFailed=true;$('saved').textContent='⚠ Sin guardado local. Descargá respaldos.';}
+ if(!ok)persistence.markError();
 }
 
 /* ---------- init ---------- */
 (async function () {
   db = await openDB(); ok = !!db;
   if (ok) {
+    await persistence.recover();
     const a = await all('assets'); if (a.length) { lib = a; lib.forEach(asset => cacheDisplayBlob(asset.id, asset.src)); }
     const st = (await all('state')).find(s => s.key === 'layout');
     if (st) { rows = st.rows || 3; total = rows * 3; if (st.RW && st.RH) { RW = st.RW; RH = st.RH; document.documentElement.style.setProperty('--ratio', RW + ' / ' + RH); } tiles = (st.tiles || []).map(t => t || null); while (tiles.length < total) tiles.push(null); const ids = new Set(lib.map(x => x.id)); tiles = tiles.map(t => { if (!t || !ids.has(t.imgId)) return null; if (!t.banner && t.z == null) t.z = 1; delete t.mode; delete t.zoom; return t; }); $('rowsSeg').querySelectorAll('button').forEach(b => b.classList.toggle('active', parseInt(b.dataset.rows) === rows)); $('ratioSeg').querySelectorAll('button').forEach(b => b.classList.toggle('active', parseInt(b.dataset.rw) === RW && parseInt(b.dataset.rh) === RH)); }
@@ -1762,6 +1777,7 @@ function initProfiles(){
   wireProfile();
   initProfiles();
   await initStudio();
+  initWorkspace();
   applyProfile();
   render(); renderTray(); updateExportUI(); syncZoom();
   hist = []; pos = -1; commit();

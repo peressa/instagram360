@@ -10,7 +10,7 @@ Dominio de producción: https://instagram.rio360.com.ar
 
 El alojamiento de producción usa Cloudflare Workers con archivos estáticos de `dist/`. Para publicar desde una computadora autorizada, instalar Wrangler, ejecutar `npx wrangler login` y luego `npx wrangler deploy`. La configuración está en `wrangler.jsonc`. También se puede cargar un ZIP con el contenido de `dist/` desde Workers & Pages en el panel de Cloudflare.
 
-Cloudflare Workers Builds conecta `peressa/rio360-instagram-studio` con el Worker de producción. Cada push a `main` ejecuta `node tests/grid-resize.cjs && node tests/backup.cjs`; si pasan ambas pruebas, publica mediante `npx --yes wrangler@4.162.0 deploy` en https://instagram.rio360.com.ar. Los errores de pruebas o publicación se consultan en Workers & Pages → rio360-instagram-studio → Deployments. No hay secretos de Cloudflare almacenados en el repositorio.
+Cloudflare Workers Builds conecta `peressa/rio360-instagram-studio` con el Worker de producción. Cada push a `main` ejecuta `node tests/run.cjs`; si pasan las pruebas, publica mediante `npx --yes wrangler@4.162.0 deploy` en https://instagram.rio360.com.ar. Los errores de pruebas o publicación se consultan en Workers & Pages → rio360-instagram-studio → Deployments. No hay secretos de Cloudflare almacenados en el repositorio.
 
 Para usar Dokploy u otro alojamiento con Docker, construir el `Dockerfile` incluido y dirigir el dominio al puerto 80 del contenedor. No necesita volúmenes: las fotos y propuestas permanecen en el navegador de cada visitante.
 
@@ -25,6 +25,10 @@ Las fotos se arrastran a la biblioteca y a la grilla. En Publicaciones se edita 
 Los destacados tienen nombre, portada, recorte, orden e imágenes de historias modificables. En la presentación se abren para recorrer la secuencia. La captura PNG se genera desde la misma vista seleccionada, con verificación, estilos y recortes.
 
 ## Guardado
+
+El editor inicia en la composición del feed. Biblioteca, Perfil y Ayuda separan las herramientas; en celulares se accede desde la navegación inferior. La vista «Ver como Instagram» y las capturas conservan la presentación del perfil, independiente del lienzo de edición.
+
+Los cambios se escriben sin espera de debounce en IndexedDB. Mientras se confirma cada transacción, se conserva un borrador de estado por propuesta en localStorage para recuperar cambios pendientes tras una recarga. Si localStorage está lleno se continúa usando IndexedDB; si falla el guardado, el editor muestra el error y permite reintentar o descargar un respaldo. Los borradores no sustituyen el respaldo de las fotos de la biblioteca. El estado «Guardado» se muestra después de completarse las transacciones.
 
 Los perfiles anteriores se conservan. Cada propuesta usa una base IndexedDB independiente. El respaldo JSON incluye perfil, biblioteca, grilla, historias y ajustes de vista. No sincroniza entre computadoras. Borrar los datos del navegador elimina el guardado local: conservar respaldos descargados.
 
@@ -41,3 +45,5 @@ Las vistas nativas de iPhone y Android están disponibles como variantes de pres
 `node tests/backup.cjs` comprueba compatibilidad con respaldos anteriores y validación de los campos añadidos. La prueba de navegador cubre edición, recarga, portadas, historias, orden, pestañas, publicaciones y exportación. No usa la API de Instagram ni publica contenido.
 
 `node tests/grid-resize.cjs` verifica que reducir la grilla conserve las fotos, el orden, los recortes y panoramas, y rechace una reducción cuando el contenido no entra.
+
+`node tests/run.cjs` ejecuta todas las pruebas, incluyendo recuperación de borradores, transacciones abortadas, falta de espacio y aislamiento entre propuestas, y verifica la sintaxis de los scripts.
