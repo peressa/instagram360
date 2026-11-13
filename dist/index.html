@@ -1354,26 +1354,41 @@ function buildZip(files) {
 }
 
 /* ---------- grid size ---------- */
+function resizedGridTiles(source, newTotal) {
+  if (source.length <= newTotal) return source.concat(Array(newTotal - source.length).fill(null));
+  const filledCount = source.filter(Boolean).length;
+  if (filledCount > newTotal) return null;
+  // Preserve positions whenever the existing photos already fit in the smaller grid.
+  if (source.slice(newTotal).every(t => !t)) return source.slice(0, newTotal);
+  const occupiedRows = [];
+  for (let i = 0; i < source.length; i += 3) {
+    const row = source.slice(i, i + 3);
+    if (row.some(Boolean)) occupiedRows.push(row);
+  }
+  let next = occupiedRows.flat();
+  if (next.length > newTotal) {
+    // Close gaps while keeping panoramas as complete, aligned rows.
+    next = [];
+    for (const row of occupiedRows) {
+      if (row.some(t => t?.banner)) {
+        while (next.length % 3) next.push(null);
+        next.push(...row);
+      } else next.push(...row.filter(Boolean));
+    }
+  }
+  if (next.length > newTotal) return null;
+  return next.concat(Array(newTotal - next.length).fill(null));
+}
 function setRows(n) {
   const newTotal = n * 3;
-  let src = tiles;
-  if (newTotal < tiles.length) {
-    // shrinking: find contiguous block of rows that best fits
-    // skip leading empty rows so bottom-up planning is preserved
-    const oldRows = tiles.length / 3;
-    let firstFilled = 0;
-    for (let r = 0; r < oldRows; r++) {
-      if (tiles[r*3] || tiles[r*3+1] || tiles[r*3+2]) { firstFilled = r; break; }
-      firstFilled = r + 1; // all empty — slice start goes beyond end, yields empty array
-    }
-    // slice from firstFilled, keeping up to n rows; if too many filled rows, keep last n
-    const sliceStart = Math.max(firstFilled, oldRows - n);
-    src = tiles.slice(sliceStart * 3);
+  const next = resizedGridTiles(tiles, newTotal);
+  if (!next) {
+    alert('Las fotos o panoramas no entran en esa grilla. Quitá publicaciones o elegí una grilla más grande.');
+    return false;
   }
   rows = n; total = newTotal;
-  const next = Array(total).fill(null);
-  for (let i = 0; i < Math.min(src.length, total); i++) next[i] = src[i] || null;
   tiles = next; normalizeBanners(); sel.clear(); active = null; render(); updateExportUI(); syncZoom(); commit();
+  return true;
 }
 function setRatio(w, h) {
   RW = w; RH = h;
@@ -1503,7 +1518,7 @@ exportModal.addEventListener('keydown', e => {
 $('showOrder').addEventListener('change', showFeedPreview);
 exportModal.addEventListener('click', e => { if (e.target === exportModal) closeExport(); });
 undoBtn.addEventListener('click', undo); redoBtn.addEventListener('click', redo);
-$('rowsSeg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { $('rowsSeg').querySelectorAll('button').forEach(x => x.classList.remove('active')); b.classList.add('active'); setRows(parseInt(b.dataset.rows)); }));
+$('rowsSeg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { if (setRows(parseInt(b.dataset.rows)) === false) return; $('rowsSeg').querySelectorAll('button').forEach(x => x.classList.remove('active')); b.classList.add('active'); }));
 $('ratioSeg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { $('ratioSeg').querySelectorAll('button').forEach(x => x.classList.remove('active')); b.classList.add('active'); setRatio(parseInt(b.dataset.rw), parseInt(b.dataset.rh)); }));
 window.addEventListener('keydown', e => {
   if(document.activeElement?.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName))return;
