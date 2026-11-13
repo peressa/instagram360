@@ -10,7 +10,7 @@ Dominio de producción: https://instagram.rio360.com.ar
 
 El alojamiento de producción usa Cloudflare Workers con archivos estáticos de `dist/`. Para publicar desde una computadora autorizada, instalar Wrangler, ejecutar `npx wrangler login` y luego `npx wrangler deploy`. La configuración está en `wrangler.jsonc`. También se puede cargar un ZIP con el contenido de `dist/` desde Workers & Pages en el panel de Cloudflare.
 
-El repositorio de GitHub conserva el código. Los cambios subidos a GitHub requieren un despliegue explícito; no hay integración automática ni secretos de Cloudflare almacenados en el repositorio.
+Cloudflare Workers Builds conecta `peressa/rio360-instagram-studio` con el Worker de producción. Cada push a `main` ejecuta `node tests/grid-resize.cjs && node tests/backup.cjs`; si pasan ambas pruebas, publica mediante `npx --yes wrangler@4.162.0 deploy` en https://instagram.rio360.com.ar. Los errores de pruebas o publicación se consultan en Workers & Pages → rio360-instagram-studio → Deployments. No hay secretos de Cloudflare almacenados en el repositorio.
 
 Para usar Dokploy u otro alojamiento con Docker, construir el `Dockerfile` incluido y dirigir el dominio al puerto 80 del contenedor. No necesita volúmenes: las fotos y propuestas permanecen en el navegador de cada visitante.
 
