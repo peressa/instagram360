@@ -1,42 +1,28 @@
-/* Editor navigation is independent of the Instagram presentation settings. */
-let workspaceSaveState = null;
-function initWorkspace() {
-  document.body.dataset.canvas = 'feed';
-  document.body.dataset.panel = 'feed';
-  const nav = document.createElement('nav'); nav.className = 'workspace-nav'; nav.setAttribute('aria-label', 'Espacio de trabajo');
-  for (const [id, label] of [['feed','Feed'], ['library','Biblioteca'], ['profile','Perfil'], ['help','Ayuda']]) {
-    const button = action(label, () => switchWorkspace(id));
-    button.dataset.panel = id; button.setAttribute('aria-pressed', String(id === 'feed')); nav.append(button);
-  }
-  document.querySelector('.projectbar').append(nav);
-  const actions = document.createElement('details'); actions.className = 'project-menu';
-  const summary = document.createElement('summary'); summary.textContent = 'Propuesta ···'; actions.append(summary);
-  const projectContent=document.createElement('div');projectContent.className='menu-content';actions.append(projectContent);
-  for (const id of ['newProfile','duplicateProfile','renameProfile','backupProfile','importProfile']) projectContent.append($(id));
-  document.querySelector('.profile-actions').append(actions);
-  const toolbar = document.createElement('div'); toolbar.className = 'feed-tools';
-  for (const [id,label] of [['ratioSeg','Formato'],['rowsSeg','Grilla']]) {
-    const group = document.createElement('div'); group.className='tool-group';
-    const title=document.createElement('span');title.textContent=label;group.append(title,$(id));toolbar.append(group);
-  }
-  toolbar.append($('zoomBlock'));
-  const more=document.createElement('details');more.className='grid-menu';
-  const moreTitle=document.createElement('summary');moreTitle.textContent='Más opciones';const gridContent=document.createElement('div');gridContent.className='menu-content';gridContent.append($('randomBtn'),$('clearBtn'));more.append(moreTitle,gridContent);toolbar.append(more);
-  document.querySelector('.shell').before(toolbar);
-  const sidebar=document.querySelector('.sidebar');
-  const title=document.createElement('div');title.className='library-heading';title.innerHTML='<strong>Tu biblioteca</strong><span>Subí fotos y arrastralas al feed.</span>';sidebar.prepend(title);
-  const help=document.querySelector('.rail-help');help.classList.add('help-panel');sidebar.append(help);
-  const heading=document.createElement('div');heading.className='canvas-heading';heading.innerHTML='<div><span class="eyebrow">TU COMPOSICIÓN</span><h1>Diseñá tu próximo feed</h1></div><span class="canvas-count"></span>';
-  document.querySelector('.stage').prepend(heading);
-  const notice=document.createElement('div');notice.id='saveNotice';notice.className='save-notice';notice.hidden=true;notice.setAttribute('role','status');
-  const copy=document.createElement('span');copy.id='saveNoticeText';notice.append(copy,action('Reintentar',retrySave),action('Guardar respaldo',()=> $('backupProfile').click()));
-  document.querySelector('.shell').before(notice);
-  $('saved').setAttribute('role','status');$('saved').setAttribute('aria-live','polite');
-  if(workspaceSaveState)showSaveStatus(workspaceSaveState);
-  $('previewToggle').classList.remove('btn-accent');
-  document.querySelector('.projectbar h1').textContent='Instagram Studio';
-  $('clearBtn').addEventListener('click',()=>{more.open=false;});
-  document.addEventListener('click',e=>{for(const menu of [actions,more])if(!menu.contains(e.target))menu.open=false;});
+/* The Instagram mockup stays visible while every editing tool opens alongside it. */
+let workspaceSaveState=null;
+function initWorkspace(){
+  document.body.dataset.canvas='profile';document.body.dataset.panel='feed';
+  const header=document.querySelector('.header'),controls=header.querySelector('.controls'),sidebar=document.querySelector('.sidebar');
+  const project=document.createElement('div');project.className='project-picker';project.append($('profileSelect'));header.insertBefore(project,controls);
+  const upload=action('+ Subir fotos',()=>fileInput.click());upload.id='uploadPhotos';
+  const edit=action('Editar perfil',()=>switchWorkspace('profile'));edit.dataset.workspacePanel='profile';edit.setAttribute('aria-pressed','false');
+  const photos=action('Mis fotos',()=>switchWorkspace('library'));photos.dataset.workspacePanel='library';photos.setAttribute('aria-pressed','false');photos.classList.add('photos-toggle');
+  controls.prepend(upload,edit);$('previewToggle').hidden=true;
+  const settings=document.createElement('details');settings.className='simple-settings';
+  const summary=document.createElement('summary');summary.textContent='Más opciones';settings.append(summary);
+  const content=document.createElement('div');content.className='settings-content';settings.append(content);
+  const addGroup=(title,nodes)=>{const group=document.createElement('div');group.className='settings-group';const label=document.createElement('strong');label.textContent=title;group.append(label,...nodes);content.append(group);};
+  addGroup('Vista del perfil',[document.querySelector('.viewbar')]);
+  addGroup('Fotos de la grilla',[$('ratioSeg'),$('rowsSeg'),$('zoomBlock'),$('undoBtn'),$('redoBtn'),$('randomBtn'),$('clearBtn')]);
+  addGroup('Propuestas y respaldos',['newProfile','duplicateProfile','renameProfile','backupProfile','importProfile'].map(id=>$(id)));
+  const help=document.querySelector('.rail-help');help.classList.add('help-panel');const guide=document.createElement('details');const guideTitle=document.createElement('summary');guideTitle.textContent='Cómo usarlo';guide.append(guideTitle,help);content.append(guide);
+  controls.append(settings);
+  const title=document.createElement('div');title.className='library-heading';title.innerHTML='<strong>Tus fotos</strong><span>Arrastrá para ordenar. Tocá una foto para editarla.</span>';sidebar.prepend(title);
+  const close=action('Listo',()=>{document.body.dataset.panel='feed';document.querySelectorAll('[data-workspace-panel]').forEach(b=>b.setAttribute('aria-pressed','false'));render();});close.classList.add('close-panel');sidebar.prepend(close);
+  const tip=document.createElement('p');tip.className='simple-hint';tip.append('Subí fotos, ordená y exportá.',photos);document.querySelector('.shell').before(tip);
+  const notice=document.createElement('div');notice.id='saveNotice';notice.className='save-notice';notice.hidden=true;notice.setAttribute('role','status');const copy=document.createElement('span');copy.id='saveNoticeText';notice.append(copy,action('Reintentar',retrySave),action('Guardar respaldo',()=> $('backupProfile').click()));document.querySelector('.shell').before(notice);
+  $('saved').setAttribute('role','status');$('saved').setAttribute('aria-live','polite');if(workspaceSaveState)showSaveStatus(workspaceSaveState);
+  document.addEventListener('click',e=>{if(!settings.contains(e.target))settings.open=false;});
 }
 async function retrySave() {
   const results=await Promise.all([...lib.map(asset=>put('assets',asset)),save(),saveProfile(),put('state',{key:'view',data:currentViewSettings()})]);
@@ -44,18 +30,12 @@ async function retrySave() {
 }
 function switchWorkspace(panel) {
   document.body.classList.remove('client-preview');
-  $('previewToggle').textContent='Ver como Instagram';
-  document.body.dataset.panel=panel;
-  document.body.dataset.canvas=panel==='profile'?'profile':'feed';
-  currentProfileTab='posts';
-  document.querySelectorAll('.workspace-nav button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===panel)));
-  document.querySelector('.stage').scrollTop=0;
+  document.body.dataset.canvas='profile';
+  document.body.dataset.panel=document.body.dataset.panel===panel?'feed':panel;
+  document.querySelectorAll('[data-workspace-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.workspacePanel===document.body.dataset.panel)));
   render();applyProfile();
 }
-function updateWorkspaceCount() {
-  const label=document.querySelector('.canvas-count');
-  if(label)label.textContent=filled().length+' de '+total+' espacios';
-}
+function updateWorkspaceCount() {}
 function showSaveStatus({pending,failed,lastSaved}) {
   workspaceSaveState={pending,failed,lastSaved};
   storageFailed=failed;

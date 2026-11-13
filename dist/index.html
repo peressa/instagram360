@@ -644,17 +644,16 @@ function applyImg(img, t, a, d) { const p = place(t, a, d.w, d.h, GAP); img.styl
 /* ---------- size the grid to fill the viewport — the grid is the product ---------- */
 function fitStage() {
  const phone=document.querySelector('.phone'),stage=document.querySelector('.stage');
- if(document.body.dataset.canvas==='feed'&&!document.body.classList.contains('client-preview')&&!document.body.classList.contains('exporting')){
-   const width=Math.max(180,Math.min(720,stage.clientWidth-(innerWidth<=700?24:80)));
-   phone.style.width=width+'px';phone.style.paddingRight='0';grid.style.width=width+'px';grid.style.gridTemplateColumns='repeat(3,1fr)';phone.style.setProperty('--ratio',RW+' / '+RH);stageTile=(width-2*GAP)/3;return;
- }
  phone.style.paddingRight='';
  const selected=$('canvasWidth')?.value||'auto';const device=phone.dataset.device;
  const defaultWidth={ios:390,android:412,mobileweb:390,desktop:Math.max(768,stage.clientWidth-48),tablet:768}[device];
- const width=selected==='auto'?defaultWidth:Number(selected);
+ const available=Math.max(240,stage.clientWidth-(innerWidth<=700?24:48));
+ const width=selected==='auto'?Math.min(defaultWidth,available):Number(selected);
+ phone.style.height=Math.max(320,Math.min(({ios:844,android:915,mobileweb:844,tablet:1024,desktop:900}[device]),stage.clientHeight-32))+'px';
  phone.style.width=width+'px'; phone.style.maxWidth='none';
  const web=['desktop','tablet','mobileweb'].includes(device);phone.dataset.webMobile=String(web&&width<768);phone.classList.toggle('web-layout',web&&width>=768);phone.classList.toggle('mobile-layout',!web||width<768);
- const feedWidth=(web&&width>=768)?(width-15)*.74:width;
+ const inner=phone.querySelector('.ig-main').clientWidth||width-2;
+ const feedWidth=(web&&width>=768)?(inner-15)*.74:inner;
  const cols=(web&&width>=768)?Math.max(3,Math.min(6,Math.floor(feedWidth/260))):3;
  phone.style.setProperty('--ratio',currentProfileTab==='reels'?String(1/previewTileHeightRatio()):RW+' / '+RH);phone.dataset.columns=cols;phone.dataset.narrow=String(width<1024);phone.style.setProperty('--canvas-height',({ios:844,android:915,mobileweb:844,tablet:1024,desktop:900}[device])+'px');grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
  stageTile=(feedWidth-(cols-1)*GAP)/cols;grid.style.width=feedWidth+'px';
@@ -1058,7 +1057,7 @@ function addFile(file) {
     if (!ds.w || !ds.h) return;   // reject zero-dimension (failed decode)
     const id = (crypto.randomUUID && crypto.randomUUID()) || (Date.now() + '-' + Math.random());
     cacheDisplayBlob(id, file);   // use original File — no size limit on iOS
-    const a = { id, name: file.name, src: ds.src, w: ds.w, h: ds.h }; lib.push(a); put('assets', a); renderTray();
+    const a = { id, name: file.name, src: ds.src, w: ds.w, h: ds.h }; lib.push(a); put('assets', a); const empty=nextEmptyCell(-1);if(empty>=0)placeAsset(empty,id);renderTray();
   };
   r.readAsDataURL(file);
 }

@@ -26,7 +26,7 @@ Los destacados tienen nombre, portada, recorte, orden e imágenes de historias m
 
 ## Guardado
 
-El editor inicia en la composición del feed. Biblioteca, Perfil y Ayuda separan las herramientas; en celulares se accede desde la navegación inferior. La vista «Ver como Instagram» y las capturas conservan la presentación del perfil, independiente del lienzo de edición.
+El mockup de Instagram permanece visible mientras se edita. Subir fotos las agrega a los próximos casilleros libres; Editar perfil abre las herramientas al costado o en un panel inferior en móvil. Las opciones de vista, grilla y respaldos se agrupan en Más opciones.
 
 Los cambios se escriben sin espera de debounce en IndexedDB. Mientras se confirma cada transacción, se conserva un borrador de estado por propuesta en localStorage para recuperar cambios pendientes tras una recarga. Si localStorage está lleno se continúa usando IndexedDB; si falla el guardado, el editor muestra el error y permite reintentar o descargar un respaldo. Los borradores no sustituyen el respaldo de las fotos de la biblioteca. El estado «Guardado» se muestra después de completarse las transacciones.
 
