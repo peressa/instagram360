@@ -18,4 +18,11 @@ const badVerification=structuredClone(enhanced);badVerification.profile.verified
 const unsafeStory=structuredClone(enhanced);unsafeStory.profile.highlights[0].stories[0].src='javascript:alert(1)';assert.equal(valid(unsafeStory),false);
 const badView=structuredClone(enhanced);badView.view.width='infinite';assert.equal(valid(badView),false);
 const brokenTile=structuredClone(enhanced);brokenTile.layout.tiles[0]={imgId:'missing',z:1,panX:0,panY:0};assert.equal(valid(brokenTile),false);
-console.log('6 backup compatibility and validation checks passed.');
+const interactive=structuredClone(enhanced);
+interactive.profile.simMessages=[{id:'m',text:'Mensaje local',createdAt:1}];
+interactive.assets=[{id:'photo',name:'foto.png',w:10,h:10,src:'data:image/png;base64,iVBORw0KGgo='}];
+interactive.layout.tiles[0]={imgId:'photo',z:1,panX:0,panY:0,simLiked:true,simSaved:true,commentEntries:[{id:'c',author:'vos',text:'Comentario local',createdAt:1}]};
+assert.equal(valid(interactive),true,'Local interactions remain transferable in backups');
+const badComments=structuredClone(interactive);badComments.layout.tiles[0].commentEntries='invalid';assert.equal(valid(badComments),false);
+const badMessages=structuredClone(interactive);badMessages.profile.simMessages=[{text:42}];assert.equal(valid(badMessages),false);
+console.log('9 backup compatibility and validation checks passed, including local interactions.');

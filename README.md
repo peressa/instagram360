@@ -26,7 +26,9 @@ Los destacados tienen nombre, portada, recorte, orden e imágenes de historias m
 
 ## Guardado
 
-El mockup de Instagram permanece visible mientras se edita. Subir fotos las agrega a los próximos casilleros libres; Editar perfil abre las herramientas al costado o en un panel inferior en móvil. Las opciones de vista, grilla y respaldos se agrupan en Más opciones.
+El editor ocupa la pantalla sin encabezado: biblioteca y perfil al costado, mockup grande y cambio directo entre iPhone, Android, tablet y PC. En móvil las herramientas se abren en un panel inferior. Las fotos se arrastran desde la biblioteca y entre casilleros; en pantallas táctiles se mantienen presionadas para moverlas. Deslizar o usar la rueda recorre el perfil sin cambiar el recorte. Las fotos nuevas entran centradas y la publicación muestra la imagen completa. El encuadre anterior se puede restablecer desde Editar publicación.
+
+Tocar una publicación abre su vista dentro del mockup, con anterior/siguiente, Me gusta, guardados y comentarios persistentes. Los destacados se recorren por historias, con pausa, avance automático, botones, teclado y deslizamiento lateral. Inicio, Reels, búsqueda, mensajes y notificaciones responden dentro de la propuesta. Todas estas interacciones son locales; no se conectan ni envían contenido a Instagram. Los comentarios y mensajes se incluyen en el respaldo JSON.
 
 Los cambios se escriben sin espera de debounce en IndexedDB. Mientras se confirma cada transacción, se conserva un borrador de estado por propuesta en localStorage para recuperar cambios pendientes tras una recarga. Si localStorage está lleno se continúa usando IndexedDB; si falla el guardado, el editor muestra el error y permite reintentar o descargar un respaldo. Los borradores no sustituyen el respaldo de las fotos de la biblioteca. El estado «Guardado» se muestra después de completarse las transacciones.
 

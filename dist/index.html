@@ -388,7 +388,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css"><link rel="stylesheet" href="workspace.css">
+</style><link rel="stylesheet" href="studio.css?v=20261113.8"><link rel="stylesheet" href="workspace.css?v=20261113.8"><link rel="stylesheet" href="simulator.css?v=20261113.8">
 </head>
 <body>
 <div class="app">
@@ -534,7 +534,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 <dialog id="nameDialog" style="margin:auto;padding:28px;border:1px solid #43503e;border-radius:12px;background:#181c18;color:#fff;max-width:420px;width:90%"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required style="display:block;width:100%;padding:12px;margin:18px 0;background:#242a23;border:1px solid #43503e;color:#fff;border-radius:7px"><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="studio.js"></script><script src="persistence.js"></script><script src="workspace.js"></script><script>
+<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="studio.js?v=20261113.8"></script><script src="persistence.js"></script><script src="workspace.js?v=20261113.8"></script><script src="simulator.js?v=20261113.8"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
@@ -646,13 +646,13 @@ function fitStage() {
  const phone=document.querySelector('.phone'),stage=document.querySelector('.stage');
  phone.style.paddingRight='';
  const selected=$('canvasWidth')?.value||'auto';const device=phone.dataset.device;
- const defaultWidth={ios:390,android:412,mobileweb:390,desktop:Math.max(768,stage.clientWidth-48),tablet:768}[device];
- const available=Math.max(240,stage.clientWidth-(innerWidth<=700?24:48));
- const width=selected==='auto'?defaultWidth:Number(selected);
- const height=({ios:844,android:915,mobileweb:844,tablet:1024,desktop:900}[device]);
- const room=Math.max(240,stage.clientHeight-(innerWidth<=700?42:62));
- phone.style.zoom=String(Math.min(1,room/height,available/width));
- phone.style.height=height+'px';
+ const defaultWidth={ios:480,android:480,mobileweb:480,desktop:Math.max(768,stage.clientWidth-32),tablet:820}[device];
+ const available=Math.max(240,stage.clientWidth-(innerWidth<=700?12:32));
+ const wide=['desktop','tablet'].includes(device);
+ const width=selected==='auto'?(wide?defaultWidth:Math.min(defaultWidth,available)):Number(selected);
+ const scale=wide?Math.min(1,available/width):1;
+ const height=Math.max(320,stage.clientHeight-(innerWidth<=700?12:24))/scale;
+ phone.style.zoom=String(scale);phone.style.height=height+'px';
  phone.style.width=width+'px'; phone.style.maxWidth='none';
  const web=['desktop','tablet','mobileweb'].includes(device);phone.dataset.webMobile=String(web&&width<768);phone.classList.toggle('web-layout',web&&width>=768);phone.classList.toggle('mobile-layout',!web||width<768);
  const inner=phone.querySelector('.ig-main').clientWidth||width-2;
@@ -858,90 +858,13 @@ function setActive(i) {
 const g = { mode: null, i: null, pts: new Map(), pX: 0, pY: 0, z: 1, dist: 0, sx: 0, sy: 0, moved: false };
 const distp = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 
-function wireCell(cell, i) {
-  if(document.body.classList.contains("client-preview"))return;
-  cell.addEventListener('pointerdown', e => {
-    if (e.target.closest('.grip, .check, .tools, .plus')) return;
-    const t = tiles[i];
-    // tap-to-assign: empty cell on touch enters assign mode
-    if (!t) {
-      if (e.pointerType !== 'mouse') {
-        e.preventDefault(); setActive(i);
-        // if photos already in tray, use assign mode; otherwise open direct picker
-        if (lib.length > 0) { enterAssign(i); }
-        else { const ci = cell.querySelector('input[type=file]'); if (ci) ci.click(); }
-        return;
-      }
-      setActive(i); return;
-    }
-    // tap anywhere while in assign mode cancels it
-    if (assignTarget >= 0) { exitAssign(); return; }
-    const touch = e.pointerType !== 'mouse';
-    g.pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (t.banner) {
-      setActive(i);
-      if (g.pts.size === 2 && g.i === i) { const p = [...g.pts.values()]; g.mode = 'bpinch'; g.dist = distp(p[0], p[1]); g.z = t.bz == null ? 1 : t.bz; g.row = t.banner.row; try { cell.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); return; }
-      g.i = i;
-      if (!touch || active === i) { g.mode = 'bpan'; g.pX = t.panX || 0; g.pY = t.panY || 0; g.sx = e.clientX; g.sy = e.clientY; g.moved = false; g.row = t.banner.row; try { cell.setPointerCapture(e.pointerId); } catch (_) {} }
-      else g.mode = 'tap';
-      return;
-    }
-    if (g.pts.size === 2 && g.i === i) {
-      const p = [...g.pts.values()]; g.mode = 'pinch'; g.dist = distp(p[0], p[1]); g.z = t.z == null ? 1 : t.z;
-      try { cell.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); return;
-    }
-    g.i = i; setActive(i);
-    if (!touch || active === i) { g.mode = 'pan'; g.pX = t.panX; g.pY = t.panY; g.sx = e.clientX; g.sy = e.clientY; g.moved = false; try { cell.setPointerCapture(e.pointerId); } catch (_) {} }
-    else { g.mode = 'tap'; }
-  });
-  cell.addEventListener('pointermove', e => {
-    if (g.i !== i) return;
-    if (g.pts.has(e.pointerId)) g.pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    const t = tiles[i]; if (!t) return; const a = lib.find(x => x.id === t.imgId); if (!a) return; const d = dims();
-    if (g.mode === 'bpinch' && g.pts.size >= 2) {
-      const p = [...g.pts.values()]; const bz = clamp(g.z * distp(p[0], p[1]) / (g.dist || 1), 1, ZMAX);
-      setBanner(g.row, { bz }); refreshBannerRow(g.row); syncZoom(); e.preventDefault();
-    } else if (g.mode === 'bpan') {
-      const scale=cell.getBoundingClientRect().width/d.w||1;
-      const bwpx = 3 * d.w + 2 * GAP, dx = (e.clientX - g.sx)/scale, dy = (e.clientY - g.sy)/scale;
-      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) g.moved = true;
-      setBanner(g.row, { panX: g.pX + dx / bwpx, panY: g.pY + dy / d.h }); refreshBannerRow(g.row); e.preventDefault();
-    } else if (g.mode === 'pinch' && g.pts.size >= 2) {
-      const p = [...g.pts.values()]; t.z = clamp(g.z * distp(p[0], p[1]) / (g.dist || 1), ZMIN, ZMAX);
-      clampPan(t, a); const im = cell.querySelector('img'); if (im) applyImg(im, t, a, d); syncZoom(); e.preventDefault();
-    } else if (g.mode === 'pan') {
-      const scale=cell.getBoundingClientRect().width/d.w||1;
-      const dx = (e.clientX - g.sx)/scale, dy = (e.clientY - g.sy)/scale;
-      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) g.moved = true;
-      t.panX = g.pX + dx / d.w; t.panY = g.pY + dy / d.h; clampPan(t, a);
-      const im = cell.querySelector('img'); if (im) applyImg(im, t, a, d); e.preventDefault();
-    }
-  });
-  const end = e => {
-    if (g.i !== i) return;
-    g.pts.delete(e.pointerId);
-    if ((g.mode === 'pan' || g.mode === 'bpan') && g.moved) commit();
-    if (g.pts.size === 0) { g.mode = null; g.i = null; }
-    else if (g.mode === 'pinch' && g.pts.size < 2) { commit(); const p = [...g.pts.values()][0]; g.mode = 'pan'; g.sx = p.x; g.sy = p.y; const t = tiles[i]; if (t) { g.pX = t.panX; g.pY = t.panY; } }
-  };
-  cell.addEventListener('pointerup', end);
-  cell.addEventListener('pointercancel', end);
-
-  // SCROLL TO ZOOM — the bit that went missing. passive:false so we can preventDefault.
-  cell.addEventListener('wheel', e => {
-    const t = tiles[i]; if (!t) return;
-    const a = lib.find(x => x.id === t.imgId); if (!a) return;
-    const isMouse = e.deltaMode === 1 || (e.deltaMode === 0 && Number.isInteger(e.deltaY) && Math.abs(e.deltaY) >= 100);
-    if (!isMouse && !e.ctrlKey && !e.metaKey) return;
-    e.preventDefault();
-    const step = e.deltaY < 0 ? 0.08 : -0.08;
-    if (t.banner) { setBanner(t.banner.row, { bz: clamp((t.bz == null ? 1 : t.bz) + step, 1, ZMAX) }); setActive(i); refreshBannerRow(t.banner.row); syncZoom(); debHist(); return; }
-    t.z = clamp((t.z == null ? 1 : t.z) + step, ZMIN, ZMAX);
-    clampPan(t, a); setActive(i);
-    const im = cell.querySelector('img'); if (im) applyImg(im, t, a, dims());
-    syncZoom(); debHist();
-  }, { passive: false });
+function wireCell(cell,i){
+ const tile=tiles[i];
+ if(tile){wireStudioDrag(cell,{kind:'cell',src:i});cell.tabIndex=0;cell.setAttribute('role','button');cell.setAttribute('aria-label','Abrir publicación '+(i+1));cell.addEventListener('click',e=>{if(e.target.closest('.tools,.grip,.check'))return;if(Date.now()<studioSuppressClick)return;openPostViewer(i)});cell.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPostViewer(i)}})}
+ cell.addEventListener('dragover',e=>{e.preventDefault();cell.classList.add('drop')});cell.addEventListener('dragleave',()=>cell.classList.remove('drop'));
+ cell.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();cell.classList.remove('drop');if(e.dataTransfer.files.length){const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/'));files.forEach((f,n)=>{const target=i+n;if(target<total)addFileToCell(f,target);else addFile(f)})}else finishStudioDrop(i)});
 }
+
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
 /* ---------- reorder (grip) + tray drag, via pointer events so touch works ---------- */
@@ -971,36 +894,8 @@ function wireGrip(grip, i) {
   };
   grip.addEventListener('pointerup', fin); grip.addEventListener('pointercancel', fin);
 }
-function wireChip(el, a) {
-  el.addEventListener('pointerdown', e => {
-    if (e.target.closest('.del')) return;
-    // tap-to-assign: if a cell is waiting, assign immediately without drag
-    if (e.pointerType !== 'mouse' && assignTarget >= 0) {
-      e.preventDefault();
-      const target = assignTarget;
-      exitAssign();
-      placeAsset(target, a.id);
-      // auto-advance to next empty cell
-      const next = nextEmptyCell(target);
-      if (next >= 0 && lib.length > 1) enterAssign(next);
-      return;
-    }
-    e.preventDefault();
-    drag = { kind: 'tray', id: e.pointerId, imgId: a.id };
-    showGhost(displaySrc(a)); moveGhost(e.clientX, e.clientY); el.classList.add('dragging');
-    document.body.style.overflow = 'hidden'; document.body.style.touchAction = 'none';
-    try { el.setPointerCapture(e.pointerId); } catch (_) {}
-  });
-  el.addEventListener('pointermove', e => { if (!drag || drag.id !== e.pointerId) return; e.preventDefault(); moveGhost(e.clientX, e.clientY); hintDrop(cellAt(e.clientX, e.clientY)); });
-  const fin = e => {
-    if (!drag || drag.id !== e.pointerId) return;
-    const tgt = cellAt(e.clientX, e.clientY);
-    ghost.style.display = 'none'; clearDrop(); el.classList.remove('dragging');
-    document.body.style.overflow = ''; document.body.style.touchAction = '';
-    if (tgt >= 0) placeAsset(tgt, drag.imgId); drag = null;
-  };
-  el.addEventListener('pointerup', fin); el.addEventListener('pointercancel', fin);
-}
+function wireChip(el,a){wireStudioDrag(el,{kind:'tray',imgId:a.id});}
+
 function placeAsset(i, imgId) { tiles[i] = { ...(tiles[i]||{}),imgId, z: 1, panX: 0, panY: 0 };delete tiles[i].banner;delete tiles[i].bz; normalizeBanners(); sel.delete(i); active = i; render(); updateExportUI(); syncZoom(); commit(); }
 
 /* ---------- assets ---------- */
@@ -1607,6 +1502,7 @@ function applyCircleImg(img, state, diam) {
 
 /* wire pan+pinch on a circle element, calling onUpdate({panX,panY,z}) and onCommit() */
 function wireCircleCrop(el, getState, onUpdate, onCommit) {
+ if(el.closest('.phone'))return;
   const pg = { mode: null, pts: new Map(), pX: 0, pY: 0, z: 1, dist: 0, sx: 0, sy: 0 };
   el.addEventListener('pointerdown', e => {
     if (e.target.closest('.hl-del, .avatar-plus')) return;
@@ -1712,7 +1608,7 @@ function applyAvatarImg() {
 
 function applyProfile() {
  TEXT_FIELDS.forEach(f=>document.querySelectorAll('[data-f="'+f+'"]').forEach(el=>{if(document.activeElement!==el)el.textContent=f==='posts'&&profile.autoPosts?String(filled().length):profile[f]||''}));
- applyAvatarImg();renderProfileExtras();applyHighlights();
+ applyAvatarImg();renderProfileExtras();applyHighlights();document.querySelectorAll('.phone [contenteditable]').forEach(e=>e.contentEditable='false');
 }
 let hlTarget=null;
 function applyHighlights(){renderHighlights();}
@@ -1739,7 +1635,7 @@ function validBackup(d){
   if(!validExtendedProfile(d.profile))return false;
   if(d.view&&(!['ios','android','mobileweb','desktop','tablet'].includes(d.view.device)||!['light','dark'].includes(d.view.theme)||!['visitor','owner'].includes(d.view.audience)||!['auto','375','390','412','768','1280','1440','1920'].includes(d.view.width)))return false;
   if(!d.assets.every(a=>typeof a.id==='string'&&typeof a.name==='string'&&Number.isFinite(a.w)&&a.w>0&&Number.isFinite(a.h)&&a.h>0&&image({src:a.src})))return false;
-  const ids=new Set(d.assets.map(a=>a.id));return l.tiles.every(t=>t===null||(ids.has(t.imgId)&&['z','panX','panY'].every(k=>Number.isFinite(t[k]))));
+  const ids=new Set(d.assets.map(a=>a.id));return l.tiles.every(t=>t===null||(ids.has(t.imgId)&&validSimTile(t)&&['z','panX','panY'].every(k=>Number.isFinite(t[k]))));
 }
 async function addSavedProfile(name,data){
   await flushProfile();
