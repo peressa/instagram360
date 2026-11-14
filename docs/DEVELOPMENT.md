@@ -20,6 +20,8 @@ Preview: `127.0.0.1:8765`. Use `--port 9000` for another port. For a phone on yo
 | `dist/persistence.js` | IndexedDB transactions and localStorage recovery drafts |
 | `dist/circle-crop.js` | Bounded circle crops and gestures |
 | `dist/profile-counts.js` | Exact count storage and display formatting |
+| `dist/post-media.js` | Ordered carousel assets, photo editor, native swipe viewer and image export |
+| `dist/story-player.js` | Highlight navigation and a load-aware, pausable progress animation |
 | `references/` | Observations and explicit verification limits |
 | `tests/` | Regression checks and script parsing |
 | `examples/` | Synthetic, redistributable example project |
@@ -29,6 +31,8 @@ Preview: `127.0.0.1:8765`. Use `--port 9000` for another port. For a phone on yo
 Internal `rio360_` storage prefixes remain stable for existing users. These are legacy identifiers, not the current brand. New exports use `format: "instagram360"`, version 1; import accepts the previous identifier. Do not remove support without a migration.
 
 Storage is scoped to the browser origin and profile. A new domain has separate storage. Recovery drafts protect pending state writes but do not replace image backups. Never commit real user projects.
+
+Multi-photo posts use `carouselIds`, an immutable ordered array of library asset IDs with `imgId` first. Photos remain ordinary library assets. Cover changes reset the grid crop; deleting a library asset removes its references and promotes the next slide. Import rejects missing/duplicate references. Legacy single-photo and cover-only carousel posts remain valid. Removing a post photo does not delete its library asset. The editor accepts at most 100 photos per post as its own storage guard; this is not a claim about Instagram's upload limit.
 
 ## Hosting
 

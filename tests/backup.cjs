@@ -2,6 +2,8 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const assert=require('node:assert/strict');
 const context=vm.createContext({});
+vm.runInContext(fs.readFileSync('dist/post-media.js','utf8'),context);
+vm.runInContext(fs.readFileSync('dist/story-player.js','utf8'),context);
 vm.runInContext(fs.readFileSync('dist/studio.js','utf8'),context);
 const html=fs.readFileSync('dist/index.html','utf8');
 const check=html.slice(html.indexOf('function validBackup('),html.indexOf('async function addSavedProfile('));
@@ -27,4 +29,8 @@ interactive.layout.tiles[0]={imgId:'photo',z:1,panX:0,panY:0,simLiked:true,simSa
 assert.equal(valid(interactive),true,'Local interactions remain transferable in backups');
 const badComments=structuredClone(interactive);badComments.layout.tiles[0].commentEntries='invalid';assert.equal(valid(badComments),false);
 const badMessages=structuredClone(interactive);badMessages.profile.simMessages=[{text:42}];assert.equal(valid(badMessages),false);
-console.log('11 backup compatibility and validation checks passed, including local interactions.');
+const carousel=structuredClone(interactive);carousel.assets.push({...carousel.assets[0],id:'second'});carousel.layout.tiles[0].carouselIds=['photo','second'];carousel.layout.tiles[0].kind='carousel';assert.equal(valid(carousel),true,'Every carousel photo is included in backups');
+const missingSlide=structuredClone(carousel);missingSlide.layout.tiles[0].carouselIds.push('missing');assert.equal(valid(missingSlide),false,'Reject missing slide references');
+const duplicateSlide=structuredClone(carousel);duplicateSlide.layout.tiles[0].carouselIds.push('photo');assert.equal(valid(duplicateSlide),false,'Reject duplicated slide references');
+const wrongCover=structuredClone(carousel);wrongCover.layout.tiles[0].carouselIds.reverse();assert.equal(valid(wrongCover),false,'Grid cover must match first slide');
+console.log('Backup checks passed: legacy compatibility, local interactions and complete validated carousel sequences.');

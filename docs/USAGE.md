@@ -11,6 +11,12 @@ Abrí [la demo](https://ig360.peressa.dev). No hace falta iniciar sesión ni con
 
 Los tres puntos del perfil abren las herramientas: apariencia, publicaciones, propuestas, importación y respaldos. El mockup sigue siendo el espacio principal.
 
+## Carruseles y destacados
+
+Abrí una publicación → sus tres puntos → **Agregar fotos**. Podés seleccionar varias imágenes juntas, arrastrar las miniaturas para ordenar o usar sus flechas. La primera es la portada de la grilla. Quitar una foto del carrusel la mantiene en la biblioteca. En PC usá las flechas de la imagen; en celular deslizá horizontalmente. Las flechas exteriores de PC cambian de publicación, las interiores cambian de foto. El ZIP incluye las portadas y una carpeta `carousel_XX` con la secuencia completa, ajustada sin recortar a la proporción de exportación.
+
+El botón de reproducción de cada destacado abre sus historias. Tocá a los lados, deslizá o usá las flechas para avanzar/retroceder. La pausa conserva el progreso; mantener pulsada la imagen pausa hasta soltar. Al volver a la pestaña se respeta una pausa manual. Los destacados vacíos se omiten al navegar. Los tres puntos del visor permiten agregar, ordenar o quitar historias; al terminar la última secuencia se vuelve al perfil.
+
 ## Ejemplo
 
 Descargá [studio360.json](../examples/studio360.json) desde GitHub (Download raw file). Abrí los tres puntos → **Proyecto y ajustes → Importar** y elegí ese archivo. Se crea una propuesta nueva. Incluye gráficos originales y datos ficticios, reutilizables bajo MIT.

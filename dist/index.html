@@ -388,7 +388,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css?v=20261113.23"><link rel="stylesheet" href="workspace.css?v=20261113.23"><link rel="stylesheet" href="simulator.css?v=20261113.23">
+</style><link rel="stylesheet" href="studio.css?v=20261114.beta2"><link rel="stylesheet" href="workspace.css?v=20261114.beta2"><link rel="stylesheet" href="simulator.css?v=20261114.beta2">
 </head>
 <body>
 <div class="app">
@@ -499,7 +499,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
     </div>
 
     <div id="paneImages">
-      <p class="sub">Imágenes individuales de <b id="expDims">1080×1440</b> — listas para subir a Instagram.</p>
+      <p class="sub">Portadas y fotos de carruseles a <b id="expDims">1080×1440</b>. Las secuencias completas se incluyen en carpetas separadas.</p>
       <div class="opt">
         <span>Formato</span>
         <label><input type="radio" name="fmt" value="png" checked> PNG</label>
@@ -534,7 +534,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 <dialog id="nameDialog" style="margin:auto;padding:28px;border:1px solid #43503e;border-radius:12px;background:#181c18;color:#fff;max-width:420px;width:90%"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required style="display:block;width:100%;padding:12px;margin:18px 0;background:#242a23;border:1px solid #43503e;color:#fff;border-radius:7px"><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261113.23"></script><script src="profile-counts.js?v=20261113.23"></script><script src="studio.js?v=20261113.23"></script><script src="persistence.js"></script><script src="workspace.js?v=20261113.23"></script><script src="simulator.js?v=20261113.23"></script><script>
+<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261114.beta2"></script><script src="profile-counts.js?v=20261114.beta2"></script><script src="post-media.js?v=20261114.beta2"></script><script src="story-player.js?v=20261114.beta2"></script><script src="studio.js?v=20261114.beta2"></script><script src="persistence.js"></script><script src="workspace.js?v=20261114.beta2"></script><script src="simulator.js?v=20261114.beta2"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
@@ -901,7 +901,7 @@ function ensureFreeCell(){let index=nextEmptyCell(-1);if(index<0&&rows<9){setRow
 function wireChip(el,a){wireStudioDrag(el,{kind:'tray',imgId:a.id});const add=()=>{if(Date.now()<studioSuppressClick)return;const index=ensureFreeCell();if(index>=0){placeAsset(index,a.id);if(innerWidth<=700)closeWorkspace()}};el.addEventListener('click',e=>{if(!e.target.closest('button'))add()});const img=el.querySelector('img');img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label','Agregar '+a.name+' al perfil');img.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();add()}});}
 
 
-function placeAsset(i, imgId) { tiles[i] = { ...(tiles[i]||{}),imgId, z: 1, panX: 0, panY: 0 };delete tiles[i].banner;delete tiles[i].bz; normalizeBanners(); sel.delete(i); active = i; render(); updateExportUI(); syncZoom(); commit(); }
+function placeAsset(i, imgId) { const previous=tiles[i],media=previous?postMediaIds(previous):[]; tiles[i] = { ...(tiles[i]||{}),imgId, z: 1, panX: 0, panY: 0 };if(media.length>1)setPostMedia(tiles[i],[imgId,...media.slice(1)]);delete tiles[i].banner;delete tiles[i].bz; normalizeBanners(); sel.delete(i); active = i; render(); updateExportUI(); syncZoom(); commit(); }
 
 /* ---------- assets ---------- */
 /* shrink oversized imports before storing — keeps IndexedDB lean.
@@ -967,7 +967,7 @@ function addFile(file) {
   r.readAsDataURL(file);
 }
 
-function addFileToCell(file, cellIdx) {
+function addFileToCell(file, cellIdx, onComplete = () => {}) {
   if (!file.type.startsWith('image/')) return;
   if (file.size > 50 * 1024 * 1024) { alert('La imagen supera los 50 MB. Reducí su tamaño antes de subirla.'); return; }
   const r = new FileReader();
@@ -978,7 +978,7 @@ function addFileToCell(file, cellIdx) {
     cacheDisplayBlob(id, file);
     const a = { id, name: file.name, src: ds.src, w: ds.w, h: ds.h }; lib.push(a); put('assets', a);
     placeAsset(cellIdx, id);   // place directly — no tray tap needed
-    renderTray();
+    renderTray();onComplete();
   };
   r.readAsDataURL(file);
 }
@@ -1003,7 +1003,7 @@ function renderTray() {
     const add = mkBtn('Agregar al feed', () => { const index=nextEmptyCell(-1); if(index<0){alert('La grilla está completa. Elegí más filas o reemplazá una publicación.');return;}placeAsset(index,a.id);if(innerWidth<=700)switchWorkspace('feed'); });add.className='btn add-asset';add.addEventListener('pointerdown',e=>e.stopPropagation());
     const nm = document.createElement('span'); nm.className = 'name'; nm.textContent = a.name.length > 22 ? a.name.slice(0, 19) + '…' : a.name;
     const x = document.createElement('button'); x.className = 'del'; x.textContent = '✕';
-    x.addEventListener('click', e => { e.stopPropagation(); lib = lib.filter(l => l.id !== a.id); del('assets', a.id); revokeBlobURL(a.id); let touched = false; for (let j = 0; j < tiles.length; j++) if (tiles[j] && tiles[j].imgId === a.id) { tiles[j] = null; sel.delete(j); touched = true; } if (touched) normalizeBanners(); render(); renderTray(); updateExportUI(); if (touched) commit(); });
+    x.addEventListener('click', e => { e.stopPropagation();closeSimScreen(false); lib = lib.filter(l => l.id !== a.id); del('assets', a.id); revokeBlobURL(a.id); let touched = false; for (let j = 0; j < tiles.length; j++) if (tiles[j] && postMediaIds(tiles[j]).includes(a.id)) { if(!detachPostAsset(tiles[j],a.id)){tiles[j]=null;sel.delete(j)} touched = true; } if (touched) normalizeBanners(); render(); renderTray(); updateExportUI(); if (touched) commit(); });
     el.append(img, nm, x, add); wireChip(el, a); tray.appendChild(el);
   });
   /* FIX (session 11): scroll-hint listener was re-added on every renderTray() call
@@ -1196,7 +1196,7 @@ async function exportZip() {
   const tileList = selList();
   const hasAvatar = !!profile.avatar;
   const hlCovers = profile.highlights.filter(h => h.cover);
-  const totalSteps = tileList.length + (hasAvatar ? 1 : 0) + hlCovers.length;
+  const totalSteps = tileList.length + tileList.reduce((n,i)=>n+(postMediaIds(tiles[i]).length>1?postMediaIds(tiles[i]).length:0),0) + (hasAvatar ? 1 : 0) + hlCovers.length;
   let done = 0;
 
   const progWrap = $('exportProgress'), progFill = $('exportProgFill'), progLabel = $('exportProgLabel');
@@ -1222,6 +1222,8 @@ async function exportZip() {
       files.push({ name: `grid_${String(i + 1).padStart(2, '0')}.${ext}`, data: new Uint8Array(await blob.arrayBuffer()) });
       setProgress(`tile ${done} of ${totalSteps}`);
     }
+    // Full carousel sequences, in addition to the grid covers.
+    for(const i of tileList){const ids=postMediaIds(tiles[i]);if(ids.length<2)continue;for(let j=0;j<ids.length;j++){const asset=lib.find(a=>a.id===ids[j]);if(!asset){done++;continue}const blob=await renderCarouselBlob(asset,fmt);if(blob)files.push({name:`carousel_${String(i+1).padStart(2,'0')}/slide_${String(j+1).padStart(2,'0')}.${ext}`,data:new Uint8Array(await blob.arrayBuffer())});setProgress(`carrusel ${i+1}, foto ${j+1}`)}}
     // avatar
     const avBlob = await renderCircleBlob(profile.avatar, 1080, fmt);
     if (avBlob) { files.push({ name: `profile_image.${ext}`, data: new Uint8Array(await avBlob.arrayBuffer()) }); setProgress('profile image'); }
@@ -1584,7 +1586,7 @@ function validBackup(d){
   if(!validExtendedProfile(d.profile))return false;
   if(d.view&&(!['ios','android','mobileweb','desktop','tablet'].includes(d.view.device)||!['light','dark'].includes(d.view.theme)||!['visitor','owner'].includes(d.view.audience)||!['auto','375','390','412','768','1280','1440','1920'].includes(d.view.width)))return false;
   if(!d.assets.every(a=>typeof a.id==='string'&&typeof a.name==='string'&&Number.isFinite(a.w)&&a.w>0&&Number.isFinite(a.h)&&a.h>0&&image({src:a.src})))return false;
-  const ids=new Set(d.assets.map(a=>a.id));return l.tiles.every(t=>t===null||(ids.has(t.imgId)&&validSimTile(t)&&['z','panX','panY'].every(k=>Number.isFinite(t[k]))));
+  const ids=new Set(d.assets.map(a=>a.id));return l.tiles.every(t=>t===null||(ids.has(t.imgId)&&validSimTile(t)&&validPostMedia(t,ids)&&['z','panX','panY'].every(k=>Number.isFinite(t[k]))));
 }
 async function addSavedProfile(name,data){
   await flushProfile();

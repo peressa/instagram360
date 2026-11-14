@@ -1,1 +1,8 @@
-{"name":"Instagram 360","version":"0.1.0-beta.1","author":"Juan Peressa","homepage":"https://ig360.peressa.dev","repository":"https://github.com/peressa/instagram360","license":"MIT"}
+{
+  "name": "Instagram 360",
+  "version": "0.1.0-beta.2",
+  "author": "Juan Peressa",
+  "homepage": "https://ig360.peressa.dev",
+  "repository": "https://github.com/peressa/instagram360",
+  "license": "MIT"
+}

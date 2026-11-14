@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.1.0-beta.2 · 2026-11-14
+
+- Real multi-photo carousels with batch upload, cover/reorder/removal, desktop arrows and native mobile swipe. Likes and comments preserve the current slide.
+- Complete carousel sequences in JSON backups and ZIP exports; legacy cover-only posts remain valid.
+- Rebuilt highlight player with desktop vertical framing, immersive mobile view, load-aware progress, hold-to-pause, resume without restarting and empty-group skipping.
 
 - Desktop posts open in a two-column overlay over the dimmed profile, with full images, independently scrolling captions/comments and fixed actions/composer.
 - Previous/next arrows, keyboard navigation, Escape/backdrop closing and modal focus management; editing stays in the post's three-dot menu.

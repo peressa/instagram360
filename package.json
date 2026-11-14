@@ -1,12 +1,20 @@
 {
   "name": "instagram360",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0-beta.2",
   "private": true,
   "description": "An open source visual studio for designing and presenting Instagram profiles.",
   "author": "Juan Peressa (https://peressa.dev)",
   "license": "MIT",
   "homepage": "https://ig360.peressa.dev",
-  "repository": { "type": "git", "url": "https://github.com/peressa/instagram360.git" },
-  "engines": { "node": ">=22" },
-  "scripts": { "dev": "node scripts/serve.cjs", "test": "node tests/run.cjs" }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peressa/instagram360.git"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node scripts/serve.cjs",
+    "test": "node tests/run.cjs"
+  }
 }

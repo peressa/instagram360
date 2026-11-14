@@ -136,7 +136,12 @@
         "caption": "Una nueva perspectiva. / 03",
         "likes": "166",
         "date": "14 de noviembre de 2026",
-        "location": "Estudio 360"
+        "location": "Estudio 360",
+        "carouselIds": [
+          "example-3",
+          "example-4",
+          "example-5"
+        ]
       },
       {
         "imgId": "example-4",
