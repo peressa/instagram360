@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Desktop posts open in a two-column overlay over the dimmed profile, with full images, independently scrolling captions/comments and fixed actions/composer.
+- Previous/next arrows, keyboard navigation, Escape/backdrop closing and modal focus management; editing stays in the post's three-dot menu.
+- Mobile posts retain their stacked presentation. Local likes, saves and comments remain persistent.
+
 ## 0.1.0-beta.1 · 2026-11-14
 
 First public beta of **Instagram 360**, created and maintained by Juan Peressa, based on mkgrid by Chris Vrakas (MIT).
