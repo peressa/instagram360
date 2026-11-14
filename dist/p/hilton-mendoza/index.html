@@ -572,7 +572,7 @@ function applySharedDocument(document){
  lib=sharedMerge(lib,Object.values(document.assets));profile=sharedMerge(profile,document.state.profile.data);
  if(simStory&&storyBefore!==JSON.stringify(profile.highlights.find(h=>h.id===simStory.id)))sharedStoryNeedsRefresh=true;
  const layout=document.state.layout;rows=layout.rows;total=rows*3;RW=layout.RW;RH=layout.RH;tiles=sharedMerge(tiles,layout.tiles);
- sharedRenderPending=true;if(!window.document.activeElement?.closest('input,textarea,[contenteditable]'))renderSharedView();
+ sharedRenderPending=true;renderSharedView();
 }
 function renderSharedView(){
  sharedRenderPending=false;
@@ -1565,7 +1565,7 @@ function applyProfile() {
  applyAvatarImg();renderProfileExtras();applyHighlights();document.querySelectorAll('.phone [data-inline-edit]').forEach(e=>e.contentEditable=document.body.classList.contains('exporting')?'false':'plaintext-only');
 }
 let hlTarget=null;
-function applyHighlights(){renderHighlights();}
+function applyHighlights(){if(document.activeElement?.closest('#hlRow [contenteditable]')){sharedRenderPending=true;return;}renderHighlights();}
 async function loadProfile() { if (!ok) return; const p = (await all('state')).find(s => s.key === 'profile'); if (p && p.data) profile = Object.assign(profile, p.data); profile.highlights.forEach(h=>{if(!Array.isArray(h.stories))h.stories=[]}); }
 
 
