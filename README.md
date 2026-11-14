@@ -4,7 +4,7 @@
 
 An open source visual studio for designing and presenting Instagram profiles. Edit directly on the mockup, arrange your images and export your proposal. Created and maintained by [Juan Peressa](https://peressa.dev).
 
-[Live demo](https://ig360.peressa.dev) · [Latest beta](https://github.com/peressa/instagram360/releases/tag/v0.1.0-beta.5) · [Guía en español](docs/USAGE.md) · [Contribute](CONTRIBUTING.md)
+[Live demo](https://ig360.peressa.dev) · [Latest beta](https://github.com/peressa/instagram360/releases/tag/v0.1.0-beta.6) · [Guía en español](docs/USAGE.md) · [Contribute](CONTRIBUTING.md)
 
 ![Instagram 360 desktop workspace with an original example profile](docs/screenshots/desktop.jpg)
 
@@ -15,7 +15,7 @@ An open source visual studio for designing and presenting Instagram profiles. Ed
 - Arrange a feed by dragging, preserving photos when resizing the grid.
 - Create multi-photo carousels by selecting and dragging a batch from the library. Arrange photos directly on the open post; browse with desktop arrows or native touch swipes.
 - Preview mobile, desktop and tablet variants, light/dark and owner/visitor views.
-- Browse simulated posts, likes and comments, plus highlight stories with progress, pause/resume and navigation across nonempty highlights.
+- Drag library photos onto highlights; arrange and remove stories directly inside their viewer, with progress, pause/resume and navigation across highlights.
 - Keep proposals locally, with JSON backup/import and recovery drafts.
 - Export a profile PNG or a ZIP of prepared grid images.
 
@@ -28,7 +28,7 @@ No account connection, backend or runtime API keys. Projects stay in your browse
 
 ![Arrange carousel photos directly on the open mockup](docs/screenshots/direct-carousel.jpg)
 
-![Vertical highlight player on desktop](docs/screenshots/highlights-desktop.jpg)
+![Arrange highlight stories directly in the viewer](docs/screenshots/direct-stories.jpg)
 
 </details>
 
@@ -50,7 +50,7 @@ Download [the example backup](examples/studio360.json) and import it from the pr
 
 ## Beta status
 
-**v0.1.0-beta.5** adds multi-select library dragging and inline carousel arrangement on the mockup. Video playback, cloud sync and real Instagram publishing are not included. Device variants are presentation mockups, not certified replicas of every native app version. Android abbreviations and the exact 9999/10000 transition remain unverified; formatting comes from web observations. See [evidence and limits](references/counts/REVISION-ANDROID.md).
+**v0.1.0-beta.6** adds library drops onto highlights and direct story arrangement inside the viewer, alongside inline carousel editing. Video playback, cloud sync and real Instagram publishing are not included. Device variants are presentation mockups, not certified replicas of every native app version. Android abbreviations and the exact 9999/10000 transition remain unverified; formatting comes from web observations. See [evidence and limits](references/counts/REVISION-ANDROID.md).
 
 Saved projects belong to one browser and origin. Export/import backups when changing domains or computers. Earlier backups remain importable.
 

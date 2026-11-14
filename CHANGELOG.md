@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.0-beta.6 · 2026-11-14
+
+- Drag selected library photos onto a highlight circle or its open viewer; insert before a story thumbnail or append the batch.
+- Arrange, preview and remove stories directly in the viewer using mouse drag, touch hold-and-drag or Alt + arrow keys.
+- Pause playback during direct editing/library selection while preserving manual pause. Keep existing cover crops, skip duplicate images and save complete independent story sources.
+- Support empty highlights and atomic batch validation with regression coverage for legacy data, missing assets, limits and playback state.
+
 ## 0.1.0-beta.5 · 2026-11-14
 
 - Keep the library selection count, clear action and add-to-post button visible while browsing photos.

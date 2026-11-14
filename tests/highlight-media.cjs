@@ -1,0 +1,17 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+let serial=0;
+const ctx=vm.createContext({crypto:{randomUUID:()=>`story-${++serial}`},normCover:x=>typeof x==='string'?{src:x}:x});
+vm.runInContext(fs.readFileSync('dist/story-player.js','utf8'),ctx);
+vm.runInContext(fs.readFileSync('dist/highlight-media.js','utf8'),ctx);
+const run=s=>vm.runInContext(s,ctx);
+ctx.h={id:'highlight',label:'Keep',cover:{src:'cover',z:2,panX:.2},stories:[{id:'first',src:'A',custom:'Keep'}]};
+const old=ctx.h.stories,cover=JSON.stringify(ctx.h.cover);ctx.assets=[{src:'A'},{src:'B'},{src:'B'},{src:'C'}];
+assert.equal(run('appendHighlightMedia(h,assets).changed'),true);assert.deepEqual(Array.from(ctx.h.stories,s=>s.src),['A','B','C']);assert.equal(old.length,1,'Old state arrays stay unchanged');assert.equal(ctx.h.stories[0].custom,'Keep');assert.equal(JSON.stringify(ctx.h.cover),cover,'Adding stories preserves the independently cropped cover');
+const before=JSON.stringify(ctx.h);assert.equal(run("appendHighlightMedia(h,[{src:'B'}]).error"),'duplicate');assert.equal(JSON.stringify(ctx.h),before);assert.equal(run("appendHighlightMedia(h,[{src:'D'},undefined]).error"),'missing');assert.equal(JSON.stringify(ctx.h),before,'Unavailable assets reject the entire batch');
+ctx.ids=Array.from(ctx.h.stories,s=>s.id);assert.equal(run('moveHighlightStory(h,ids[2],ids[0])'),0);assert.deepEqual(Array.from(ctx.h.stories,s=>s.src),['C','A','B']);assert.equal(ctx.h.stories[1].custom,'Keep');assert.equal(JSON.stringify(ctx.h.cover),cover);assert.equal(run("moveHighlightStory(h,'missing',ids[0])"),-1);
+assert.equal(run("appendHighlightMedia(h,[{src:'D'}],ids[0]).changed"),true);assert.deepEqual(Array.from(ctx.h.stories,s=>s.src),['C','D','A','B']);
+ctx.empty={cover:null,stories:[]};run("appendHighlightMedia(empty,[{src:'First'}])");assert.equal(ctx.empty.cover.src,'First');assert.equal(ctx.empty.stories[0].src,'First');
+ctx.legacy={cover:{src:'Legacy'}};run("appendHighlightMedia(legacy,[{src:'New'}])");assert.deepEqual(Array.from(ctx.legacy.stories,s=>s.src),['Legacy','New']);assert.ok(ctx.legacy.stories.every(s=>typeof s.id==='string'));
+ctx.removed={cover:{src:'Old cover'},stories:[]};run("appendHighlightMedia(removed,[{src:'New'}])");assert.deepEqual(Array.from(ctx.removed.stories,s=>s.src),['New'],'An explicitly empty highlight must not resurrect its cover as a story');
+ctx.full={cover:null,stories:Array.from({length:100},(_,i)=>({id:String(i),src:String(i)}))};const full=JSON.stringify(ctx.full);assert.equal(run("appendHighlightMedia(full,[{src:'Extra'}]).error"),'limit');assert.equal(JSON.stringify(ctx.full),full,'Limit errors are atomic');
+console.log('Highlight media checks passed: batch add, insertion, order, duplicate/missing/limit safety, independent covers and legacy data.');

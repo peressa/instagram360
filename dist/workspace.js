@@ -26,7 +26,7 @@ function initWorkspace(){
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.dataset.panel!=='feed'&&!document.querySelector('dialog[open]')){e.preventDefault();e.stopImmediatePropagation();closeWorkspace();(document.querySelector('.sim-inline-toggle')||photos).focus()}});
  initSimulator();initDirectEditing();
 }
-function closeWorkspace(){libraryTargetPost=null;syncLibrarySelection();document.body.dataset.panel='feed';document.body.classList.remove('placing-photo');const b=$('openPhotos');if(b)b.setAttribute('aria-expanded','false');}
+function closeWorkspace(){libraryTargetPost=null;libraryTargetStory=null;syncLibrarySelection();syncStoryPlayback();document.body.dataset.panel='feed';document.body.classList.remove('placing-photo');const b=$('openPhotos');if(b)b.setAttribute('aria-expanded','false');}
 function syncDeviceSwitch(){}
 function initDirectEditing(){
  const phone=document.querySelector('.phone');

@@ -59,7 +59,9 @@ function initSimulator(){
 }
 function finishStudioDrop(target){
  if(!studioDrag)return;const data=studioDrag,fromLibrary=data.kind==='tray';let changed=false;
- if(fromLibrary){const index=typeof target==='number'?target:target?.kind==='post'?target.index:-1;if(index>=0&&index<total)changed=applyLibraryDrop(index,data.imgIds||[data.imgId],target?.beforeId||null)}
+ if(fromLibrary&&target?.kind==='highlight')changed=applyHighlightDrop(target.id,data.imgIds||[data.imgId],target.beforeId||null);
+ else if(fromLibrary){const index=typeof target==='number'?target:target?.kind==='post'?target.index:-1;if(index>=0&&index<total)changed=applyLibraryDrop(index,data.imgIds||[data.imgId],target?.beforeId||null)}
+ else if(data.kind==='story-photo'){if(target?.kind==='story-photo'&&target.id===data.highlightId)changed=reorderDirectStory(data.highlightId,data.storyId,target.storyId)}
  else if(data.kind==='post-photo'){if(target?.kind==='photo'&&target.index===data.postIndex)changed=reorderDirectPhoto(data.postIndex,data.imgId,target.id)}
  else if(typeof target==='number'&&target>=0&&target<total){closeSimScreen();const src=data.src;if(src!==target){[tiles[src],tiles[target]]=[tiles[target],tiles[src]];normalizeBanners();sel.clear();render();updateExportUI();commit();changed=true}}
  if(fromLibrary&&changed&&typeof closeWorkspace==='function')closeWorkspace();if(typeof document!=='undefined')document.body.classList.remove('placing-photo','moving-photo');studioDrag=null;studioSuppressClick=Date.now()+350;clearStudioDrop();ghost.style.display='none';if(ghost.dataset)ghost.dataset.count='';

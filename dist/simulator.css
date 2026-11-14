@@ -133,3 +133,9 @@ body:has(.sim-story) .canvas-save,body:has(.phone.web-layout>.sim-story) .canvas
 body[data-panel=library]:has(.sim-post-screen) .main>.sidebar{z-index:110}.direct-media-status{position:fixed;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);pointer-events:none}
 .sim-inline-toggle.sim-button{width:auto;height:auto;min-width:0;white-space:nowrap}.phone.mobile-layout .sim-carousel>.sim-inline-toggle{display:flex}.sim-inline-list{padding-top:8px}
 @media(max-width:700px){.sim-inline-photo,.sim-inline-select.sim-button{width:54px}.sim-inline-select.sim-button,.sim-inline-add.sim-button{height:64px}.sim-inline-remove.sim-button{opacity:1}.sim-inline-media{padding:8px 6px 5px}.sim-inline-toggle.sim-button{top:9px;left:9px}.sim-inline-list{gap:7px}}
+
+/* Story arrangement shares the carousel's direct thumbnail controls. */
+.sim-story-inline-toggle.sim-button{top:90px;left:12px}.sim-story-frame:hover>.sim-story-inline-toggle,.sim-story-frame:focus-within>.sim-story-inline-toggle{opacity:1;pointer-events:auto}.sim-story-frame.library-drop-target{outline:4px solid #4a5df9;outline-offset:-4px}.hl.library-drop-target{outline:3px solid #4a5df9;border-radius:12px}.hl.library-drop-target:after{inset:auto -12px -12px;font-size:10px;padding:5px}.sim-inline-story,.sim-inline-story>.sim-inline-select{width:48px}.sim-inline-story>.sim-inline-select{height:78px}
+body[data-panel=library]:has(.sim-story) .main>.sidebar{z-index:110}
+
+.sim-inline-list{scrollbar-width:none}.sim-inline-list::-webkit-scrollbar{display:none}
