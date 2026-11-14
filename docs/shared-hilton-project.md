@@ -11,6 +11,11 @@ shared route includes a separate copy of the beta.7 editor and its assets, so it
 does not read or overwrite personal browser profiles. Its UI snapshot is pinned;
 future editor improvements must also be applied to this route. The beta.2 export interface and dark-mode shortcut are applied here too, using the common `/export-ui.js` and `/export-ui.css` assets.
 
+The dish cover `lux-5043498f677198667b57` and the building cover
+`lux-9527e0b19a722f6cacb3` have a project-specific Reels grid badge. This
+presentation exception preserves their carousel photos and does not affect the
+main editor, other projects or other Hilton publications.
+
 ## Storage and synchronization
 
 `worker/shared-project.mjs` coordinates the project in one SQLite-backed Cloudflare

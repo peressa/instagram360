@@ -50,7 +50,9 @@ function filterProfileGrid(){
  if(!empty.hidden){empty.innerHTML=igIcon(currentProfileTab==='posts'?'Instagram':'Reels');empty.append(dom('strong','',currentProfileTab==='posts'?'Aún no hay publicaciones':'Aún no hay contenido'),dom('p','','El contenido de este perfil aparecerá aquí.'))}
 }
 function decorateGrid(){
- [...grid.children].forEach((cell,i)=>{const t=tiles[i];if(!t)return;let badge=t.pinned?'pin':postMediaIds(t).length>1||t.kind==='carousel'?'carousel':t.kind==='reel'?'Reels':t.kind==='video'?'Video largo':null;
+ // Presentation-only exception for these two Hilton covers; retain their carousel photos.
+ const reelCovers=new Set(['lux-5043498f677198667b57','lux-9527e0b19a722f6cacb3']);
+ [...grid.children].forEach((cell,i)=>{const t=tiles[i];if(!t)return;let badge=t.pinned?'pin':reelCovers.has(t.imgId)?'Reels':postMediaIds(t).length>1||t.kind==='carousel'?'carousel':t.kind==='reel'?'Reels':t.kind==='video'?'Video largo':null;
   if(badge){const el=dom('span','ig-media-badge');el.innerHTML=igIcon(badge);cell.append(el)}
   if(currentProfileTab==='reels'){const views=dom('span','reel-views');views.innerHTML=svgLine('<path d="m7 3 14 9-14 9z"/>');views.append(document.createTextNode(t.views||'0'));cell.append(views)}
 
