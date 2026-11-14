@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0-beta.4 · 2026-11-14
+
+- Select multiple library photos and drag the batch onto an existing post or empty slot to create one carousel, with duplicate prevention and atomic undo.
+- Add and arrange photos directly on the open mockup, without opening the metadata editor. Inline thumbnails support mouse drag, touch hold-and-drag, keyboard ordering and cover selection.
+- Preserve existing cover crops, captions, likes, comments and comment drafts while adding photos.
+
 ## 0.1.0-beta.3 · 2026-11-14
 
 - Keep carousel pagination labels accessible without showing them as text over the image.

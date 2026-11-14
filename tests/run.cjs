@@ -7,5 +7,5 @@ for(const name of ['grid-resize','backup','persistence','simulator','circle-crop
 }
 const html=readFileSync('dist/index.html','utf8');
 for(const match of html.matchAll(/<script>([\s\S]*?)<\/script>/g))new vm.Script(match[1]);
-for(const file of ['post-media','story-player','studio','workspace','persistence','icons','simulator','circle-crop','profile-counts'])new vm.Script(readFileSync('dist/'+file+'.js','utf8'));
+for(const file of ['post-media','direct-media','story-player','studio','workspace','persistence','icons','simulator','circle-crop','profile-counts'])new vm.Script(readFileSync('dist/'+file+'.js','utf8'));
 console.log('Application scripts parsed successfully.');

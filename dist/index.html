@@ -388,7 +388,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css?v=20261114.beta3"><link rel="stylesheet" href="workspace.css?v=20261114.beta3"><link rel="stylesheet" href="simulator.css?v=20261114.beta3">
+</style><link rel="stylesheet" href="studio.css?v=20261114.beta4"><link rel="stylesheet" href="workspace.css?v=20261114.beta4"><link rel="stylesheet" href="simulator.css?v=20261114.beta4">
 </head>
 <body>
 <div class="app">
@@ -534,7 +534,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 <dialog id="nameDialog" style="margin:auto;padding:28px;border:1px solid #43503e;border-radius:12px;background:#181c18;color:#fff;max-width:420px;width:90%"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required style="display:block;width:100%;padding:12px;margin:18px 0;background:#242a23;border:1px solid #43503e;color:#fff;border-radius:7px"><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261114.beta3"></script><script src="profile-counts.js?v=20261114.beta3"></script><script src="post-media.js?v=20261114.beta3"></script><script src="story-player.js?v=20261114.beta3"></script><script src="studio.js?v=20261114.beta3"></script><script src="persistence.js"></script><script src="workspace.js?v=20261114.beta3"></script><script src="simulator.js?v=20261114.beta3"></script><script>
+<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261114.beta4"></script><script src="profile-counts.js?v=20261114.beta4"></script><script src="post-media.js?v=20261114.beta4"></script><script src="direct-media.js?v=20261114.beta4"></script><script src="story-player.js?v=20261114.beta4"></script><script src="studio.js?v=20261114.beta4"></script><script src="persistence.js"></script><script src="workspace.js?v=20261114.beta4"></script><script src="simulator.js?v=20261114.beta4"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
@@ -898,8 +898,11 @@ function wireGrip(grip, i) {
   grip.addEventListener('pointerup', fin); grip.addEventListener('pointercancel', fin);
 }
 function ensureFreeCell(){let index=nextEmptyCell(-1);if(index<0&&rows<9){setRows(rows===3?6:9);$('rowsSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('active',Number(b.dataset.rows)===rows));index=nextEmptyCell(-1)}return index;}
-function wireChip(el,a){wireStudioDrag(el,{kind:'tray',imgId:a.id});const add=()=>{if(Date.now()<studioSuppressClick)return;const index=ensureFreeCell();if(index>=0){placeAsset(index,a.id);if(innerWidth<=700)closeWorkspace()}};el.addEventListener('click',e=>{if(!e.target.closest('button'))add()});const img=el.querySelector('img');img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label','Agregar '+a.name+' al perfil');img.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();add()}});}
-
+function wireChip(el,a){
+ wireLibrarySelection(el,a);wireStudioDrag(el,{kind:'tray',imgId:a.id});
+ const add=e=>{if(Date.now()<studioSuppressClick)return;if(e?.shiftKey||e?.ctrlKey||e?.metaKey||librarySelection.size){toggleLibraryPhoto(a.id,!!e?.shiftKey);return}if(libraryTargetPost!==null){if(applyLibraryDrop(libraryTargetPost,[a.id]))closeWorkspace();return}const index=ensureFreeCell();if(index>=0){placeAsset(index,a.id);if(innerWidth<=700)closeWorkspace()}};
+ el.addEventListener('click',e=>{if(!e.target.closest('button'))add(e)});const img=el.querySelector('img');img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label','Agregar '+a.name+' al perfil');img.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();add(e)}});
+}
 
 function placeAsset(i, imgId) { const previous=tiles[i],media=previous?postMediaIds(previous):[]; tiles[i] = { ...(tiles[i]||{}),imgId, z: 1, panX: 0, panY: 0 };if(media.length>1)setPostMedia(tiles[i],[imgId,...media.slice(1)]);delete tiles[i].banner;delete tiles[i].bz; normalizeBanners(); sel.delete(i); active = i; render(); updateExportUI(); syncZoom(); commit(); }
 
@@ -1006,6 +1009,7 @@ function renderTray() {
     x.addEventListener('click', e => { e.stopPropagation();closeSimScreen(false); lib = lib.filter(l => l.id !== a.id); del('assets', a.id); revokeBlobURL(a.id); let touched = false; for (let j = 0; j < tiles.length; j++) if (tiles[j] && postMediaIds(tiles[j]).includes(a.id)) { if(!detachPostAsset(tiles[j],a.id)){tiles[j]=null;sel.delete(j)} touched = true; } if (touched) normalizeBanners(); render(); renderTray(); updateExportUI(); if (touched) commit(); });
     el.append(img, nm, x, add); wireChip(el, a); tray.appendChild(el);
   });
+  syncLibrarySelection();
   /* FIX (session 11): scroll-hint listener was re-added on every renderTray() call
      (every addFile/placeAsset/removal), accumulating duplicate listeners over a session.
      Guarded with a module-level flag so it's bound exactly once. */

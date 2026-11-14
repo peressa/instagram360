@@ -21,6 +21,7 @@ Preview: `127.0.0.1:8765`. Use `--port 9000` for another port. For a phone on yo
 | `dist/circle-crop.js` | Bounded circle crops and gestures |
 | `dist/profile-counts.js` | Exact count storage and display formatting |
 | `dist/post-media.js` | Ordered carousel assets, photo editor, native swipe viewer and image export |
+| `dist/direct-media.js` | Library selection, batch drops and inline carousel arrangement |
 | `dist/story-player.js` | Highlight navigation and a load-aware, pausable progress animation |
 | `references/` | Observations and explicit verification limits |
 | `tests/` | Regression checks and script parsing |

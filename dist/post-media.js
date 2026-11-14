@@ -8,6 +8,14 @@ function setPostMedia(tile,ids){
 function movePostMedia(tile,from,to){const ids=postMediaIds(tile);if(from<0||to<0||from>=ids.length||to>=ids.length)return false;ids.splice(to,0,ids.splice(from,1)[0]);return setPostMedia(tile,ids);}
 function detachPostAsset(tile,id){return setPostMedia(tile,postMediaIds(tile).filter(item=>item!==id));}
 function validPostMedia(tile,assetIds){return tile.carouselIds===undefined||Array.isArray(tile.carouselIds)&&tile.carouselIds.length>=1&&tile.carouselIds.length<=100&&tile.carouselIds[0]===tile.imgId&&new Set(tile.carouselIds).size===tile.carouselIds.length&&tile.carouselIds.every(id=>typeof id==='string'&&(!assetIds||assetIds.has(id)));}
+function appendPostMedia(tile,incoming,assetIds,beforeId=null){
+ const requested=[...new Set(incoming)];if(!requested.length||requested.some(id=>!assetIds.has(id)))return {changed:false,error:'missing'};
+ const current=postMediaIds(tile),added=requested.filter(id=>!current.includes(id));
+ if(!added.length)return {changed:false,added:[],error:'duplicate'};
+ if(current.length+added.length>100)return {changed:false,error:'limit'};
+ const position=beforeId===null?current.length:current.indexOf(beforeId),ids=[...current];ids.splice(position<0?ids.length:position,0,...added);
+ const result=tile||{imgId:ids[0],z:1,panX:0,panY:0};setPostMedia(result,ids);return {changed:true,tile:result,added};
+}
 
 function buildPostMedia(media,tile,asset,index,start=0){
  const items=postMediaIds(tile).map(id=>lib.find(a=>a.id===id)).filter(Boolean);
@@ -19,10 +27,11 @@ function buildPostMedia(media,tile,asset,index,start=0){
  const show=i=>{simCurrentSlide=Math.max(0,Math.min(items.length-1,i));track.scrollTo({left:track.clientWidth*simCurrentSlide,behavior:'smooth'});sync()};
  const previous=simButton('Foto anterior',()=>show(simCurrentSlide-1),igIcon('back')),next=simButton('Foto siguiente',()=>show(simCurrentSlide+1),svgLine('<path d="m9 5 7 7-7 7"/>'));previous.classList.add('sim-carousel-prev');next.classList.add('sim-carousel-next');
  items.forEach((_,i)=>{const dot=simButton('Ir a la foto '+(i+1),()=>show(i));dot.textContent='';dots.append(dot)});
- function sync(){counter.textContent=(simCurrentSlide+1)+' / '+items.length;previous.hidden=simCurrentSlide===0;next.hidden=simCurrentSlide===items.length-1;[...dots.children].forEach((dot,i)=>{dot.classList.toggle('active',i===simCurrentSlide);dot.setAttribute('aria-current',String(i===simCurrentSlide))});media.dataset.slideIndex=simCurrentSlide}
+ function sync(){counter.textContent=(simCurrentSlide+1)+' / '+items.length;previous.hidden=simCurrentSlide===0;next.hidden=simCurrentSlide===items.length-1;[...dots.children].forEach((dot,i)=>{dot.classList.toggle('active',i===simCurrentSlide);dot.setAttribute('aria-current',String(i===simCurrentSlide))});media.dataset.slideIndex=simCurrentSlide;if(typeof syncInlineMedia==='function')syncInlineMedia(index,simCurrentSlide)}
  simCurrentSlide=Math.max(0,Math.min(items.length-1,start));media.append(track,counter,previous,next,dots);sync();
  track.addEventListener('scroll',()=>{if(!track.isConnected||simCurrentPost!==index)return;const i=Math.round(track.scrollLeft/track.clientWidth);if(Number.isFinite(i)){simCurrentSlide=Math.max(0,Math.min(items.length-1,i));sync()}},{passive:true});
  media.changeSlide=delta=>show(simCurrentSlide+delta);
+ media.showSlide=show;
  requestAnimationFrame(()=>{if(track.isConnected){track.scrollLeft=track.clientWidth*simCurrentSlide;sync()}});
 }
 
