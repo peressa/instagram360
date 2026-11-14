@@ -82,3 +82,6 @@ body.moving-photo:not(.exporting) .phone .cell:not(.has){display:block!important
 body.exporting .phone .cell:not(.has){display:none!important}
 
 .phone [data-circle-crop][data-crop-ready=true]{touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}.phone [data-circle-crop][data-crop-ready=true]:active{cursor:grabbing}.phone [data-circle-crop] img{pointer-events:none;user-select:none;-webkit-user-drag:none}
+
+.phone .stat [data-inline-edit]:focus{max-width:90px;white-space:nowrap;overflow-x:auto;scrollbar-width:none;text-overflow:clip}
+@media(max-width:360px){.phone.mobile-layout .prof{grid-template-columns:64px minmax(0,1fr);column-gap:10px}.phone.mobile-layout .avatar-slot,.phone.mobile-layout .avatar{width:64px;height:64px}.phone.mobile-layout .stats{gap:4px}.phone.mobile-layout .stat span{font-size:11px}.phone .stat [data-inline-edit]:focus{max-width:70px}}

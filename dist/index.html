@@ -388,7 +388,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css?v=20261113.19"><link rel="stylesheet" href="workspace.css?v=20261113.19"><link rel="stylesheet" href="simulator.css?v=20261113.19">
+</style><link rel="stylesheet" href="studio.css?v=20261113.21"><link rel="stylesheet" href="workspace.css?v=20261113.21"><link rel="stylesheet" href="simulator.css?v=20261113.21">
 </head>
 <body>
 <div class="app">
@@ -534,7 +534,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 <dialog id="nameDialog" style="margin:auto;padding:28px;border:1px solid #43503e;border-radius:12px;background:#181c18;color:#fff;max-width:420px;width:90%"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required style="display:block;width:100%;padding:12px;margin:18px 0;background:#242a23;border:1px solid #43503e;color:#fff;border-radius:7px"><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261113.19"></script><script src="studio.js?v=20261113.19"></script><script src="persistence.js"></script><script src="workspace.js?v=20261113.19"></script><script src="simulator.js?v=20261113.19"></script><script>
+<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261113.21"></script><script src="profile-counts.js?v=20261113.21"></script><script src="studio.js?v=20261113.21"></script><script src="persistence.js"></script><script src="workspace.js?v=20261113.21"></script><script src="simulator.js?v=20261113.21"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
@@ -739,7 +739,7 @@ function render() {
   renderRowGrips();
   // keep posts count in sync with filled tiles (only if user hasn't manually edited it)
   const postsEl = document.querySelector('[data-f="posts"]');
-  if (postsEl && document.activeElement !== postsEl) postsEl.textContent = profile.autoPosts ? filled().length : profile.posts;
+  if (postsEl && document.activeElement !== postsEl) postsEl.textContent = profileFieldDisplay('posts');
   decorateGrid();
 }
 
@@ -1445,7 +1445,7 @@ window.addEventListener('keydown', e => {
   }
 });
 document.querySelector('.stage').addEventListener('pointerdown', e => { if (e.target.classList.contains('stage') || e.target.classList.contains('phone') || e.target.classList.contains('grid')) { if (assignTarget >= 0) exitAssign(); setActive(null); } });
-let rt = null; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 120); });
+let rt = null; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(()=>{render();applyAvatarImg()}, 120); });
 
 /* ---------- export the whole profile as one PNG (hand-drawn, no libs) ---------- */
 function wrapLines(ctx, text, maxW) {
@@ -1512,10 +1512,10 @@ function wireCircleCrop(el,getState,onUpdate,onCommit){
 function wireProfile() {
   document.querySelectorAll('[data-f]').forEach(el=>{
     const f=el.dataset.f;let initial=null,cancelled=false;
-    const persist=()=>{profile[f]=readInlineProfileField(el);if(f==='posts')profile.autoPosts=false;saveProfile();syncEditor();document.querySelectorAll('[data-f="'+f+'"]').forEach(other=>{if(other!==el)other.textContent=profile[f]})};
-    el.addEventListener('focus',()=>{initial={value:profile[f],display:el.innerText??el.textContent,autoPosts:profile.autoPosts};cancelled=false;closeWorkspace()});
-    el.addEventListener('input',e=>{if(!e.isComposing)persist()});el.addEventListener('compositionend',persist);
-    el.addEventListener('blur',()=>{if(!cancelled)persist();cancelled=false;initial=null;document.querySelectorAll('[data-f="'+f+'"]').forEach(other=>other.textContent=f==='posts'&&profile.autoPosts?String(filled().length):profile[f]||'');syncEditor()});
+    const persist=(final=false)=>{const raw=readInlineProfileField(el);profile[f]=final?canonicalProfileCount(f,raw):raw;if(f==='posts')profile.autoPosts=false;saveProfile();syncEditor();document.querySelectorAll('[data-f="'+f+'"]').forEach(other=>{if(other!==el)other.textContent=profileFieldDisplay(f)})};
+    el.addEventListener('focus',()=>{initial={value:profile[f],display:el.innerText??el.textContent,autoPosts:profile.autoPosts};cancelled=false;if(PROFILE_COUNT_FIELDS.has(f))el.textContent=profileFieldForEditing(f,f==='posts'&&profile.autoPosts?filled().length:profile[f]);closeWorkspace()});
+    el.addEventListener('input',e=>{if(!e.isComposing)persist()});el.addEventListener('compositionend',()=>persist());
+    el.addEventListener('blur',()=>{if(!cancelled)persist(true);cancelled=false;initial=null;document.querySelectorAll('[data-f="'+f+'"]').forEach(other=>other.textContent=profileFieldDisplay(f));syncEditor()});
     el.addEventListener('keydown',e=>{
       if(e.isComposing)return;
       if(e.key==='Escape'&&initial){e.preventDefault();e.stopPropagation();cancelled=true;profile[f]=initial.value;if(f==='posts')profile.autoPosts=initial.autoPosts;el.textContent=initial.display;saveProfile();el.blur();return}
@@ -1556,7 +1556,7 @@ function applyAvatarImg() {
 }
 
 function applyProfile() {
- TEXT_FIELDS.forEach(f=>document.querySelectorAll('[data-f="'+f+'"]').forEach(el=>{if(document.activeElement!==el)el.textContent=f==='posts'&&profile.autoPosts?String(filled().length):profile[f]||''}));
+ TEXT_FIELDS.forEach(f=>document.querySelectorAll('[data-f="'+f+'"]').forEach(el=>{if(document.activeElement!==el)el.textContent=profileFieldDisplay(f)}));
  applyAvatarImg();renderProfileExtras();applyHighlights();document.querySelectorAll('.phone [data-inline-edit]').forEach(e=>e.contentEditable=document.body.classList.contains('exporting')?'false':'plaintext-only');
 }
 let hlTarget=null;

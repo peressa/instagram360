@@ -1,0 +1,8 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const ctx=vm.createContext({Intl,profile:{followers:'1234567',posts:'8646',autoPosts:false},filled:()=>[1,2,3]});vm.runInContext(fs.readFileSync('dist/profile-counts.js','utf8'),ctx);
+const parse=v=>{ctx.value=v;return vm.runInContext('parseProfileCount(value)',ctx)},format=v=>{ctx.value=v;return vm.runInContext('formatProfileCount(value)',ctx).replace(/\u00a0/g,' ')};
+for(const [raw,n] of [['5000',5000],['5k',5000],['5 K',5000],['12,5 mil',12500],['1.5M',1500000],['1,25 millones',1250000],['686 M',686000000],['1.234.567',1234567],['1,234,567',1234567],['1.250',1250],['',0],['-5',0]])assert.equal(parse(raw),n,raw);
+for(const [n,label] of [[0,'0'],[999,'999'],[5000,'5.000'],[9999,'9.999'],[10000,'10 mil'],[12500,'12,5 mil'],[99999,'99,9 mil'],[100000,'100 mil'],[999999,'999 mil'],[1000000,'1 M'],[1250000,'1,2 M'],[5000000,'5 M'],[686360059,'686 M']])assert.equal(format(n),label,String(n));
+assert.equal(parse('texto'),null);assert.equal(format('texto'),'texto');assert.equal(parse('9999999999999999999999'),null);
+assert.equal(vm.runInContext("profileFieldDisplay('followers')",ctx),'1,2\u00a0M');assert.equal(ctx.profile.followers,'1234567','Formatting must not round the saved count');assert.equal(vm.runInContext("profileFieldForEditing('followers',profile.followers)",ctx),'1234567');ctx.profile.autoPosts=true;assert.equal(vm.runInContext("profileFieldDisplay('posts')",ctx),'3');
+console.log('Profile count checks passed: input formats, thresholds, exact storage, editing and automatic post counts.');
