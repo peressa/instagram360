@@ -1,63 +1,57 @@
-# RIO360 · Instagram Studio
+# Instagram 360
 
-Planificador de perfiles de Instagram para preparar y presentar propuestas. Adaptación de mkgrid (Chris Vrakas, MIT; ver LICENSE). Incluye html2canvas 1.4.1, MIT, en dist/vendor. La tipografía Manrope se sirve localmente; su licencia SIL OFL está en dist/fonts/OFL-Manrope.txt.
+**Design the profile. Move the feed. Present the idea.**
 
-Aplicación estática independiente: no requiere ChatGPT, inicio de sesión, API, servidor de aplicación ni secretos. Todos los recursos de ejecución están incluidos en `dist/`.
+An open source visual studio for designing and presenting Instagram profiles. Edit directly on the mockup, arrange your images and export your proposal. Created and maintained by [Juan Peressa](https://peressa.dev).
 
-## Publicación
+[Live demo](https://ig360.peressa.dev) · [First beta](https://github.com/peressa/instagram360/releases/tag/v0.1.0-beta.1) · [Guía en español](docs/USAGE.md) · [Contribute](CONTRIBUTING.md)
 
-Dominio de producción: https://instagram.rio360.com.ar
+![Instagram 360 desktop workspace with an original example profile](docs/screenshots/desktop.jpg)
 
-El alojamiento de producción usa Cloudflare Workers con archivos estáticos de `dist/`. Para publicar desde una computadora autorizada, instalar Wrangler, ejecutar `npx wrangler login` y luego `npx wrangler deploy`. La configuración está en `wrangler.jsonc`. También se puede cargar un ZIP con el contenido de `dist/` desde Workers & Pages en el panel de Cloudflare.
+## What you can do
 
-Cloudflare Workers Builds conecta `peressa/rio360-instagram-studio` con el Worker de producción. Cada push a `main` ejecuta `node tests/run.cjs`; si pasan las pruebas, publica mediante `npx --yes wrangler@4.162.0 deploy` en https://instagram.rio360.com.ar. Los errores de pruebas o publicación se consultan en Workers & Pages → rio360-instagram-studio → Deployments. No hay secretos de Cloudflare almacenados en el repositorio.
+- Edit names, biography and counts directly on the profile.
+- Replace avatars/highlight covers and drag to crop inside their circles.
+- Arrange a feed by dragging, preserving photos when resizing the grid.
+- Preview mobile, desktop and tablet variants, light/dark and owner/visitor views.
+- Browse simulated posts, likes, comments and highlight stories.
+- Keep proposals locally, with JSON backup/import and recovery drafts.
+- Export a profile PNG or a ZIP of prepared grid images.
 
-Para usar Dokploy u otro alojamiento con Docker, construir el `Dockerfile` incluido y dirigir el dominio al puerto 80 del contenedor. No necesita volúmenes: las fotos y propuestas permanecen en el navegador de cada visitante.
+No account connection, backend or runtime API keys. Projects stay in your browser. The interface is Spanish.
 
-Mantener el mismo dominio HTTPS conserva el almacenamiento local existente. Para cambiar de dominio o computadora, descargar e importar un respaldo JSON.
+<img src="docs/screenshots/mobile.jpg" alt="Instagram 360 at a 390 px mobile browser viewport" width="320">
 
-## Uso
+## Run locally
 
-Servir `dist/` con un servidor estático. No requiere instalación ni compilación. El panel permite editar usuario, nombre, verificación visual, seguidores, seguidos, publicaciones (manual o automático), avatar y recorte, bio, pronombres, categoría, enlaces, ubicación, contacto, privacidad y textos de botones. Las cifras son de la propuesta y no modifican ninguna cuenta real.
+Requires Node.js 22+. No dependencies to install or build step.
 
-Las fotos se arrastran a la biblioteca y a la grilla. En Publicaciones se edita portada, tipo, fijación, texto, ubicación, fecha, Me gusta y comentarios. Reels, videos y carruseles usan imágenes de portada en este simulador, sin publicación ni reproducción de video.
+```sh
+git clone https://github.com/peressa/instagram360.git
+cd instagram360
+node scripts/serve.cjs
+```
 
-Los destacados tienen nombre, portada, recorte, orden e imágenes de historias modificables. En la presentación se abren para recorrer la secuencia. La captura PNG se genera desde la misma vista seleccionada, con verificación, estilos y recortes.
+Open **http://127.0.0.1:8765**. Run `node tests/run.cjs` (or `npm test`). Any static HTTPS host can serve `dist/`; see [hosting and architecture](docs/DEVELOPMENT.md).
 
-## Guardado
+## Try a complete example
 
-El mockup ocupa la pantalla por defecto. Solo quedan visibles el selector de dispositivo, Fotos y Exportar. Nombre, usuario, biografía, enlace y cifras se escriben directamente sobre el mockup, con guardado automático. Enter termina una edición de una línea; en la bio agrega un salto. Esc restaura el valor anterior de ese campo. El avatar y las portadas abren directamente el selector de imagen al tocarlos, incluso si ya tienen foto. Los nombres de destacados se escriben en su lugar y se guardan automáticamente. El pequeño botón de reproducción sobre cada portada abre sus historias; los tres puntos del perfil abren los ajustes del proyecto, grilla y respaldos. La biblioteca se muestra como panel temporal y se cierra al tocar afuera o con Esc, sin cambiar el tamaño del mockup. Se puede tocar una foto para agregarla o arrastrarla; al arrastrar desde la biblioteca el panel se aparta y, al soltar la foto en el perfil, se cierra. Al completar la grilla, la siguiente foto agrega filas automáticamente hasta el límite de 27 casilleros. Las fotos que exceden ese límite permanecen en la biblioteca. Se mantienen los controles manuales de proporción y cantidad de filas en los ajustes del proyecto.
+Download [the example backup](examples/studio360.json) and import it from the profile's three-dot menu → **Proyecto y ajustes → Importar**. It creates a separate project with synthetic data and original graphics. See [usage and backups](docs/USAGE.md).
 
-El scroll recorre el perfil sin modificar el recorte. Las fotos nuevas entran centradas y la publicación muestra la imagen completa. El encuadre anterior se puede restablecer desde la edición de la publicación. Las herramientas de composición y panorama permanecen dentro de esa edición.
+## Beta status
 
-Tocar una publicación abre su vista dentro del mockup, con anterior/siguiente, Me gusta, guardados y comentarios persistentes. Los destacados se recorren por historias, con pausa, avance automático, botones, teclado y deslizamiento lateral. Inicio, Reels, búsqueda, mensajes y notificaciones responden dentro de la propuesta. Todas estas interacciones son locales; no se conectan ni envían contenido a Instagram. Los comentarios y mensajes se incluyen en el respaldo JSON.
+**v0.1.0-beta.1** is the first public beta. Video playback, cloud sync and real Instagram publishing are not included. Device variants are presentation mockups, not certified replicas of every native app version. Android abbreviations and the exact 9999/10000 transition remain unverified; formatting comes from web observations. See [evidence and limits](references/counts/REVISION-ANDROID.md).
 
-Los cambios se escriben sin espera de debounce en IndexedDB. Mientras se confirma cada transacción, se conserva un borrador de estado por propuesta en localStorage para recuperar cambios pendientes tras una recarga. Si localStorage está lleno se continúa usando IndexedDB; si falla el guardado, el editor muestra el error y permite reintentar o descargar un respaldo. Los borradores no sustituyen el respaldo de las fotos de la biblioteca. El estado «Guardado» se muestra después de completarse las transacciones.
+Saved projects belong to one browser and origin. Export/import backups when changing domains or computers. Earlier backups remain importable.
 
-Los perfiles anteriores se conservan. Cada propuesta usa una base IndexedDB independiente. El respaldo JSON incluye perfil, biblioteca, grilla, historias y ajustes de vista. No sincroniza entre computadoras. Borrar los datos del navegador elimina el guardado local: conservar respaldos descargados.
+## Help shape the project
 
-## Comparación visual
+Read [CONTRIBUTING](CONTRIBUTING.md), [community conduct](CODE_OF_CONDUCT.md) and [security reporting](SECURITY.md). Bug reports, design feedback, accessibility fixes and well-sourced Instagram comparisons are welcome.
 
-Se consultó directamente instagram.com/instagram el 13 de noviembre de 2026 con Chrome. `references/` conserva medidas de escritorio (1920, 1280 y 768 px) y web móvil (390 px de viewport, 375 px útiles por la barra de desplazamiento de Chrome). Se copiaron las formas SVG observadas de la interfaz y se reprodujeron tipografías, colores, medidas, columnas adaptables y distribución mediante CSS.
+Next priorities: modularize remaining inline code; strengthen browser regression coverage; improve accessibility and touch gestures; richer carousel/video previews. These are directions, not committed dates.
 
-Las medidas de referencia se conservan en `references/`. La vista móvil predeterminada es App · iPhone. Las etiquetas de estadísticas se mantienen en una sola línea en iPhone, Android y la alternativa web móvil, en los anchos de 375, 390 y 412 px. Los perfiles guardados con la antigua vista web móvil pasan una sola vez a la vista de app; las elecciones posteriores se conservan.
+## Credits and license
 
-Las vistas nativas de iPhone y Android están disponibles como variantes de presentación. Sin capturas de una versión concreta de las apps no puede certificarse igualdad de píxeles con ellas ni con todos los experimentos de interfaz de Instagram.
+Developed and maintained by **Juan Peressa**, building on [mkgrid](https://github.com/chrisvrakas/mkgrid) by **Chris Vrakas**, retaining the original MIT attribution. Licensed under [MIT](LICENSE), including the original example graphics. Bundled dependencies: html2canvas 1.4.1 ([MIT](dist/vendor/html2canvas.LICENSE.txt)) and Manrope ([SIL OFL](dist/fonts/OFL-Manrope.txt)).
 
-## Verificación
-
-`node tests/backup.cjs` comprueba compatibilidad con respaldos anteriores y validación de los campos añadidos. La prueba de navegador cubre edición, recarga, portadas, historias, orden, pestañas, publicaciones y exportación. No usa la API de Instagram ni publica contenido.
-
-`node tests/grid-resize.cjs` verifica que reducir la grilla conserve las fotos, el orden, los recortes y panoramas, y rechace una reducción cuando el contenido no entra.
-
-`node tests/run.cjs` ejecuta todas las pruebas, incluyendo recuperación de borradores, transacciones abortadas, falta de espacio y aislamiento entre propuestas, y verifica la sintaxis de los scripts.
-
-Revisión visual del 13/11/2026: contrastado con instagram.com/instagram en Chrome, escritorio y web móvil. Los casilleros libres aparecen solo al arrastrar. En modo visitante se oculta el círculo de nuevo destacado; se conserva su creación en las herramientas del perfil. La reproducción de historias aparece al interactuar con un destacado y también admite clic derecho/pulsación larga en la portada. Las opciones de las historias se concentran en sus tres puntos.
-
-El avatar y las portadas se encuadran arrastrando dentro del círculo. El movimiento queda limitado a la imagen para no mostrar bordes vacíos. Un toque sin arrastrar reemplaza la foto. Pellizcar con dos dedos o usar +/− con el círculo enfocado acerca la imagen; la rueda mantiene el desplazamiento normal del perfil. Los recortes anteriores se conservan y se guardan también los nuevos encuadres.
-
-Las cifras siguen la muestra real guardada en `references/counts/instagram-es-2026-11-13.json`: seguidores de cuatro dígitos sin separadores (5194, 9653), miles con coma decimal (10,1 mil, 18,5 mil), cientos de miles sin decimal (496 mil, 983 mil), millones con un decimal cuando corresponde (6,7 M, 38,2 M), cientos de millones enteros (268 M, 686 M). Las publicaciones se mantienen exactas y añaden puntos a partir de cinco dígitos (32.167, 176.097); los seguidos se mantienen exactos (1294, 1467).
-
-La muestra se tomó directamente de 12 perfiles de Instagram web en español; dos se contrastaron también en web móvil. El corte exacto de 10.000 se infiere de las muestras 9653 y 10.101, sin una cuenta observada exactamente en 9999/10000. No se observaron cuentas con mil millones de seguidores: en ese rango se conservan las cifras completas, sin generar B ni mil M. El valor completo siempre se conserva y aparece al editar; en pantallas estrechas las cifras fuera de rango se pueden desplazar dentro del campo enfocado.
-
-Revisión Android del 14/11/2026: se inspeccionaron videos públicos publicados en 2026. Se aceptó una grabación de un teléfono Android físico con Instagram en español y tres contadores en cero; el editor ya coincide en ese caso. No acredita el formato de miles/millones ni el salto exacto 9999/10000 en la app. Todas las vistas siguen compartiendo el formato derivado de la web; no se certifica equivalencia numérica con Android. Fuentes, fotograma, descartes y pendientes: [revisión de Android](references/counts/REVISION-ANDROID.md). Las pruebas distinguen observaciones externas de decisiones provisionales del código.
+Independent project, not affiliated with or endorsed by Instagram or Meta. Third-party brands and reference captures belong to their respective owners; MIT does not grant rights to those materials. Original example graphics and screenshots of this project's synthetic example are provided for reuse.

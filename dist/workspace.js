@@ -4,7 +4,7 @@ function isBrowsing(){return true;}
 function initWorkspace(){
  document.body.dataset.canvas='profile';document.body.dataset.panel='feed';document.body.classList.add('canvas-expanded','direct-workspace');
  const sidebar=document.querySelector('.sidebar'),stage=document.querySelector('.stage');sidebar.id='studioPanel';sidebar.setAttribute('aria-label','Herramientas de la propuesta');
- const top=dom('div','studio-sidebar-top'),brand=dom('div','studio-brand');brand.innerHTML='<b>RIO360<span>.</span></b><small>instagram studio</small>';top.append(brand,$('profileSelect'));sidebar.prepend(top);
+ const top=dom('div','studio-sidebar-top'),brand=dom('div','studio-brand');brand.innerHTML='<b>Instagram<span>360</span></b><small>by Peressa · beta</small>';top.append(brand,$('profileSelect'));sidebar.prepend(top);
  const close=action('×',closeWorkspace);close.className='close-panel';close.setAttribute('aria-label','Cerrar herramientas');top.prepend(close);
  const upload=action('+ Subir fotos',()=>fileInput.click());upload.id='uploadPhotos';top.append(upload);
  const title=dom('div','library-heading');title.innerHTML='<strong>Tus fotos<span class="photo-count"></span></strong><span>Tocá para agregar o arrastrá al perfil.</span>';top.after(title);

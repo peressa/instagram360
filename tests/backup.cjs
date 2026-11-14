@@ -9,7 +9,9 @@ vm.runInContext("const TEXT_FIELDS=['handle','name','bio','link','posts','follow
 const legacy={format:'rio360-instagram',version:1,name:'Legacy',profile:{handle:'demo',name:'Demo',bio:'',link:'',posts:'123',followers:'12,5 mil',following:'50',avatar:null,highlights:[{id:'one',label:'Uno',cover:null}]},layout:{rows:3,RW:3,RH:4,tiles:Array(9).fill(null)},assets:[]};
 const valid=d=>{context.input=d;return vm.runInContext('validBackup(input)',context)};
 assert.equal(valid(legacy),true,'Existing saved profiles remain importable');
-const enhanced=structuredClone(legacy);
+const current=structuredClone(legacy);current.format='instagram360';assert.equal(valid(current),true,'New Instagram 360 backups remain importable');
+const unknown=structuredClone(legacy);unknown.format='unknown';assert.equal(valid(unknown),false,'Unknown backup formats are rejected');
+const enhanced=structuredClone(current);
 Object.assign(enhanced.profile,{verified:true,autoPosts:false,category:'Agencia',private:false,extraLinks:['https://example.com'],contacts:['Contacto']});
 enhanced.profile.highlights[0].stories=[{id:'story',src:'data:image/png;base64,iVBORw0KGgo='}];
 enhanced.view={device:'desktop',theme:'dark',audience:'visitor',width:'1440'};
@@ -25,4 +27,4 @@ interactive.layout.tiles[0]={imgId:'photo',z:1,panX:0,panY:0,simLiked:true,simSa
 assert.equal(valid(interactive),true,'Local interactions remain transferable in backups');
 const badComments=structuredClone(interactive);badComments.layout.tiles[0].commentEntries='invalid';assert.equal(valid(badComments),false);
 const badMessages=structuredClone(interactive);badMessages.profile.simMessages=[{text:42}];assert.equal(valid(badMessages),false);
-console.log('9 backup compatibility and validation checks passed, including local interactions.');
+console.log('11 backup compatibility and validation checks passed, including local interactions.');

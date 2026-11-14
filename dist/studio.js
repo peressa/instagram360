@@ -1,5 +1,5 @@
 const DEFAULT_AVATAR='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="#dbdbdb"/><circle cx="50" cy="35" r="18" fill="#fff"/><path d="M16 92v-8a34 27 0 0 1 68 0v8" fill="#fff"/></svg>');
-/* RIO360 profile editor. Account data stays in this browser. */
+/* Instagram 360 profile editor. Account data stays in this browser. */
 let currentProfileTab='posts',highlightDragId=null,storyPosition=0,storyHighlightId=null,editingPostIndex=null;
 const svgLine=paths=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="24" height="24">'+paths+'</svg>';
 function igIcon(name){

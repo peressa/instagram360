@@ -1,9 +1,9 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "rio360-instagram-studio",
+  "name": "instagram360",
   "compatibility_date": "2026-11-13",
   "assets": { "directory": "./dist" },
   "routes": [
-    { "pattern": "instagram.rio360.com.ar", "custom_domain": true }
+    { "pattern": "ig360.peressa.dev", "custom_domain": true }
   ]
 }

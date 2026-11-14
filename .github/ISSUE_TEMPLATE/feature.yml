@@ -1,0 +1,17 @@
+name: Feature proposal / Mejora
+description: Propose an improvement that keeps the editor simple.
+title: "[Feature] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What task is difficult today? / ¿Qué tarea resulta difícil?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior / Comportamiento propuesto
+      description: Explain the user benefit and how the interface stays simple.
+    validations:
+      required: true

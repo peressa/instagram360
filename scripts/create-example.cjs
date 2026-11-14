@@ -1,0 +1,24 @@
+// Original code-native vector artwork; no external photos or personal data.
+const fs=require('node:fs'),path=require('node:path');
+const dir=path.resolve(__dirname,'../examples');fs.mkdirSync(path.join(dir,'art'),{recursive:true});
+const svg=(bg,content,w=900,h=1200)=>`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><rect width="${w}" height="${h}" fill="${bg}"/>${content}</svg>`;
+const label=(s,c='#243d32')=>`<text x="62" y="1120" fill="${c}" font-family="Arial,sans-serif" font-size="20" letter-spacing="5">${s}</text>`;
+const arts=[
+ svg('#e7e0d3',`<path d="M190 870V450a260 260 0 0 1 520 0v420z" fill="#365346"/><path d="M285 870V465a165 165 0 0 1 330 0v405z" fill="#b4b69a"/><circle cx="450" cy="615" r="112" fill="#e9a66b"/>${label('FORM / 01')}`),
+ svg('#304c3e',`<text x="70" y="380" fill="#eee9dc" font-family="Georgia,serif" font-size="170">Make</text><text x="70" y="555" fill="#eee9dc" font-family="Georgia,serif" font-style="italic" font-size="170">room</text><text x="70" y="730" fill="#eee9dc" font-family="Georgia,serif" font-size="170">for ideas.</text><path d="M76 870h730" stroke="#b9c1a2" stroke-width="2"/>${label('STUDIO 360 / NOTES','#eee9dc')}`),
+ svg('#d9a078',`<circle cx="455" cy="500" r="230" fill="#efe6d6"/><ellipse cx="450" cy="925" rx="290" ry="45" fill="#ac7757" opacity=".4"/><path d="M260 910V650a190 190 0 0 1 380 0v260z" fill="#b6b79a"/><path d="M450 460v450" stroke="#d8d8bf" stroke-width="4"/>${label('OBJECT / 03','#382e24')}`),
+ svg('#f0ebdf',`<path d="M120 910V350a330 330 0 0 1 660 0v560" fill="#c7c7af"/><path d="M240 910V380a210 210 0 0 1 420 0v530" fill="#3d5144"/><path d="M360 910V430a90 90 0 0 1 180 0v480" fill="#e0ac7f"/>${label('PERSPECTIVES / 04')}`),
+ svg('#d5d8c6',`<circle cx="450" cy="460" r="255" fill="#304c3e"/><circle cx="450" cy="460" r="165" fill="#d5d8c6"/><circle cx="450" cy="460" r="75" fill="#304c3e"/><text x="450" y="925" text-anchor="middle" fill="#304c3e" font-family="Georgia,serif" font-size="130">360°</text>${label('A DIFFERENT ANGLE / 05')}`),
+ svg('#2c4035',`<path d="M80 880 450 220 820 880z" fill="#d0ac82"/><path d="M230 880 450 490 670 880z" fill="#ede7d9"/><circle cx="680" cy="270" r="75" fill="#b3bd9d"/>${label('BALANCE / 06','#eee9dc')}`),
+ svg('#e7dac7',`<rect x="130" y="220" width="640" height="720" rx="320" fill="#bd7f5d"/><path d="M450 220v720M130 580h640" stroke="#e7dac7" stroke-width="6"/><circle cx="450" cy="580" r="180" fill="#e7dac7"/>${label('IN GOOD SHAPE / 07')}`),
+ svg('#aeb99d',`<text x="70" y="370" fill="#243d32" font-family="Georgia,serif" font-size="135">Less noise.</text><text x="70" y="550" fill="#243d32" font-family="Georgia,serif" font-style="italic" font-size="135">More</text><text x="70" y="730" fill="#243d32" font-family="Georgia,serif" font-size="135">meaning.</text>${label('STUDIO 360 / MANIFESTO')}`),
+ svg('#eee6d7',`<circle cx="380" cy="440" r="235" fill="#bd835e"/><path d="M265 900V560a235 235 0 0 1 470 0v340z" fill="#435c49"/><path d="M390 900V590a110 110 0 0 1 220 0v310z" fill="#a9b497"/>${label('WHAT COMES NEXT / 09')}`)
+];
+const uri=s=>'data:image/svg+xml;base64,'+Buffer.from(s).toString('base64');
+const assets=arts.map((s,i)=>{const name=`form-${String(i+1).padStart(2,'0')}.svg`;fs.writeFileSync(path.join(dir,'art',name),s);return {id:'example-'+(i+1),name,w:900,h:1200,src:uri(s)}});
+const avatar=svg('#304c3e','<circle cx="300" cy="300" r="230" fill="none" stroke="#e9e3d7" stroke-width="3"/><text x="300" y="340" text-anchor="middle" fill="#e9e3d7" font-family="Georgia,serif" font-size="150">360</text>',600,600);
+fs.writeFileSync(path.join(dir,'art/avatar.svg'),avatar);
+const image=src=>({src,w:900,h:1200,z:1,panX:0,panY:0,cropVersion:2});
+const example={format:'instagram360',version:1,name:'Estudio 360 · ejemplo',profile:{handle:'estudio.360',name:'Estudio 360',bio:'Identidad, forma y nuevas perspectivas.\nUn espacio para imaginar lo que viene.',link:'peressa.dev',posts:'9',followers:'12500',following:'154',avatar:{...image(uri(avatar)),w:600,h:600},verified:false,autoPosts:true,category:'Estudio de diseño',private:false,storyRing:'seen',showVideo:false,showReposts:false,showTagged:true,hlOpen:true,highlights:['Estudio','Proceso','Ideas'].map((label,i)=>({id:'highlight-'+i,label,cover:image(assets[i*3].src),stories:[0,1].map(n=>({id:'story-'+i+'-'+n,src:assets[i*3+n].src}))}))},layout:{rows:3,RW:3,RH:4,tiles:assets.map((a,i)=>({imgId:a.id,z:1,panX:0,panY:0,kind:i===2?'carousel':i===5?'reel':'photo',caption:'Una nueva perspectiva. / '+String(i+1).padStart(2,'0'),likes:String(120+i*23),date:'14 de noviembre de 2026',location:'Estudio 360'}))},assets,view:{device:'desktop',theme:'light',audience:'visitor',width:'auto',mobileLayoutVersion:1}};
+fs.writeFileSync(path.join(dir,'studio360.json'),JSON.stringify(example,null,2)+'\n');
+console.log('Created original example artwork and importable project.');

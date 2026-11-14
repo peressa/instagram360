@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security / Seguridad
+    url: https://github.com/peressa/instagram360/security/advisories/new
+    about: Report vulnerabilities privately. No publiques vulnerabilidades con datos sensibles.
