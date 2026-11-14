@@ -66,7 +66,7 @@ function initSharingUI(){
 }
 class SharedProjectClient {
  constructor(slug,state){
-  this.slug=slug;this.known=new Set();this.generation=0;this.applying=false;this.queued=false;this.working=Promise.resolve();this.online=1;this.ready=false;this.error='';this.retry=1000;
+  this.assetRecords=new Map(lib.map(a=>[a.id,{...a}]));this.slug=slug;this.known=new Set();this.generation=0;this.applying=false;this.queued=false;this.working=Promise.resolve();this.online=1;this.ready=false;this.error='';this.retry=1000;
   this.sync=new LiveProjectSync({state,clientId:crypto.randomUUID(),persist:state=>persistence.put('state',{key:'share',data:state}),onChange:()=>this.schedule(),onState:()=>{this.status();if(sharingReady)updateHistUI()},send:message=>this.send(message)});
  }
  async capture(){identifySharedPosts();let generation=this.generation;const values=await sharedValues(backupData());if(generation!==this.generation)return this.capture();this.sync.capture(values);return generation}
@@ -80,16 +80,16 @@ class SharedProjectClient {
   this.apply(data,true);this.sync.setBaseline(values);await this.persistModel();
  }
  apply(data,renderUI){
-  this.applying=true;const editing=document.activeElement?.matches('[data-f]')?document.activeElement:null,selection=window.getSelection();let caret=null;if(editing&&selection?.rangeCount&&editing.contains(selection.anchorNode)){const range=selection.getRangeAt(0).cloneRange();range.selectNodeContents(editing);range.setEnd(selection.anchorNode,selection.anchorOffset);caret=range.toString().length}const oldText=editing?.textContent;const messages=profile.simMessages,previousPost=simCurrentPost!==null?tiles[simCurrentPost]?._sharedId:null,slide=simCurrentSlide,previousStory=simStory?{id:simStory.id,position:simStory.position,story:storyItems(profile.highlights.find(h=>h.id===simStory.id))[simStory.position]?.id,paused:simStory.paused,elapsed:Number(simStory.animation?.currentTime)||0}:null;
+  this.applying=true;try{const previousSources=new Map(lib.map(a=>[a.id,a.src]));const editing=document.activeElement?.matches('[data-f]')?document.activeElement:null,selection=window.getSelection();let caret=null;if(editing&&selection?.rangeCount&&editing.contains(selection.anchorNode)){const range=selection.getRangeAt(0).cloneRange();range.selectNodeContents(editing);range.setEnd(selection.anchorNode,selection.anchorOffset);caret=range.toString().length}const oldText=editing?.textContent;const messages=profile.simMessages,previousPost=simCurrentPost!==null?tiles[simCurrentPost]?._sharedId:null,slide=simCurrentSlide,previousStory=simStory?{id:simStory.id,position:simStory.position,story:storyItems(profile.highlights.find(h=>h.id===simStory.id))[simStory.position]?.id,paused:simStory.paused,elapsed:Number(simStory.animation?.currentTime)||0}:null;
   const priorPost=previousPost?tiles.find(t=>t?._sharedId===previousPost):null,oldStory=previousStory?JSON.stringify(profile.highlights.find(h=>h.id===previousStory.id)):null;
-  profile=data.profile;profile.simMessages=messages||[];tiles=data.layout.tiles;rows=data.layout.rows;total=rows*3;RW=data.layout.RW;RH=data.layout.RH;lib=data.assets;lib.forEach(a=>cacheDisplayBlob(a.id,a.src));
+  profile=data.profile;profile.simMessages=messages||[];tiles=data.layout.tiles;rows=data.layout.rows;total=rows*3;RW=data.layout.RW;RH=data.layout.RH;lib=data.assets;const keep=new Set(lib.map(a=>a.id));for(const id of previousSources.keys())if(!keep.has(id))revokeBlobURL(id);lib.forEach(a=>{if(previousSources.get(a.id)!==a.src||!blobCache[a.id])cacheDisplayBlob(a.id,a.src)});
   const entry=profileCatalog.find(p=>p.id===activeProfile);entry.name=data.name;storeCatalog();
   if(renderUI){restore(data.layout);renderTray();applyProfile();if(editing?.isConnected){const f=editing.dataset.f,text=PROFILE_COUNT_FIELDS.has(f)?profileFieldForEditing(f,f==='posts'&&profile.autoPosts?filled().length:profile[f]):profile[f];if(text!==oldText){editing.textContent=text;if(caret!==null){let prefix=0;while(prefix<oldText.length&&prefix<text.length&&oldText[prefix]===text[prefix])prefix++;const offset=Math.min(text.length,Math.max(0,caret>prefix?caret+text.length-oldText.length:caret));const range=document.createRange();if(editing.firstChild){range.setStart(editing.firstChild,offset);range.collapse(true);selection.removeAllRanges();selection.addRange(range)}}}}syncEditor();renderProfiles();updateHistUI();
    if(previousPost){const index=tiles.findIndex(t=>t?._sharedId===previousPost);if(index<0)closeSimScreen(false);else if(index!==simCurrentPost||!SharedProjectModel.equal(priorPost,tiles[index]))showSimPost(index,false,slide)}
    else if(previousStory){const h=profile.highlights.find(h=>h.id===previousStory.id);if(!h)closeSimScreen(false);else if(oldStory!==JSON.stringify(h)){const position=previousStory.story?h.stories.findIndex(s=>s.id===previousStory.story):previousStory.position;showSimStory(h.id,Math.max(0,position),previousStory.paused,previousStory.elapsed)}}
-  }this.applying=false;
+  }}finally{this.applying=false}
  }
- async persistModel(){for(const a of lib)await persistence.put('assets',a);const current=new Set(lib.map(a=>a.id));for(const a of await readAll('assets'))if(!current.has(a.id))await del('assets',a.id);await persistence.put('state',{key:'profile',data:profile});await persistence.put('state',{key:'layout',...snap()})}
+ async persistModel(){for(const a of lib){const old=this.assetRecords.get(a.id);if(!old||['src','name','w','h'].some(k=>old[k]!==a[k])){if(await persistence.put('assets',a))this.assetRecords.set(a.id,{...a})}}const current=new Set(lib.map(a=>a.id));for(const id of this.assetRecords.keys())if(!current.has(id)){await del('assets',id);this.assetRecords.delete(id)}await persistence.put('state',{key:'profile',data:profile});await persistence.put('state',{key:'layout',...snap()})}
  async load(){
   const cached=!!Object.keys(this.sync.remote).length;
   if(cached)await this.capture();

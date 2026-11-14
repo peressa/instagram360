@@ -34,13 +34,13 @@ const append=new Sync({clientId:'append',send:()=>true});append.snapshot({values
 
 (async()=>{
  const {ProjectRoom,default:router}=await import('../server/worker.mjs');
- const database=new DatabaseSync(':memory:');const sql={exec(query,...args){const stmt=database.prepare(query);const rows=stmt.columns().length?stmt.all(...args):((stmt.run(...args)),[]);return {toArray:()=>rows,one:()=>{assert.equal(rows.length,1);return rows[0]},[Symbol.iterator]:()=>rows[Symbol.iterator]()}}};
+ const database=new DatabaseSync(':memory:');const sql={exec(query,...args){const stmt=database.prepare(query);const rows=stmt.columns().length?stmt.all(...args.map(v=>v instanceof ArrayBuffer?new Uint8Array(v):v)):((stmt.run(...args.map(v=>v instanceof ArrayBuffer?new Uint8Array(v):v))),[]);return {toArray:()=>rows,one:()=>{assert.equal(rows.length,1);return rows[0]},[Symbol.iterator]:()=>rows[Symbol.iterator]()}}};
  const ctx={storage:{sql,transactionSync:fn=>{database.exec('BEGIN');try{const v=fn();database.exec('COMMIT');return v}catch(e){database.exec('ROLLBACK');throw e}}},getWebSockets:()=>[]};const room=new ProjectRoom(ctx);
  const req=(path='',options={})=>new Request('https://test.invalid/api/projects/test'+path,options);
  const createKey='fixture-creation-token-12345678901234567890',create=()=>req('',{method:'POST',headers:{'X-IG360-Create-Key':createKey},body:JSON.stringify({values})});
  assert.equal((await room.fetch(req())).status,404);assert.equal((await room.fetch(create())).status,201);assert.equal((await room.fetch(create())).status,200);
  assert.equal((await room.fetch(req('',{method:'POST',headers:{'X-IG360-Create-Key':'different-token-12345678901234567890'},body:JSON.stringify({values})}))).status,409);
- for(const [h,{mime,bytes}]of blobs){assert.equal((await room.fetch(req('/media/'+h,{method:'PUT',headers:{'Content-Type':mime},body:bytes}))).status,200);const response=await room.fetch(req('/media/'+h));assert.match(response.headers.get('Content-Security-Policy'),/sandbox/);assert.deepEqual(Buffer.from(await response.arrayBuffer()),bytes)}
+ for(const [h,{mime,bytes}]of blobs){const uploaded=await room.fetch(req('/media/'+h,{method:'PUT',headers:{'Content-Type':mime},body:bytes}));assert.equal(uploaded.status,200,await uploaded.text());const response=await room.fetch(req('/media/'+h));assert.match(response.headers.get('Content-Security-Policy'),/sandbox/);assert.deepEqual(Buffer.from(await response.arrayBuffer()),bytes)}
  const ops=change(values,'profile/name','Public editing');const patch={id:'fixture:1',ops};const patchRequest=body=>req('/patch',{method:'POST',body:JSON.stringify(body)});
  let response=await (await room.fetch(patchRequest(patch))).json();assert.equal(response.type,'ack');const rev=response.revision;
  response=await (await room.fetch(patchRequest(patch))).json();assert.equal(response.revision,rev,'Retries are idempotent');
