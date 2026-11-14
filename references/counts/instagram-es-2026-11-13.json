@@ -1,0 +1,104 @@
+{
+  "observedAt": "2026-11-14T00:52:34.602Z",
+  "locale": "Instagram web · Español",
+  "scope": "Desktop; mobile web spot-check at 390px. Native apps not inspected.",
+  "samples": [
+    {
+      "url": "https://www.instagram.com/natea23mv/",
+      "handle": "natea23mv",
+      "followers": 10101,
+      "display": "10,1 mil"
+    },
+    {
+      "url": "https://www.instagram.com/adventurelust.travel/",
+      "handle": "adventurelust.travel",
+      "followers": 2868,
+      "display": "2868"
+    },
+    {
+      "url": "https://www.instagram.com/kelliepaxian/",
+      "handle": "kelliepaxian",
+      "followers": 18525,
+      "display": "18,5 mil"
+    },
+    {
+      "url": "https://www.instagram.com/figma/",
+      "handle": "figma",
+      "followers": 983725,
+      "display": "983 mil"
+    },
+    {
+      "url": "https://www.instagram.com/notionhq/",
+      "handle": "notionhq",
+      "followers": 496862,
+      "display": "496 mil"
+    },
+    {
+      "url": "https://www.instagram.com/openai/",
+      "handle": "openai",
+      "followers": 6754703,
+      "display": "6,7 M"
+    },
+    {
+      "url": "https://www.instagram.com/instagram/",
+      "handle": "instagram",
+      "followers": 686360059,
+      "display": "686 M"
+    },
+    {
+      "url": "https://www.instagram.com/irina_yaremchuk/",
+      "handle": "irina_yaremchuk",
+      "followers": 9653,
+      "display": "9653"
+    },
+    {
+      "url": "https://www.instagram.com/npaulos31/",
+      "handle": "npaulos31",
+      "followers": 5194,
+      "display": "5194"
+    },
+    {
+      "url": "https://www.instagram.com/apple/",
+      "handle": "apple",
+      "followers": 38225958,
+      "display": "38,2 M"
+    },
+    {
+      "url": "https://www.instagram.com/natgeo/",
+      "handle": "natgeo",
+      "followers": 268138860,
+      "display": "268 M",
+      "postsDisplay": "32.167",
+      "followingDisplay": "195"
+    },
+    {
+      "url": "https://www.instagram.com/theshaderoom/",
+      "handle": "theshaderoom",
+      "followers": 28014389,
+      "display": "28 M",
+      "postsDisplay": "176.097",
+      "followingDisplay": "1467"
+    }
+  ],
+  "mobile": [
+    {
+      "handle": "theshaderoom",
+      "display": "28 M seguidores",
+      "titles": [
+        "28.014.389"
+      ]
+    },
+    {
+      "handle": "natea23mv",
+      "display": "10,1 mil\nseguidores",
+      "titles": [
+        "10.101"
+      ]
+    }
+  ],
+  "limits": [
+    "Exact transition at 9999/10000 was not directly observed: nearest samples 9653 and 10101.",
+    "No real profile with >=1000000000 followers was observed.",
+    "layal.interiors was unavailable and excluded."
+  ]
+}

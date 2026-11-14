@@ -11,15 +11,17 @@ function parseProfileCount(value){
  else if(separators){const last=Math.max(text.lastIndexOf(','),text.lastIndexOf('.'));text=text.slice(0,last).replace(/[.,]/g,'')+'.'+text.slice(last+1)}
  const count=Math.round(Number(text)*factor);return Number.isSafeInteger(count)&&count>=0?count:null;
 }
+/* Verified Instagram web Spanish samples are in references/counts/.
+   9653 is exact and 10101 is compact; the 10000 boundary is inferred, not a published Meta contract.
+   Counts beyond the observed follower range keep exact digits instead of invented units. */
 function formatProfileCount(value){
  const n=parseProfileCount(value);if(n===null)return String(value??'');
- const nf=new Intl.NumberFormat('es-AR',{maximumFractionDigits:1});
- if(n<10000)return nf.format(n);
- if(n>=1000000000000)return nf.format(n<100000000000000?Math.floor(n/100000000000)/10:Math.floor(n/1000000000000))+'\u00a0B';
- if(n>=1000000000)return nf.format(n<100000000000?Math.floor(n/100000000)/10:Math.floor(n/1000000000))+'\u00a0mil M';
+ if(n<10000||n>=1000000000)return String(n);
+ const nf=new Intl.NumberFormat('es-AR',{maximumFractionDigits:1,useGrouping:false});
  if(n<1000000)return nf.format(n<100000?Math.floor(n/100)/10:Math.floor(n/1000))+'\u00a0mil';
  return nf.format(n<100000000?Math.floor(n/100000)/10:Math.floor(n/1000000))+'\u00a0M';
 }
+function formatExactProfileCount(value,field){const n=parseProfileCount(value);if(n===null)return String(value??'');return field==='posts'&&n>=10000?new Intl.NumberFormat('es-AR',{maximumFractionDigits:0}).format(n):String(n);}
 function canonicalProfileCount(field,value){if(!PROFILE_COUNT_FIELDS.has(field))return value;const n=parseProfileCount(value);return n===null?value:String(n);}
-function profileFieldDisplay(field){const value=field==='posts'&&profile.autoPosts?filled().length:profile[field]??'';return PROFILE_COUNT_FIELDS.has(field)?formatProfileCount(value):value;}
+function profileFieldDisplay(field){const value=field==='posts'&&profile.autoPosts?filled().length:profile[field]??'';return field==='followers'?formatProfileCount(value):PROFILE_COUNT_FIELDS.has(field)?formatExactProfileCount(value,field):value;}
 function profileFieldForEditing(field,value){return PROFILE_COUNT_FIELDS.has(field)?canonicalProfileCount(field,value):value;}

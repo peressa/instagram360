@@ -85,3 +85,5 @@ body.exporting .phone .cell:not(.has){display:none!important}
 
 .phone .stat [data-inline-edit]:focus{max-width:90px;white-space:nowrap;overflow-x:auto;scrollbar-width:none;text-overflow:clip}
 @media(max-width:360px){.phone.mobile-layout .prof{grid-template-columns:64px minmax(0,1fr);column-gap:10px}.phone.mobile-layout .avatar-slot,.phone.mobile-layout .avatar{width:64px;height:64px}.phone.mobile-layout .stats{gap:4px}.phone.mobile-layout .stat span{font-size:11px}.phone .stat [data-inline-edit]:focus{max-width:70px}}
+
+.phone.mobile-layout .stat{flex:1 1 0;min-width:0}.phone .stat [data-inline-edit]{display:block;max-width:100%;overflow-x:hidden;text-overflow:ellipsis;white-space:nowrap}.phone .stat [data-inline-edit]:focus{overflow-x:auto;text-overflow:clip}
