@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0-beta.1 · 2026-11-14
+
+- Create public editable `/p/<slug>/` links for any project while retaining the original local copy.
+- Persist metadata and content-addressed image chunks in SQLite Durable Objects; synchronize field patches with hibernating WebSockets and connection presence.
+- Preserve offline outboxes and private browser drafts; merge independent changes, detect competing edits and offer explicit conflict resolution with a backup option.
+- Preserve post identity, preview preferences and active post/story position across remote updates. Add collaboration regressions and desktop/mobile checks.
+- Document public-link access, hosting requirements, storage limits and beta limitations.
+- Preserve the existing Hilton route, original cloud document, media and Durable Object migration; reserve its slug against accidental replacement.
+
 ## 0.1.0-beta.7 · 2026-11-14
 
 - Preserve exact profile counts across switching, duplication and backups; save comment drafts across interactions, viewer reopening and reload, clearing only after submission. Previously rounded digits cannot be reconstructed automatically.

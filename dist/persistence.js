@@ -42,7 +42,7 @@ function createLocalPersistence({getDatabase, getNamespace, storage, onStatus}) 
   }
   function drafts() {
     const found = [];
-    for (const key of ['layout', 'profile', 'view']) {
+    for (const key of ['layout', 'profile', 'view', 'share']) {
       try {
         const record = JSON.parse(storage.getItem(prefix() + key) || 'null');
         if (record?.key === key && (key !== 'layout' || Array.isArray(record.tiles))) found.push(record);

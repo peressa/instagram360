@@ -17,9 +17,10 @@ An open source visual studio for designing and presenting Instagram profiles. Ed
 - Preview mobile, desktop and tablet variants, light/dark and owner/visitor views.
 - Drag library photos onto highlights; arrange and remove stories directly inside their viewer, with progress, pause/resume and navigation across highlights.
 - Keep proposals locally, with JSON backup/import and recovery drafts.
+- Create public editable links for any project and collaborate live without accounts.
 - Export a profile PNG or a ZIP of prepared grid images.
 
-No account connection, backend or runtime API keys. Projects stay in your browser. The interface is Spanish.
+No Instagram account connection or runtime API keys. Local projects stay in your browser until you explicitly share them. Public editable links use a Cloudflare Worker with Durable Objects and live WebSocket updates. The interface is Spanish.
 
 <img src="docs/screenshots/mobile.jpg" alt="Instagram 360 at a 390 px mobile browser viewport" width="320">
 
@@ -50,9 +51,13 @@ Download [the example backup](examples/studio360.json) and import it from the pr
 
 ## Beta status
 
-**v0.1.0-beta.7** fixes exact-count persistence, saved comment drafts, interaction counts, highlight pause cleanup, export selection/numbering, pinned posts, singular labels and invalid-image feedback. Video playback, cloud sync and real Instagram publishing are not included. Device variants are presentation mockups, not certified replicas of every native app version. Android abbreviations and the exact 9999/10000 transition remain unverified; formatting comes from web observations. See [evidence and limits](references/counts/REVISION-ANDROID.md).
+**v0.2.0-beta.1** adds editable project links such as `https://ig360.peressa.dev/p/my-project/`. Choose **Compartir**, pick an available address and create the link. Anyone with it can view and edit without an account. Profile, library, grid, carousels, highlights and submitted comments synchronize; comment drafts, simulated messages and preview preferences stay local. See [collaboration and deployment](docs/COLLABORATION.md).
 
-Saved projects belong to one browser and origin. Export/import backups when changing domains or computers. Earlier backups remain importable.
+Different fields merge automatically. Competing edits to the same field require an explicit choice; this is field-level collaboration, not character-level collaborative text. Pending edits survive disconnections in that browser. Keep JSON backups. Shared projects currently have no owner accounts, access revocation or public deletion UI.
+
+Video playback and real Instagram publishing are not included. Device variants are presentation mockups, not certified replicas of every native app version. Android abbreviations and the exact 9999/10000 transition remain unverified; see [evidence and limits](references/counts/REVISION-ANDROID.md).
+
+Local projects remain browser- and origin-specific. Static hosting and the downloadable static ZIP support the local editor; shared links require the Cloudflare backend. Earlier backups remain importable.
 
 ## Help shape the project
 

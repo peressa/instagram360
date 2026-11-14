@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Instagram 360 · by Peressa</title><meta name="description" content="Diseñá y presentá perfiles de Instagram. Editor visual open source de Juan Peressa, sin conectar tu cuenta."><meta name="author" content="Juan Peressa"><meta name="application-name" content="Instagram 360"><meta name="theme-color" content="#f5f2ed"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="canonical" href="https://ig360.peressa.dev/"><meta property="og:title" content="Instagram 360 · by Peressa"><meta property="og:description" content="An open source visual studio for Instagram profiles. Design, preview and export, right in your browser."><meta property="og:type" content="website"><meta property="og:url" content="https://ig360.peressa.dev/"><style>
+<head><base href="/"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Instagram 360 · by Peressa</title><meta name="description" content="Diseñá y presentá perfiles de Instagram. Editor visual open source de Juan Peressa, sin conectar tu cuenta."><meta name="author" content="Juan Peressa"><meta name="application-name" content="Instagram 360"><meta name="theme-color" content="#f5f2ed"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="canonical" href="https://ig360.peressa.dev/"><meta property="og:title" content="Instagram 360 · by Peressa"><meta property="og:description" content="An open source visual studio for Instagram profiles. Design, preview and export, right in your browser."><meta property="og:type" content="website"><meta property="og:url" content="https://ig360.peressa.dev/"><style>
   :root {
     --bg: #0b0b0c;
     --surface: #161617;
@@ -388,7 +388,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css?v=20261114.beta7"><link rel="stylesheet" href="workspace.css?v=20261114.beta7"><link rel="stylesheet" href="simulator.css?v=20261114.beta7">
+</style><link rel="stylesheet" href="studio.css?v=20261114.live1"><link rel="stylesheet" href="workspace.css?v=20261114.live1"><link rel="stylesheet" href="simulator.css?v=20261114.live1"><link rel="stylesheet" href="sharing.css?v=20261114.live1">
 </head>
 <body>
 <div class="app">
@@ -534,13 +534,14 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 <dialog id="nameDialog" style="margin:auto;padding:28px;border:1px solid #43503e;border-radius:12px;background:#181c18;color:#fff;max-width:420px;width:90%"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required style="display:block;width:100%;padding:12px;margin:18px 0;background:#242a23;border:1px solid #43503e;color:#fff;border-radius:7px"><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261114.beta7"></script><script src="profile-counts.js?v=20261114.beta7"></script><script src="reliability.js?v=20261114.beta7"></script><script src="post-media.js?v=20261114.beta7"></script><script src="direct-media.js?v=20261114.beta7"></script><script src="highlight-media.js?v=20261114.beta7"></script><script src="story-player.js?v=20261114.beta7"></script><script src="studio.js?v=20261114.beta7"></script><script src="persistence.js"></script><script src="workspace.js?v=20261114.beta7"></script><script src="simulator.js?v=20261114.beta7"></script><script>
+<script src="shared-model.js?v=20261114.live1"></script><script src="live-sync.js?v=20261114.live1"></script><script src="sharing.js?v=20261114.live1"></script><script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261114.live1"></script><script src="profile-counts.js?v=20261114.live1"></script><script src="reliability.js?v=20261114.live1"></script><script src="post-media.js?v=20261114.live1"></script><script src="direct-media.js?v=20261114.live1"></script><script src="highlight-media.js?v=20261114.live1"></script><script src="story-player.js?v=20261114.live1"></script><script src="studio.js?v=20261114.live1"></script><script src="persistence.js"></script><script src="workspace.js?v=20261114.live1"></script><script src="simulator.js?v=20261114.live1"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
 try { profileCatalog = JSON.parse(localStorage.getItem('rio360_profiles') || 'null'); if (!Array.isArray(profileCatalog) || !profileCatalog.length) profileCatalog = [{id:'default',name:'Mi perfil'}]; activeProfile = localStorage.getItem('rio360_active'); if (!profileCatalog.some(p=>p.id===activeProfile)) activeProfile=profileCatalog[0].id; } catch(e) { profileCatalog=[{id:'default',name:'Mi perfil'}]; activeProfile='default'; }
+initializeSharedCatalog();
 function storeCatalog(){localStorage.setItem('rio360_profiles',JSON.stringify(profileCatalog));localStorage.setItem('rio360_active',activeProfile);}
-function renderProfiles(){const select=$('profileSelect'); select.replaceChildren();profileCatalog.forEach(p=>{const o=new Option(p.name,p.id);select.add(o)});select.value=activeProfile;}
+function renderProfiles(){const select=$('profileSelect'); select.replaceChildren();profileCatalog.forEach(p=>{const o=new Option(p.name+(p.sharedSlug?' · compartido':''),p.id);select.add(o)});select.value=activeProfile;}
 
 
 /* ---------- state ---------- */
@@ -567,8 +568,8 @@ function openDB() {
   });
 }
 const persistence = createLocalPersistence({getDatabase:()=>db,getNamespace:()=>activeProfile,storage:{getItem:key=>localStorage.getItem(key),setItem:(key,value)=>localStorage.setItem(key,value),removeItem:key=>localStorage.removeItem(key)},onStatus:showSaveStatus});
-const put = (s, v) => persistence.put(s, v);
-const del = (s, k) => new Promise(res => { if (!db) return res(); try { const t = db.transaction(s, 'readwrite'); t.objectStore(s).delete(k); t.oncomplete = res; t.onerror = t.onabort = () => { persistence.markError(); res(); }; } catch (e) { persistence.markError(); res(); } });
+const put = (s, v) => { if(sharedRoute&&s==='state'&&v.key==='layout'&&activeProfile==='shared:'+sharedRoute)identifySharedPosts();const result=persistence.put(s,v);sharedLocalChanged(s,v);return result; };
+const del = (s, k) => new Promise(res => { if (!db) return res(); try { const t = db.transaction(s, 'readwrite'); t.objectStore(s).delete(k); t.oncomplete = () => { sharedLocalChanged(s);res(); }; t.onerror = t.onabort = () => { persistence.markError(); res(); }; } catch (e) { persistence.markError(); res(); } });
 const readAll = s => new Promise(res => { if (!db) return res([]); try { const t = db.transaction(s, 'readonly'); const q = t.objectStore(s).getAll(); q.onsuccess = () => res(q.result || []); q.onerror = () => res([]); } catch (e) { res([]); } });
 const all = async s => { const records=await readAll(s); if(s!=='state')return records;const merged=new Map(records.map(record=>[record.key,record]));for(const draft of persistence.drafts())merged.set(draft.key,draft);return [...merged.values()]; };
 let storageFailed=false; let saveT = null;
@@ -600,9 +601,9 @@ function restore(s) {
   $('ratioSeg').querySelectorAll('button').forEach(b => b.classList.toggle('active', parseInt(b.dataset.rw) === RW && parseInt(b.dataset.rh) === RH));
   render(); updateExportUI(); syncZoom();
 }
-function undo() { if (pos > 0) { pos--; restore(hist[pos]); updateHistUI(); save(); } }
-function redo() { if (pos < hist.length - 1) { pos++; restore(hist[pos]); updateHistUI(); save(); } }
-function updateHistUI() { undoBtn.disabled = pos <= 0; redoBtn.disabled = pos >= hist.length - 1; }
+function undo() { if(liveProject){liveProject.sync.undo();return} if (pos > 0) { pos--; restore(hist[pos]); updateHistUI(); save(); } }
+function redo() { if(liveProject){liveProject.sync.redo();return} if (pos < hist.length - 1) { pos++; restore(hist[pos]); updateHistUI(); save(); } }
+function updateHistUI() { if(liveProject&&sharingReady){undoBtn.disabled=!liveProject.sync.canUndo;redoBtn.disabled=!liveProject.sync.canRedo;return} undoBtn.disabled = pos <= 0; redoBtn.disabled = pos >= hist.length - 1; }
 let histT = null; const debHist = () => { save(); clearTimeout(histT); histT = setTimeout(commit, 250); };
 
 /* ---------- geometry (proven WYSIWYG: same math for tile, preview, export) ---------- */
@@ -1556,11 +1557,12 @@ async function flushProfile(){
   clearTimeout(saveT);clearTimeout(profSaveT);clearTimeout(histT);
   if(!ok)throw new Error('El guardado local no está disponible. Descargá un respaldo.');
   await put('state',{key:'layout',rows,RW,RH,tiles});await put('state',{key:'profile',data:profile});
+  if(liveProject&&sharingReady)await liveProject.flush();
   await persistence.settled();
   if(storageFailed)throw new Error('No se pudo guardar. Descargá un respaldo antes de cambiar de perfil.');
 }
 function nextProfileId(){return crypto.randomUUID();}
-async function activateProfile(id){await flushProfile();activeProfile=id;storeCatalog();location.reload();}
+async function activateProfile(id){await flushProfile();activeProfile=id;storeCatalog();location.assign(sharedDestination(id));}
 function backupData(){return {format:'instagram360',version:1,name:profileCatalog.find(p=>p.id===activeProfile)?.name||'Perfil',profile:structuredClone(profile),layout:snap(),assets:lib,view:currentViewSettings()};}
 function validBackup(d){
   if(!['instagram360','rio360-instagram'].includes(d?.format)||d.version!==1||!d.profile||!d.layout||!Array.isArray(d.assets))return false;
@@ -1579,7 +1581,7 @@ async function addSavedProfile(name,data){
   try{
     activeProfile=id;db=await openDB();if(!db)throw new Error('No se pudo crear el perfil.');
     if(data){for(const a of data.assets)await put('assets',a);await put('state',{key:'layout',...data.layout});await put('state',{key:'profile',data:data.profile});if(data.view)await put('state',{key:'view',data:data.view});if(storageFailed)throw new Error('No hay espacio suficiente para guardar el perfil.');}
-    profileCatalog.push({id,name});storeCatalog();location.reload();
+    profileCatalog.push({id,name});storeCatalog();location.assign("/");
   }catch(e){activeProfile=currentID;db=currentDB;throw e;}
 }
 function askName(label,value=''){return new Promise(resolve=>{const dialog=$('nameDialog');$('nameLabel').textContent=label;$('nameInput').value=value;dialog.returnValue='';dialog.onclose=()=>resolve(dialog.returnValue==='ok'?$('nameInput').value:null);dialog.showModal();$('nameInput').focus()})}
@@ -1592,7 +1594,7 @@ function initProfiles(){
  $('profileSelect').addEventListener('change',guarded(e=>activateProfile(e.target.value)));
  $('newProfile').addEventListener('click',guarded(async()=>{const name=await askName('Nombre del nuevo perfil o propuesta:');if(name?.trim())await addSavedProfile(name.trim(),null)}));
  $('duplicateProfile').addEventListener('click',guarded(async()=>{const name=await askName('Nombre de la copia:',profileCatalog.find(p=>p.id===activeProfile).name+' · copia');if(name?.trim()){await flushProfile();await addSavedProfile(name.trim(),backupData())}}));
- $('renameProfile').addEventListener('click',guarded(async()=>{const item=profileCatalog.find(p=>p.id===activeProfile);const name=await askName('Nombre del perfil:',item.name);if(name?.trim()){item.name=name.trim();storeCatalog();renderProfiles()}}));
+ $('renameProfile').addEventListener('click',guarded(async()=>{const item=profileCatalog.find(p=>p.id===activeProfile);const name=await askName('Nombre del perfil:',item.name);if(name?.trim()){item.name=name.trim();storeCatalog();renderProfiles();if(liveProject)liveProject.note()}}));
  $('backupProfile').addEventListener('click',()=>{document.activeElement?.blur();dl(new Blob([JSON.stringify(backupData())],{type:'application/json'}),'Instagram360-'+(profile.handle||'perfil').replace(/[^\w.-]/g,'_')+'.json')});
  $('importProfile').addEventListener('click',()=>$('backupInput').click());
  $('backupInput').addEventListener('change',guarded(async e=>{const file=e.target.files[0];e.target.value='';if(!file)return;if(file.size>150*1024*1024)throw new Error('El respaldo supera los 150 MB.');const data=JSON.parse(await file.text());if(!validBackup(data))throw new Error('El archivo no es un respaldo válido de Instagram 360.');await addSavedProfile(String(data.name||'Perfil importado'),data)}));
@@ -1611,10 +1613,12 @@ function initProfiles(){
   if (!tiles.length) tiles = Array(9).fill(null);
   tiles=normalizedPinnedTiles(tiles);normalizeBanners();
   await loadProfile();
+  if(!await prepareSharedProject())return;
   wireProfile();
   initProfiles();
   await initStudio();
   initWorkspace();
+  initSharingUI();
   applyProfile();
   render(); renderTray(); updateExportUI(); syncZoom();
   hist = []; pos = -1; commit();

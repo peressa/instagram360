@@ -1,6 +1,6 @@
 # Development and hosting
 
-Node.js 22+ is sufficient; no packages or compilation are needed.
+Node.js 22+ is sufficient for the local editor and tests. Shared projects additionally require Wrangler and a Cloudflare Worker with SQLite Durable Objects. See [collaboration](COLLABORATION.md).
 
 ```sh
 node scripts/serve.cjs
@@ -17,6 +17,10 @@ Preview: `127.0.0.1:8765`. Use `--port 9000` for another port. For a phone on yo
 | `dist/workspace.js`, `workspace.css` | Minimal workspace and direct editing |
 | `dist/studio.js`, `studio.css` | Profile presentation, contextual editors and device variants |
 | `dist/simulator.js`, `simulator.css` | Local posts, comments, stories and navigation |
+| `worker/main.mjs` | Generic project routing and compatibility with the existing Hilton namespace |
+| `server/worker.mjs` | Shared project routing, SQLite Durable Objects, media and WebSockets |
+| `dist/sharing.js`, `sharing.css` | Share creation, outbox, reconnect, conflict UI and local integration |
+| `dist/shared-model.js`, `live-sync.js` | Wire schema, field diffs and optimistic collaboration |
 | `dist/persistence.js` | IndexedDB transactions and localStorage recovery drafts |
 | `dist/circle-crop.js` | Bounded circle crops and gestures |
 | `dist/profile-counts.js` | Exact count storage and display formatting |
@@ -39,14 +43,14 @@ Multi-photo posts use `carouselIds`, an immutable ordered array of library asset
 
 ## Hosting
 
-Publish `dist/` with any static HTTPS host. Runtime assets are bundled locally; no API credentials are needed. With Docker:
+Publish `dist/` with any static HTTPS host for local-only editing. This mode does not provide shared links; the Docker image is also local-only. Runtime assets are bundled locally; no API credentials are needed. With Docker:
 
 ```sh
 docker build -t instagram360 .
 docker run --rm -p 8080:80 instagram360
 ```
 
-For Cloudflare, use `wrangler.jsonc` as a template, change its Worker name/domain to yours, authenticate and run Wrangler. Forks must replace the official demo domain. Never commit tokens or `.wrangler` files.
+For Cloudflare, use `wrangler.jsonc` as a template, change its Worker name/domain to yours, authenticate and run `npx wrangler@4.162.0 deploy`. Keep the `PROJECTS` binding and SQLite migration: shared data is stored there, not in GitHub or build assets. Use `npx wrangler@4.162.0 dev` for a local backend at port 8787. Forks must replace the official demo domain. Never commit tokens or `.wrangler` files.
 
 Official Cloudflare Workers Builds configuration: `main`, root `/`, build `node tests/run.cjs`, deploy `npx --yes wrangler@4.162.0 deploy`. GitHub Actions checks Node 22/24 without deployment credentials. PRs are checked; merging to `main` triggers publication.
 

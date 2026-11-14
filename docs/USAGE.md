@@ -6,7 +6,7 @@ Abrí [la demo](https://ig360.peressa.dev). No hace falta iniciar sesión ni con
 2. Tocá el nombre, usuario, bio o cifras para escribir. El valor completo de las cifras aparece al editar. Enter termina los campos de una línea; Esc restaura la edición anterior.
 3. Tocá el avatar o una portada para cambiar su imagen. Arrastrá dentro del círculo para encuadrar; pellizcá o usá +/− con el círculo enfocado para acercar.
 4. Cambiá entre **iPhone, Android, PC, tablet o web móvil** con el selector flotante.
-5. Abrí una publicación o destacado para recorrer la propuesta. Las interacciones son simuladas y locales.
+5. Abrí una publicación o destacado para recorrer la propuesta. Las interacciones son simuladas; en los proyectos compartidos, los Me gusta y comentarios publicados también se comparten.
 6. Usá **Exportar** para descargar una captura del perfil o las imágenes de la grilla.
 
 Los tres puntos del perfil abren las herramientas: apariencia, publicaciones, propuestas, importación y respaldos. El mockup sigue siendo el espacio principal. Podés fijar hasta tres publicaciones desde sus tres puntos: se ubican al inicio. Al desfijar, se recupera su posición guardada cuando está disponible. Los proyectos antiguos con más de tres fijados conservan sus fotos y mantienen las primeras tres fijaciones.
@@ -40,3 +40,19 @@ No publica en Instagram ni envía mensajes reales. Reels/videos usan portadas es
 ## English quick start
 
 Use **Fotos** to upload images, drag into the grid and click profile fields to edit. The floating selector changes devices; **Exportar** downloads the result. The three-dot menu contains settings and **Guardar respaldo / Importar** (backup/import). Projects stay in your browser. The interface is Spanish; English contributions are welcome.
+
+
+## Compartir y editar en vivo
+
+1. Abrí cualquier proyecto y tocá **Compartir** en los controles flotantes.
+2. Elegí una dirección libre, por ejemplo `hilton-mendoza`, y tocá **Crear enlace**. Si ya está ocupada, elegí otra: no se sobrescribe otro proyecto.
+3. Se abre `/p/hilton-mendoza/`. Copiá el enlace y compartilo. Tu proyecto local original queda como copia privada; las ediciones posteriores se hacen en el enlace compartido.
+4. Cualquier persona con esa dirección puede ver y editar sin iniciar sesión. El indicador **En vivo** muestra las conexiones abiertas, no personas identificadas.
+
+Se comparten perfil, fotos, grilla, recortes, carruseles, destacados e interacciones publicadas. Los borradores de comentarios, mensajes simulados, dispositivo y tema quedan en cada navegador. Los enlaces son públicos y editables: no publiques material confidencial. No hay cuentas, roles ni revocación del enlace en esta beta.
+
+Los cambios en campos diferentes se combinan. Si dos personas editan el mismo campo o reordenan una misma secuencia, el indicador avisa del conflicto: tocá para guardar una copia, aplicar tu edición o usar la compartida. No se mezclan letras dentro de una misma bio. Mientras haya un diálogo de edición abierto o un arrastre en curso, la actualización visual espera para no interrumpirlo.
+
+Sin conexión podés seguir editando una copia ya abierta. Los cambios pendientes quedan en este navegador y se envían al reconectar. No borres sus datos mientras estén pendientes. Abrir un enlace por primera vez necesita conexión. El guardado local y la sincronización tienen indicadores separados.
+
+Límites propios de esta beta: 25 MB por imagen, 200 MB/500 imágenes almacenadas por proyecto, 50 conexiones simultáneas y 10 intentos de creación por hora y dirección IP. Las imágenes quitadas siguen ocupando espacio del proyecto en el servidor. Los JSON descargados siguen siendo una copia portátil de todos los datos del navegador, incluidos sus borradores privados.
