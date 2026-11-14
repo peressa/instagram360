@@ -24,7 +24,7 @@ function openInstagramImporter(){
    if(controller.signal.aborted)return;committing=true;close.disabled=true;status.textContent='Guardando el proyecto en este navegador…';const data=instagramProjectData(preview,images);await createImportedLocalProject(data);
   }catch(error){if(error.name!=='AbortError'&&dialog.isConnected)status.textContent=error.message||'No se pudo importar el perfil. Ningún proyecto existente se reemplazó.'}
   finally{committing=false;close.disabled=false;busy=false;importing.disabled=false;input.disabled=false;search.disabled=false}
- });importing.classList.add('btn-accent');importing.hidden=true;dialog.append(importing,dom('p','ig-import-privacy','La copia queda en este navegador. Sólo se publica si después usás Compartir. No necesitamos tu contraseña de Instagram.'));
+ });importing.classList.add('btn-accent');importing.hidden=true;const footer=dom('div','ig-import-footer');footer.append(importing,dom('p','ig-import-privacy','La copia queda en este navegador. Sólo se publica si después usás Compartir. No necesitamos tu contraseña de Instagram.'));dialog.append(footer);
  input.addEventListener('input',()=>{preview=null;importing.hidden=true;result.replaceChildren();status.textContent=''});
  form.addEventListener('submit',async event=>{
   event.preventDefault();if(busy)return;let handle;try{handle=InstagramImportModel.username(input.value)}catch(error){status.textContent=error.message;return}busy=true;search.disabled=true;input.disabled=true;preview=null;importing.hidden=true;result.replaceChildren();status.textContent='Consultando el perfil público…';controller=new AbortController();

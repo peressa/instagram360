@@ -8,7 +8,7 @@ export async function instagramImport(request,env){
  try{
   if(url.pathname==='/api/instagram/preview'&&request.method==='POST'){
    const body=JSON.parse(new TextDecoder().decode(await bounded(request,4096))),handle=Model.username(body.profileURL),allowed=await rate(request,env,'preview',30);if(!allowed.ok)return json({error:'Se alcanzó el límite de consultas de esta hora. Reintentá más tarde.'},429);
-   const cacheKey=new Request(url.origin+'/api/instagram/cache/'+handle);let cache=null;try{cache=caches.default;const hit=await cache.match(cacheKey);if(hit)return hit}catch{}
+   const cacheKey=new Request(url.origin+'/api/instagram/cache/v2/'+handle);let cache=null;try{cache=caches.default;const hit=await cache.match(cacheKey);if(hit)return hit}catch{}
    const results=await Promise.allSettled([page('https://www.instagram.com/'+handle+'/'),page('https://www.instagram.com/'+handle+'/embed/')]);
    if(results.every(r=>r.status==='rejected'))return json({error:'Instagram bloqueó la lectura o el perfil no está disponible. No se importó ningún dato. Reintentá más tarde.'},502);
    const data=Model.parse(handle,results[0].status==='fulfilled'?results[0].value:'',results[1].status==='fulfilled'?results[1].value:'');
