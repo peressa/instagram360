@@ -15,6 +15,8 @@ function formatProfileCount(value){
  const n=parseProfileCount(value);if(n===null)return String(value??'');
  const nf=new Intl.NumberFormat('es-AR',{maximumFractionDigits:1});
  if(n<10000)return nf.format(n);
+ if(n>=1000000000000)return nf.format(n<100000000000000?Math.floor(n/100000000000)/10:Math.floor(n/1000000000000))+'\u00a0B';
+ if(n>=1000000000)return nf.format(n<100000000000?Math.floor(n/100000000)/10:Math.floor(n/1000000000))+'\u00a0mil M';
  if(n<1000000)return nf.format(n<100000?Math.floor(n/100)/10:Math.floor(n/1000))+'\u00a0mil';
  return nf.format(n<100000000?Math.floor(n/100000)/10:Math.floor(n/1000000))+'\u00a0M';
 }
