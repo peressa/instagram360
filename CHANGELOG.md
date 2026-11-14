@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0-beta.2 · 2026-11-14
+
+- Make profile capture the default export, with clear capture/photo choices, device/theme context and a single Save capture action. Keep format and publication numbering under optional details.
+- Add a persistent moon/sun toggle for Instagram dark mode beside the device selector; preserve the chosen theme in downloaded profile PNGs.
+- Export a single carousel as a complete ZIP, show the selected file type/count and keep failed exports open for retry. Await PNG creation and guard repeated downloads and destructive editor shortcuts inside the export dialog.
+- Apply the export and theme controls to the existing Hilton editor as well as local and generic shared projects, preserving their storage protocols.
+
 ## 0.2.0-beta.1 · 2026-11-14
 
 - Create public editable `/p/<slug>/` links for any project while retaining the original local copy.

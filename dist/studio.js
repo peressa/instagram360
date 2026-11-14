@@ -163,7 +163,7 @@ function normalizeSavedView(view){if(!view)return null;return view.device==='mob
 function saveViewSettings(){if(ok)put('state',{key:'view',data:currentViewSettings()});buildNavigation();applyProfile()}
 async function captureProfile(){
  const button=$('exportScreen');button.disabled=true;button.textContent='Generando…';
- try{const c=await renderProfileCanvas();downloadProfileCanvas(c)}catch(e){alert('No se pudo generar la captura. '+e.message)}finally{button.disabled=false;button.textContent='↓ Capturar perfil'}
+ try{const c=await renderProfileCanvas();await downloadProfileCanvas(c)}catch(e){alert('No se pudo generar la captura. '+e.message)}finally{button.disabled=false;button.textContent='↓ Capturar perfil'}
 }
 async function initStudio(){
  buildProfileEditor();buildNavigation();$('canvasWidth').addEventListener('change',()=>{render();applyProfile();saveViewSettings()});$('exportScreen').addEventListener('click',captureProfile);

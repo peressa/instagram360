@@ -388,8 +388,8 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css?v=20261114.beta7"><link rel="stylesheet" href="workspace.css?v=20261114.beta7"><link rel="stylesheet" href="simulator.css?v=20261114.beta7">
-</head>
+</style><link rel="stylesheet" href="studio.css?v=20261114.export2"><link rel="stylesheet" href="workspace.css?v=20261114.export2"><link rel="stylesheet" href="simulator.css?v=20261114.export2">
+<link rel="stylesheet" href="/export-ui.css?v=20261114.export2"></head>
 <body>
 <div class="app">
   <div class="header">
@@ -492,49 +492,39 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 
 <div class="modal" id="exportModal">
   <div class="card">
-    <h3>Exportar</h3>
-    <div class="seg expmode" id="expMode">
-      <button data-m="images" class="active">▦ Imágenes</button>
-      <button data-m="feed">⛶ Perfil completo</button>
+    <button type="button" class="export-close" id="closeExport" aria-label="Cerrar exportación">×</button>
+    <h3 id="exportTitle">¿Qué querés guardar?</h3>
+    <p class="export-intro">Una captura para compartir o las fotos para publicar.</p>
+    <div class="expmode" id="expMode" role="group" aria-label="Tipo de descarga">
+      <button type="button" data-m="feed" class="active" aria-pressed="true"><strong>Captura del perfil</strong><small>Todo el perfil en una imagen</small></button>
+      <button type="button" data-m="images" aria-pressed="false"><strong>Fotos para publicar</strong><small>Fotos separadas y carruseles</small></button>
     </div>
-
-    <div id="paneImages">
-      <p class="sub">Portadas y fotos de carruseles a <b id="expDims">1080×1440</b>. Las secuencias completas se incluyen en carpetas separadas.</p>
-      <div class="opt">
-        <span>Formato</span>
-        <label><input type="radio" name="fmt" value="png" checked> PNG</label>
-        <label><input type="radio" name="fmt" value="jpg"> JPG</label>
-        <span class="selctl">Seleccionar <button class="mini" id="selAll">todo</button><button class="mini" id="selNone">nada</button></span>
-      </div>
+    <div id="paneFeed">
+      <p id="captureContext" class="capture-context"></p>
+      <p class="sub">Incluye el perfil completo y todas las publicaciones visibles, con el dispositivo y el tema que elegiste.</p>
+      <div class="feed-preview" id="feedPreview" aria-label="Vista previa de la captura"><div class="feed-loading">Preparando vista previa…</div></div>
+      <details class="export-options"><summary>Opciones de la captura</summary><div class="opt"><label><input type="checkbox" id="showOrder"> Numerar el orden para publicar</label></div><p class="sub">El 1 indica la primera foto que tenés que publicar, abajo a la derecha.</p></details>
+      <div class="actions"><button class="btn" id="exportCancel2">Volver</button><button class="btn btn-accent" id="feedGo">Guardar captura</button></div>
+      <p class="exp-ios-hint">iPhone: abrí la descarga → Compartir → Guardar en Fotos.</p>
+    </div>
+    <div id="paneImages" hidden>
+      <p class="sub">Tocá las publicaciones que querés descargar. Se conserva su recorte de <b id="expDims">1080×1440</b> píxeles.</p>
+      <div class="export-selection"><strong id="exportSelectionCount"></strong><span class="selctl"><button class="mini" id="selAll">Todas</button><button class="mini" id="selNone">Ninguna</button></span></div>
       <div class="preview" id="preview"></div>
-      <div id="exportProgress" hidden>
-        <div class="exp-prog-bar" id="exportProgBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="exportProgFill"></div></div>
-        <div id="exportProgLabel" class="exp-prog-label" aria-live="polite"></div>
-      </div>
-      <div class="actions">
-        <button class="btn" id="exportCancel">Cancelar</button>
-        <button class="btn btn-accent" id="exportGo">Descargar</button>
-      </div>
-      <p class="exp-ios-hint">📱 iPhone: abrí la descarga → Compartir → Guardar en Fotos</p>
+      <details class="export-options"><summary>Formato de las fotos</summary><div class="opt"><label><input type="radio" name="fmt" value="png" checked> PNG · mayor calidad</label><label><input type="radio" name="fmt" value="jpg"> JPG · archivo más liviano</label></div></details>
+      <p class="sub" id="exportContents"></p>
+      <div id="exportProgress" hidden><div class="exp-prog-bar" id="exportProgBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="exportProgFill"></div></div><div id="exportProgLabel" class="exp-prog-label" aria-live="polite"></div></div>
+      <div class="actions"><button class="btn" id="exportCancel">Volver</button><button class="btn btn-accent" id="exportGo">Descargar fotos</button></div>
+      <p class="exp-ios-hint">iPhone: abrí la descarga → Compartir → Guardar en Fotos.</p>
     </div>
-
-    <div id="paneFeed" hidden>
-      <p class="sub">El perfil completo con avatar, biografía, destacados y fotos en una imagen para compartir.</p>
-      <div class="opt"><label><input type="checkbox" id="showOrder"> Mostrar orden de publicación <span style="color:#666">(① = publicar primero, abajo a la derecha)</span></label></div>
-      <div class="feed-preview" id="feedPreview"><div class="feed-loading">generando…</div></div>
-      <div class="actions">
-        <button class="btn" id="exportCancel2">Cancelar</button>
-        <button class="btn btn-accent" id="feedGo">Descargar PNG</button>
-      </div>
-      <p class="exp-ios-hint">📱 iPhone: abrí la descarga → Compartir → Guardar en Fotos</p>
-    </div>
+    <p id="exportError" role="alert" hidden></p>
   </div>
 </div>
 
 <dialog id="nameDialog" style="margin:auto;padding:28px;border:1px solid #43503e;border-radius:12px;background:#181c18;color:#fff;max-width:420px;width:90%"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required style="display:block;width:100%;padding:12px;margin:18px 0;background:#242a23;border:1px solid #43503e;color:#fff;border-radius:7px"><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261114.beta7"></script><script src="profile-counts.js?v=20261114.beta7"></script><script src="reliability.js?v=20261114.beta7"></script><script src="post-media.js?v=20261114.beta7"></script><script src="direct-media.js?v=20261114.beta7"></script><script src="highlight-media.js?v=20261114.beta7"></script><script src="story-player.js?v=20261114.beta7"></script><script src="studio.js?v=20261114.beta7"></script><script src="persistence.js"></script><script src="shared-client.js"></script><script src="workspace.js?v=20261114.beta7"></script><script src="simulator.js?v=20261114.beta7"></script><script>
+<script src="/export-ui.js?v=20261114.export2"></script><script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261114.export2"></script><script src="profile-counts.js?v=20261114.export2"></script><script src="reliability.js?v=20261114.export2"></script><script src="post-media.js?v=20261114.export2"></script><script src="direct-media.js?v=20261114.export2"></script><script src="highlight-media.js?v=20261114.export2"></script><script src="story-player.js?v=20261114.export2"></script><script src="studio.js?v=20261114.export2"></script><script src="persistence.js"></script><script src="shared-client.js"></script><script src="workspace.js?v=20261114.export2"></script><script src="simulator.js?v=20261114.export2"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
@@ -1122,7 +1112,8 @@ function openExport() {
   exportTrigger = document.activeElement;
   const es = exportSize(); $('expDims').textContent = es.W + '×' + es.H;
   if (sel.size === 0) filled().forEach(i => sel.add(i));   // default to everything selected
-  setExportMode('images');
+  showExportError('');
+  setExportMode('feed');
   refreshSelectionUI();
   exportModal.classList.add('open');
   exportModal.setAttribute('role', 'dialog');
@@ -1131,6 +1122,7 @@ function openExport() {
   if (first) first.focus();
 }
 function closeExport() {
+  if(exportBusy)return;
   exportModal.classList.remove('open');
   if (exportTrigger && exportTrigger.focus) exportTrigger.focus();
   exportTrigger = null;
@@ -1157,7 +1149,7 @@ async function downloadSingle() {
   const btn = $('exportGo'); if (btn) { btn.disabled = true; btn.textContent = 'Generando…'; }
   const i = list[0], blob = await renderTileBlob(i, fmt);
   if (btn) { btn.disabled = false; btn.textContent = 'Descargar'; }
-  if (!blob) return;
+  if(!blob)throw new Error('No se pudo generar la foto seleccionada.');
   dl(blob, `grid_${String(i + 1).padStart(2, '0')}.${fmt === 'jpg' ? 'jpg' : 'png'}`);
 }
 /* render a circle-cropped image to a square canvas at exportW px
@@ -1236,7 +1228,7 @@ async function exportZip() {
     if (progWrap) { setTimeout(() => { progWrap.hidden = true; progFill.style.width = '0%'; }, 1200); }
   }
 
-  if (!files.length) return;
+  if(!files.length)throw new Error('No se pudo generar ninguna foto.');
   dl(new Blob([buildZip(files)], { type: 'application/zip' }), `${handle}_tiles.zip`);
 }
 /* minimal STORED zip (PNG/JPG already compressed) — one file, no extra prompts */
@@ -1382,9 +1374,10 @@ function nextEmptyCell(from) {
   return -1;
 }
 function setExportMode(m) {
-  $('expMode').querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.m === m));
+  $('expMode').querySelectorAll('button').forEach(b => (b.classList.toggle('active', b.dataset.m === m),b.setAttribute('aria-pressed',String(b.dataset.m===m))));
   $('paneImages').hidden = m !== 'images';
   $('paneFeed').hidden = m !== 'feed';
+  syncExportDescription();
   if (m === 'feed') showFeedPreview();
 }
 $('expMode').querySelectorAll('button').forEach(b => b.addEventListener('click', () => setExportMode(b.dataset.m)));
@@ -1400,7 +1393,7 @@ function refreshSelectionUI() {
   $('selNone').classList.toggle('active', sel.size === 0);
   const go = $('exportGo');
   go.disabled = sel.size === 0;
-  go.textContent = sel.size > 1 ? `Descargar ZIP (${sel.size})` : 'Descargar';
+  syncExportDescription();
 }
 $('exportCancel').addEventListener('click', closeExport);
 $('exportCancel2').addEventListener('click', closeExport);
@@ -1408,17 +1401,11 @@ $('exportCancel2').addEventListener('click', closeExport);
    block already resets the button/progress-bar UI on failure, but an unhandled
    rejection here would still skip closeExport() below it — leaving the modal open
    even though the button looked reset. Same treatment for feedGo. */
-$('exportGo').addEventListener('click', async () => {
-  const n = selList().length; if (!n) return;
-  try {
-    if (n === 1) await downloadSingle(); else await exportZip();
-  } catch (e) { console.error('Instagram 360: export failed', e); }
-  closeExport();
+$('exportGo').addEventListener('click', () => {
+  const plan=exportPhotoPlan();if(!plan.indices.length)return;
+  runExportTask(()=>plan.zip?exportZip():downloadSingle(),$('exportGo'));
 });
-$('feedGo').addEventListener('click', async () => {
-  try { await downloadProfile(); } catch (e) { console.error('Instagram 360: profile export failed', e); }
-  closeExport();
-});
+$('feedGo').addEventListener('click',()=>runExportTask(downloadProfile,$('feedGo')));
 exportModal.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeExport(); return; }
   if (e.key !== 'Tab') return;
@@ -1434,6 +1421,7 @@ undoBtn.addEventListener('click', undo); redoBtn.addEventListener('click', redo)
 $('rowsSeg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { if (setRows(parseInt(b.dataset.rows)) === false) return; $('rowsSeg').querySelectorAll('button').forEach(x => x.classList.remove('active')); b.classList.add('active'); }));
 $('ratioSeg').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { $('ratioSeg').querySelectorAll('button').forEach(x => x.classList.remove('active')); b.classList.add('active'); setRatio(parseInt(b.dataset.rw), parseInt(b.dataset.rh)); }));
 window.addEventListener('keydown', e => {
+  if(exportModal.classList.contains('open'))return;
   if(document.activeElement?.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName))return;
   const m = e.ctrlKey || e.metaKey;
   if (m && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
@@ -1473,16 +1461,13 @@ async function captureProfileCanvasNow(showOrder){
    return await html2canvas(phone,{height:Math.ceil(phone.scrollHeight),scale:2,backgroundColor:null,logging:false,useCORS:false,onclone:doc=>{doc.body.classList.add('client-preview','exporting');const p=doc.querySelector('.phone');p.style.margin='0';const nav=p.querySelector('.ig-bottom');if(nav)nav.style.position='static';p.querySelectorAll('.cell:not(.has)').forEach(c=>c.remove());p.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));decorateExportOrder(doc,showOrder);}});
  } finally {document.body.classList.remove('exporting');document.body.dataset.canvas=previous;render();applyProfile();stage.scrollTop=top;stage.scrollLeft=left;}
 }
-function downloadProfileCanvas(c) { c.toBlob(blob => { const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `${(profile.handle || 'profile').replace(/[^\w.-]/g, '_')}_profile.png`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1500); }, 'image/png'); }
-async function downloadProfile() { const c = await renderProfileCanvas(); downloadProfileCanvas(c); }
+function downloadProfileCanvas(c) {return new Promise((resolve,reject)=>{try{c.toBlob(blob=>{if(!blob){reject(new Error('No se pudo crear la imagen.'));return}dl(blob,`${(profile.handle||'perfil').replace(/[^\w.-]/g,'_')}_perfil.png`);resolve()},'image/png')}catch(error){reject(error)}});}
+async function downloadProfile(){const c=await renderProfileCanvas();await downloadProfileCanvas(c);}
 let feedPreviewVersion=0;
-async function showFeedPreview() {
-  const version=++feedPreviewVersion;
-  const el = $('feedPreview'); el.innerHTML = '<div class="feed-loading">generando…</div>';
-  const c = await renderProfileCanvas();
-  if(version!==feedPreviewVersion)return;
-  const img = new Image(); img.className = 'feed-img'; img.src = c.toDataURL('image/png');
-  el.innerHTML = ''; el.appendChild(img);
+async function showFeedPreview(){
+ const version=++feedPreviewVersion,el=$('feedPreview');el.replaceChildren(dom('div','feed-loading','Preparando vista previa…'));
+ try{const c=await renderProfileCanvas();if(version!==feedPreviewVersion)return;const img=new Image();img.className='feed-img';img.alt='Así se guardará tu perfil de Instagram';img.src=c.toDataURL('image/png');el.replaceChildren(img)}
+ catch(error){if(version!==feedPreviewVersion)return;el.replaceChildren(dom('p','feed-loading','No se pudo cargar la vista previa. Podés volver a intentar con Guardar captura.'))}
 }
 
 /* ---------- editable profile ---------- */

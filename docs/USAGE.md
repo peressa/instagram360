@@ -5,9 +5,9 @@ Abrí [la demo](https://ig360.peressa.dev). No hace falta iniciar sesión ni con
 1. Tocá **Fotos**, subí imágenes y arrastralas al perfil. También podés tocar una miniatura para agregarla.
 2. Tocá el nombre, usuario, bio o cifras para escribir. El valor completo de las cifras aparece al editar. Enter termina los campos de una línea; Esc restaura la edición anterior.
 3. Tocá el avatar o una portada para cambiar su imagen. Arrastrá dentro del círculo para encuadrar; pellizcá o usá +/− con el círculo enfocado para acercar.
-4. Cambiá entre **iPhone, Android, PC, tablet o web móvil** con el selector flotante.
+4. Cambiá entre **iPhone, Android, PC, tablet o web móvil** con el selector flotante. El botón de la luna/sol a su lado activa o desactiva el **modo oscuro de Instagram**; se recuerda en este navegador y se respeta en las capturas.
 5. Abrí una publicación o destacado para recorrer la propuesta. Las interacciones son simuladas; en los proyectos compartidos, los Me gusta y comentarios publicados también se comparten.
-6. Usá **Exportar** para descargar una captura del perfil o las imágenes de la grilla.
+6. Tocá **Exportar → Guardar captura** para guardar el perfil completo en PNG. Para descargar las imágenes por separado, elegí **Fotos para publicar**.
 
 Los tres puntos del perfil abren las herramientas: apariencia, publicaciones, propuestas, importación y respaldos. El mockup sigue siendo el espacio principal. Podés fijar hasta tres publicaciones desde sus tres puntos: se ubican al inicio. Al desfijar, se recupera su posición guardada cuando está disponible. Los proyectos antiguos con más de tres fijados conservan sus fotos y mantienen las primeras tres fijaciones.
 
@@ -56,3 +56,10 @@ Los cambios en campos diferentes se combinan. Si dos personas editan el mismo ca
 Sin conexión podés seguir editando una copia ya abierta. Los cambios pendientes quedan en este navegador y se envían al reconectar. No borres sus datos mientras estén pendientes. Abrir un enlace por primera vez necesita conexión. El guardado local y la sincronización tienen indicadores separados.
 
 Límites propios de esta beta: 25 MB por imagen, 200 MB/500 imágenes almacenadas por proyecto, 50 conexiones simultáneas y 10 intentos de creación por hora y dirección IP. Las imágenes quitadas siguen ocupando espacio del proyecto en el servidor. Los JSON descargados siguen siendo una copia portátil de todos los datos del navegador, incluidos sus borradores privados.
+
+
+## Descargar una captura o las fotos
+
+**Exportar** abre primero **Captura del perfil**. La vista previa indica el dispositivo y el modo claro/oscuro actuales. Tocá **Guardar captura**: se descarga una imagen PNG con el perfil completo, sin controles del editor. En **Opciones de la captura** podés activar la numeración para publicar.
+
+**Fotos para publicar** permite seleccionar publicaciones y elegir PNG o JPG. Una foto se descarga directamente. Varias publicaciones o un solo carrusel se descargan en ZIP, con las secuencias completas y el avatar y las portadas de destacados. El botón indica el tipo de archivo antes de descargar. Si algo falla, el menú muestra el error y permite reintentar.

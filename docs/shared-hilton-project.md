@@ -9,7 +9,7 @@ account. Everyone with the URL can edit the same proposal without signing in.
 The personal studio at `/` continues to use its existing local persistence. The
 shared route includes a separate copy of the beta.7 editor and its assets, so it
 does not read or overwrite personal browser profiles. Its UI snapshot is pinned;
-future editor improvements must also be applied to this route.
+future editor improvements must also be applied to this route. The beta.2 export interface and dark-mode shortcut are applied here too, using the common `/export-ui.js` and `/export-ui.css` assets.
 
 ## Storage and synchronization
 

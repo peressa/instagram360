@@ -24,7 +24,7 @@ function initWorkspace(){
  const saved=$('saved');saved.classList.add('canvas-save');document.querySelector('.canvas-column').append(saved);saved.setAttribute('role','status');saved.setAttribute('aria-live','polite');if(workspaceSaveState)showSaveStatus(workspaceSaveState);
  document.addEventListener('pointerdown',e=>{if(document.body.dataset.panel!=='feed'&&!sidebar.contains(e.target)&&!e.target.closest('#openPhotos'))closeWorkspace()});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.dataset.panel!=='feed'&&!document.querySelector('dialog[open]')){e.preventDefault();e.stopImmediatePropagation();closeWorkspace();(document.querySelector('.sim-inline-toggle')||photos).focus()}});
- initSimulator();initDirectEditing();
+ initSimulator();initDirectEditing();initExportExperience();
 }
 function closeWorkspace(){libraryTargetPost=null;libraryTargetStory=null;syncLibrarySelection();syncStoryPlayback();document.body.dataset.panel='feed';document.body.classList.remove('placing-photo');const b=$('openPhotos');if(b)b.setAttribute('aria-expanded','false');}
 function syncDeviceSwitch(){}
