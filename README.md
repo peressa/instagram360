@@ -51,3 +51,5 @@ Las vistas nativas de iPhone y Android están disponibles como variantes de pres
 `node tests/grid-resize.cjs` verifica que reducir la grilla conserve las fotos, el orden, los recortes y panoramas, y rechace una reducción cuando el contenido no entra.
 
 `node tests/run.cjs` ejecuta todas las pruebas, incluyendo recuperación de borradores, transacciones abortadas, falta de espacio y aislamiento entre propuestas, y verifica la sintaxis de los scripts.
+
+Revisión visual del 13/11/2026: contrastado con instagram.com/instagram en Chrome, escritorio y web móvil. Los casilleros libres aparecen solo al arrastrar. En modo visitante se oculta el círculo de nuevo destacado; se conserva su creación en las herramientas del perfil. La reproducción de historias aparece al interactuar con un destacado y también admite clic derecho/pulsación larga en la portada. Las opciones de las historias se concentran en sus tres puntos.

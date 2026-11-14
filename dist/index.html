@@ -388,7 +388,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css?v=20261113.17"><link rel="stylesheet" href="workspace.css?v=20261113.17"><link rel="stylesheet" href="simulator.css?v=20261113.17">
+</style><link rel="stylesheet" href="studio.css?v=20261113.18"><link rel="stylesheet" href="workspace.css?v=20261113.18"><link rel="stylesheet" href="simulator.css?v=20261113.18">
 </head>
 <body>
 <div class="app">
@@ -534,7 +534,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 <dialog id="nameDialog" style="margin:auto;padding:28px;border:1px solid #43503e;border-radius:12px;background:#181c18;color:#fff;max-width:420px;width:90%"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required style="display:block;width:100%;padding:12px;margin:18px 0;background:#242a23;border:1px solid #43503e;color:#fff;border-radius:7px"><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="studio.js?v=20261113.17"></script><script src="persistence.js"></script><script src="workspace.js?v=20261113.17"></script><script src="simulator.js?v=20261113.17"></script><script>
+<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="studio.js?v=20261113.18"></script><script src="persistence.js"></script><script src="workspace.js?v=20261113.18"></script><script src="simulator.js?v=20261113.18"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
@@ -865,7 +865,7 @@ function wireCell(cell,i){
  const tile=tiles[i];
  if(tile){wireStudioDrag(cell,{kind:'cell',src:i});cell.tabIndex=0;cell.setAttribute('role','button');cell.setAttribute('aria-label','Abrir publicación '+(i+1));cell.addEventListener('click',e=>{if(e.target.closest('.tools,.grip,.check'))return;if(Date.now()<studioSuppressClick)return;openPostViewer(i)});cell.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPostViewer(i)}})}
  cell.addEventListener('dragover',e=>{e.preventDefault();cell.classList.add('drop')});cell.addEventListener('dragleave',()=>cell.classList.remove('drop'));
- cell.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();cell.classList.remove('drop');if(e.dataTransfer.files.length){const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/'));files.forEach((f,n)=>{const target=i+n;if(target<total)addFileToCell(f,target);else addFile(f)})}else finishStudioDrop(i)});
+ cell.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();cell.classList.remove('drop');document.body.classList.remove('moving-photo');if(e.dataTransfer.files.length){const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/'));files.forEach((f,n)=>{const target=i+n;if(target<total)addFileToCell(f,target);else addFile(f)})}else finishStudioDrop(i)});
 }
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -1481,7 +1481,7 @@ async function showFeedPreview() {
 }
 
 /* ---------- editable profile ---------- */
-let profile = { verified:false,autoPosts:false,category:'',pronouns:'',address:'',extraLinks:[],mutual:'',private:false,storyRing:'none',followLabel:'Seguir',messageLabel:'Mensaje',ownerEditLabel:'Editar perfil',ownerShareLabel:'Compartir perfil',ownerWebSecondaryLabel:'Ver archivo',contacts:[],showVideo:true,showReposts:true,showTagged:true,handle: 'rio360', name: 'RIO360', bio: 'Tu marca, desde todos los ángulos.\nEditá esta biografía para probar tu propuesta.', link: 'rio360.com', posts: '0', followers: '0', following: '0', avatar: null, hlOpen: true, highlights: [{id:'servicios',label:'Servicios',cover:null},{id:'proyectos',label:'Proyectos',cover:null},{id:'equipo',label:'Equipo',cover:null}] };
+let profile = { verified:false,autoPosts:true,category:'',pronouns:'',address:'',extraLinks:[],mutual:'',private:false,storyRing:'none',followLabel:'Seguir',messageLabel:'Mensaje',ownerEditLabel:'Editar perfil',ownerShareLabel:'Compartir perfil',ownerWebSecondaryLabel:'Ver archivo',contacts:[],showVideo:true,showReposts:true,showTagged:true,handle: 'rio360', name: 'RIO360', bio: 'Tu marca, desde todos los ángulos.\nEditá esta biografía para probar tu propuesta.', link: 'rio360.com', posts: '0', followers: '0', following: '0', avatar: null, hlOpen: true, highlights: [{id:'servicios',label:'Servicios',cover:null},{id:'proyectos',label:'Proyectos',cover:null},{id:'equipo',label:'Equipo',cover:null}] };
 let profSaveT = null;
 function saveProfile() { if (!ok) { persistence.markError(); return Promise.resolve(false); } clearTimeout(profSaveT); return put('state', { key: 'profile', data: profile }); }
 const TEXT_FIELDS = ['handle', 'name', 'bio', 'link', 'posts', 'following', 'followers'];
