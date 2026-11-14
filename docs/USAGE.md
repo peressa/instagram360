@@ -9,7 +9,7 @@ Abrí [la demo](https://ig360.peressa.dev). No hace falta iniciar sesión ni con
 5. Abrí una publicación o destacado para recorrer la propuesta. Las interacciones son simuladas y locales.
 6. Usá **Exportar** para descargar una captura del perfil o las imágenes de la grilla.
 
-Los tres puntos del perfil abren las herramientas: apariencia, publicaciones, propuestas, importación y respaldos. El mockup sigue siendo el espacio principal.
+Los tres puntos del perfil abren las herramientas: apariencia, publicaciones, propuestas, importación y respaldos. El mockup sigue siendo el espacio principal. Podés fijar hasta tres publicaciones desde sus tres puntos: se ubican al inicio. Al desfijar, se recupera su posición guardada cuando está disponible. Los proyectos antiguos con más de tres fijados conservan sus fotos y mantienen las primeras tres fijaciones.
 
 ## Carruseles y destacados
 
@@ -26,6 +26,10 @@ Descargá [studio360.json](../examples/studio360.json) desde GitHub (Download ra
 ## Guardado y cambio de dirección
 
 Los perfiles se guardan en este navegador y dominio. Para moverlos, abrí las herramientas → **Guardar respaldo** en la dirección anterior; luego **Importar** en la nueva. Repetí para cada propuesta. Borrar los datos del navegador puede eliminar proyectos y fotos; conservá los JSON descargados.
+
+Los borradores de comentarios se guardan con la propuesta: sobreviven a Me gusta, Guardar, cerrar la publicación y recargar. Se limpian al publicar el comentario. Las cifras completas se conservan al cambiar o duplicar propuestas. Si una versión anterior ya guardó una cifra redondeada, volvé a escribir el valor exacto: los dígitos perdidos no se pueden reconstruir automáticamente.
+
+En **Exportar → Imágenes**, tocá las miniaturas para incluir o excluir publicaciones; **todo/nada** siguen disponibles. **Perfil completo → Mostrar orden de publicación** numera desde la última foto visible (1, abajo a la derecha).
 
 Los respaldos anteriores siguen siendo compatibles. Incluyen fotos y comentarios simulados: guardalos como documentos personales, no como reportes públicos de errores.
 

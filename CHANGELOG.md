@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.0-beta.7 · 2026-11-14
+
+- Preserve exact profile counts across switching, duplication and backups; save comment drafts across interactions, viewer reopening and reload, clearing only after submission. Previously rounded digits cannot be reconstructed automatically.
+- Parse abbreviated interaction counts and display exact Spanish integers; correct singular profile labels.
+- Restore highlight autoplay when the library closes while preserving manual pause and progress.
+- Select individual export thumbnails with mouse, touch or keyboard; render reverse publication-order badges in profile PNGs and serialize concurrent captures.
+- Pin up to three posts at the start, support unpinning and normalize legacy excess pins without removing photos. Preserve metadata when a panorama splits.
+- Show accessible, dismissible errors for invalid, unreadable or oversized image uploads.
+- Add integration regressions for the nine audited issues; check desktop and mobile browser layouts, downloads and saved-data roundtrips.
+
 ## 0.1.0-beta.6 · 2026-11-14
 
 - Drag selected library photos onto a highlight circle or its open viewer; insert before a story thumbnail or append the batch.

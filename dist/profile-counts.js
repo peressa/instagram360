@@ -27,3 +27,8 @@ function formatExactProfileCount(value,field){const n=parseProfileCount(value);i
 function canonicalProfileCount(field,value){if(!PROFILE_COUNT_FIELDS.has(field))return value;const n=parseProfileCount(value);return n===null?value:String(n);}
 function profileFieldDisplay(field){const value=field==='posts'&&profile.autoPosts?filled().length:profile[field]??'';return field==='followers'?formatProfileCount(value):PROFILE_COUNT_FIELDS.has(field)?formatExactProfileCount(value,field):value;}
 function profileFieldForEditing(field,value){return PROFILE_COUNT_FIELDS.has(field)?canonicalProfileCount(field,value):value;}
+
+function profileCountLabel(field,value){const words={posts:['publicación','publicaciones'],followers:['seguidor','seguidores'],following:['seguido','seguidos']};return words[field][parseProfileCount(value)===1?0:1]}
+function syncProfileCountLabels(){
+ for(const field of PROFILE_COUNT_FIELDS){const value=field==='posts'&&profile.autoPosts?filled().length:profile[field];document.querySelectorAll('[data-f="'+field+'"]').forEach(el=>{const label=el.closest('.stat')?.querySelector('span');if(label)label.textContent=profileCountLabel(field,value)})}
+}

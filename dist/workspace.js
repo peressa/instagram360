@@ -61,8 +61,9 @@ async function retrySave() {
   if(results.every(Boolean))persistence.resetError();
 }
 function switchWorkspace(panel){
- if(panel==='profile'){openProfileContext();return}
- document.body.dataset.panel=panel==='feed'||document.body.dataset.panel===panel?'feed':panel;
+ if(panel==='profile'){closeWorkspace();openProfileContext();return}
+ if(panel==='feed'||document.body.dataset.panel===panel){closeWorkspace();return}
+ document.body.dataset.panel=panel;
  $('openPhotos')?.setAttribute('aria-expanded',String(document.body.dataset.panel==='library'));
 }
 function updateWorkspaceCount() {const el=document.querySelector('.photo-count');if(el)el.textContent=String(lib.length);}

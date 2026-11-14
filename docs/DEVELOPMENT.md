@@ -20,6 +20,7 @@ Preview: `127.0.0.1:8765`. Use `--port 9000` for another port. For a phone on yo
 | `dist/persistence.js` | IndexedDB transactions and localStorage recovery drafts |
 | `dist/circle-crop.js` | Bounded circle crops and gestures |
 | `dist/profile-counts.js` | Exact count storage and display formatting |
+| `dist/reliability.js` | Pin ordering, upload errors and profile export numbering |
 | `dist/post-media.js` | Ordered carousel assets, photo editor, native swipe viewer and image export |
 | `dist/direct-media.js` | Library selection, batch drops and inline carousel arrangement |
 | `dist/highlight-media.js` | Embedded story sequences, library drops and inline story arrangement |

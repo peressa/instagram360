@@ -33,4 +33,5 @@ const carousel=structuredClone(interactive);carousel.assets.push({...carousel.as
 const missingSlide=structuredClone(carousel);missingSlide.layout.tiles[0].carouselIds.push('missing');assert.equal(valid(missingSlide),false,'Reject missing slide references');
 const duplicateSlide=structuredClone(carousel);duplicateSlide.layout.tiles[0].carouselIds.push('photo');assert.equal(valid(duplicateSlide),false,'Reject duplicated slide references');
 const wrongCover=structuredClone(carousel);wrongCover.layout.tiles[0].carouselIds.reverse();assert.equal(valid(wrongCover),false,'Grid cover must match first slide');
+const withDraft=structuredClone(interactive);withDraft.layout.tiles[0].commentDraft='Comentario todavía sin publicar';assert.equal(valid(withDraft),true,'Persisted drafts remain transferable');withDraft.layout.tiles[0].commentDraft='x'.repeat(2201);assert.equal(valid(withDraft),false,'Reject oversized comment drafts');
 console.log('Backup checks passed: legacy compatibility, local interactions and complete validated carousel sequences.');

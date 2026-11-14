@@ -4,7 +4,7 @@
 
 An open source visual studio for designing and presenting Instagram profiles. Edit directly on the mockup, arrange your images and export your proposal. Created and maintained by [Juan Peressa](https://peressa.dev).
 
-[Live demo](https://ig360.peressa.dev) · [Latest beta](https://github.com/peressa/instagram360/releases/tag/v0.1.0-beta.6) · [Guía en español](docs/USAGE.md) · [Contribute](CONTRIBUTING.md)
+[Live demo](https://ig360.peressa.dev) · [Latest beta](https://github.com/peressa/instagram360/releases/tag/v0.1.0-beta.7) · [Guía en español](docs/USAGE.md) · [Contribute](CONTRIBUTING.md)
 
 ![Instagram 360 desktop workspace with an original example profile](docs/screenshots/desktop.jpg)
 
@@ -50,7 +50,7 @@ Download [the example backup](examples/studio360.json) and import it from the pr
 
 ## Beta status
 
-**v0.1.0-beta.6** adds library drops onto highlights and direct story arrangement inside the viewer, alongside inline carousel editing. Video playback, cloud sync and real Instagram publishing are not included. Device variants are presentation mockups, not certified replicas of every native app version. Android abbreviations and the exact 9999/10000 transition remain unverified; formatting comes from web observations. See [evidence and limits](references/counts/REVISION-ANDROID.md).
+**v0.1.0-beta.7** fixes exact-count persistence, saved comment drafts, interaction counts, highlight pause cleanup, export selection/numbering, pinned posts, singular labels and invalid-image feedback. Video playback, cloud sync and real Instagram publishing are not included. Device variants are presentation mockups, not certified replicas of every native app version. Android abbreviations and the exact 9999/10000 transition remain unverified; formatting comes from web observations. See [evidence and limits](references/counts/REVISION-ANDROID.md).
 
 Saved projects belong to one browser and origin. Export/import backups when changing domains or computers. Earlier backups remain importable.
 
