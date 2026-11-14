@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0-beta.3 · 2026-11-14
+
+- Import a public Instagram profile by URL or username from Photos, with a preview before creating a separate local project.
+- Read available public profile/embed metadata, captions, counters, photos and complete available carousel sequences; copy image bytes locally so the project does not depend on expiring CDN URLs.
+- Explicitly report missing/partial data, limits and video covers; do not fabricate highlights, private data or unavailable counts.
+- Preserve the current local/shared/Hilton project during import; add bounded same-origin endpoints, CDN-only image proxying, rate limits and parser/security regressions.
+
 ## 0.2.0-beta.2 · 2026-11-14
 
 - Make profile capture the default export, with clear capture/photo choices, device/theme context and a single Save capture action. Keep format and publication numbering under optional details.

@@ -51,7 +51,7 @@ export class ProjectRoom {
  async fetch(request){
   const url=new URL(request.url);
   try{
-   if(url.pathname==='/rate'){const key=url.searchParams.get('key'),bucket=Math.floor(Date.now()/3600000),id=key+':'+bucket,row=this.sql.exec('SELECT n FROM rates WHERE key=?',id).toArray()[0];if((row?.n||0)>=10)return json({error:'Se alcanzó el límite de creación de enlaces de esta hora. Reintentá más tarde.'},429);this.sql.exec('INSERT OR REPLACE INTO rates VALUES (?,?,?)',id,(row?.n||0)+1,(bucket+1)*3600000);this.sql.exec('DELETE FROM rates WHERE expires<?',Date.now());return json({ok:true})}
+   if(url.pathname==='/rate'){const key=url.searchParams.get('key'),bucket=Math.floor(Date.now()/3600000),id=key+':'+bucket,row=this.sql.exec('SELECT n FROM rates WHERE key=?',id).toArray()[0];if((row?.n||0)>=([10,30,600].includes(Number(url.searchParams.get('limit')))?Number(url.searchParams.get('limit')):10))return json({error:'Se alcanzó el límite de creación de enlaces de esta hora. Reintentá más tarde.'},429);this.sql.exec('INSERT OR REPLACE INTO rates VALUES (?,?,?)',id,(row?.n||0)+1,(bucket+1)*3600000);this.sql.exec('DELETE FROM rates WHERE expires<?',Date.now());return json({ok:true})}
    const route=url.pathname.match(/^\/api\/projects\/([^/]+)(?:\/(.*))?$/);if(!route)return json({error:'Ruta inválida.'},404);const path=route[2]||'';
    if(!path&&request.method==='POST'){
     const key=request.headers.get('X-IG360-Create-Key');if(!key||key.length<32||key.length>200)return json({error:'Solicitud de creación inválida.'},400);const keyHash=await digest(new TextEncoder().encode(key));

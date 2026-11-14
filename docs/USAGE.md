@@ -63,3 +63,15 @@ Límites propios de esta beta: 25 MB por imagen, 200 MB/500 imágenes almacenada
 **Exportar** abre primero **Captura del perfil**. La vista previa indica el dispositivo y el modo claro/oscuro actuales. Tocá **Guardar captura**: se descarga una imagen PNG con el perfil completo, sin controles del editor. En **Opciones de la captura** podés activar la numeración para publicar.
 
 **Fotos para publicar** permite seleccionar publicaciones y elegir PNG o JPG. Una foto se descarga directamente. Varias publicaciones o un solo carrusel se descargan en ZIP, con las secuencias completas y el avatar y las portadas de destacados. El botón indica el tipo de archivo antes de descargar. Si algo falla, el menú muestra el error y permite reintentar.
+
+
+## Importar un Instagram por enlace
+
+1. Tocá **Fotos → Importar Instagram**.
+2. Pegá el enlace del perfil público, por ejemplo `https://www.instagram.com/usuario/`, y tocá **Buscar perfil**. También acepta `@usuario`.
+3. Revisá el nombre, la bio, las cifras, las miniaturas y las advertencias. La vista previa indica cuántas publicaciones y fotos entregó Instagram.
+4. Tocá **Importar como proyecto nuevo**. Se descargan las imágenes y se abre una copia editable guardada en tu navegador. El proyecto que tenías abierto se conserva. Si querés compartir la copia, usá **Compartir** después.
+
+Se traen los datos públicos disponibles y las fotos de los carruseles que entrega Instagram. No incluye destacados, mensajes, comentarios individuales ni estadísticas privadas. Los videos se representan con su portada. Las cifras no disponibles quedan como `—`; las abreviaturas entregadas por Instagram no se convierten en cifras exactas inventadas.
+
+Instagram puede entregar sólo parte del feed, exigir iniciar sesión o bloquear temporalmente la lectura. La app lo indica y no pide tu contraseña ni intenta saltar esas restricciones. Si una foto no se puede descargar, no se guarda una importación incompleta: volvé a buscar el perfil para renovar los enlaces. [Detalles y límites](INSTAGRAM-IMPORT.md).
