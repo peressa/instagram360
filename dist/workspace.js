@@ -38,7 +38,7 @@ function initDirectEditing(){
  }));
  phone.querySelectorAll('.prof-address,.prof-mutual').forEach(el=>bind(el,2,'address','Cambiar ubicación y enlaces'));
  bind(phone.querySelector('.profile-options'),-1,null,'Opciones del perfil y proyecto');
- const avatar=$('avatar');avatar.tabIndex=0;avatar.setAttribute('role','button');avatar.setAttribute('aria-label','Cambiar foto del perfil');avatar.title='Tocá para cambiar la foto';avatar.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();closeWorkspace();$('avatarInput').click()},true);avatar.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('avatarInput').click()}});
+ const avatar=$('avatar');wireCircleCrop(avatar,()=>normAvatar(profile.avatar),patch=>{profile.avatar={...normAvatar(profile.avatar),...patch};applyAvatarImg()},saveProfile);avatar.tabIndex=0;avatar.setAttribute('role','button');avatar.setAttribute('aria-label','Cambiar foto del perfil');avatar.title='Arrastrá para encuadrar. Tocá para cambiar la foto. Pellizcá o usá + y − para acercar.';avatar.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();closeWorkspace();$('avatarInput').click()},true);avatar.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('avatarInput').click()}});
 }
 function normalizeInlineProfileValue(field,value){
  const text=String(value??'').replace(/\r\n?/g,'\n').replace(/\u00a0/g,' ');

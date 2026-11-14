@@ -80,3 +80,5 @@ body.moving-photo:not(.exporting) .phone .cell:not(.has){display:block!important
 .sim-story-controls>.sim-button:last-child{justify-content:flex-end}
 .sim-story-controls>.sim-button:hover,.sim-story-controls>.sim-button:focus-visible{opacity:1}
 body.exporting .phone .cell:not(.has){display:none!important}
+
+.phone [data-circle-crop][data-crop-ready=true]{touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}.phone [data-circle-crop][data-crop-ready=true]:active{cursor:grabbing}.phone [data-circle-crop] img{pointer-events:none;user-select:none;-webkit-user-drag:none}

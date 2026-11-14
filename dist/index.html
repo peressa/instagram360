@@ -388,7 +388,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css?v=20261113.18"><link rel="stylesheet" href="workspace.css?v=20261113.18"><link rel="stylesheet" href="simulator.css?v=20261113.18">
+</style><link rel="stylesheet" href="studio.css?v=20261113.19"><link rel="stylesheet" href="workspace.css?v=20261113.19"><link rel="stylesheet" href="simulator.css?v=20261113.19">
 </head>
 <body>
 <div class="app">
@@ -534,7 +534,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 <dialog id="nameDialog" style="margin:auto;padding:28px;border:1px solid #43503e;border-radius:12px;background:#181c18;color:#fff;max-width:420px;width:90%"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required style="display:block;width:100%;padding:12px;margin:18px 0;background:#242a23;border:1px solid #43503e;color:#fff;border-radius:7px"><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="studio.js?v=20261113.18"></script><script src="persistence.js"></script><script src="workspace.js?v=20261113.18"></script><script src="simulator.js?v=20261113.18"></script><script>
+<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261113.19"></script><script src="studio.js?v=20261113.19"></script><script src="persistence.js"></script><script src="workspace.js?v=20261113.19"></script><script src="simulator.js?v=20261113.19"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
@@ -1490,61 +1490,23 @@ const TEXT_FIELDS = ['handle', 'name', 'bio', 'link', 'posts', 'following', 'fol
 function normAvatar(v) {
   if (!v) return null;
   if (typeof v === 'string') return { src: v, panX: 0, panY: 0, z: 1 };
-  return { src: v.src || '', panX: v.panX || 0, panY: v.panY || 0, z: v.z || 1 };
+  return { src: v.src || '', panX: v.panX || 0, panY: v.panY || 0, z: v.z || 1,cropVersion:v.cropVersion||1 };
 }
 function normCover(v) { return normAvatar(v); }
 
 /* apply pan+zoom to an img inside a circle — uses object-position for pan, scale for zoom */
-function applyCircleImg(img, state, diam) {
-  if (!img || !state) return;
-  const z = state.z || 1;
-  // panX/panY are -0.5..0.5 fractions; convert to % offset from center for object-position
-  const px = 50 + (state.panX || 0) * 100;
-  const py = 50 + (state.panY || 0) * 100;
-  img.style.objectPosition = `${px}% ${py}%`;
-  img.style.transform = `scale(${z})`;
+function applyCircleImg(img,state,diam){
+ if(!img||!state)return;const g=circleCropGeometry(state,img.naturalWidth||diam,img.naturalHeight||diam,diam);
+ Object.assign(img.style,{position:'absolute',width:g.width+'px',height:g.height+'px',maxWidth:'none',left:g.left+'px',top:g.top+'px',objectFit:'fill',objectPosition:'50% 50%',transform:'none'});
 }
-
-/* wire pan+pinch on a circle element, calling onUpdate({panX,panY,z}) and onCommit() */
-function wireCircleCrop(el, getState, onUpdate, onCommit) {
- if(el.closest('.phone'))return;
-  const pg = { mode: null, pts: new Map(), pX: 0, pY: 0, z: 1, dist: 0, sx: 0, sy: 0 };
-  el.addEventListener('pointerdown', e => {
-    if (e.target.closest('.hl-del, .avatar-plus')) return;
-    const st = getState(); if (!st) return; // no image yet — let click fire
-    e.preventDefault(); e.stopPropagation();
-    pg.pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pg.pts.size === 2) {
-      const p = [...pg.pts.values()]; pg.mode = 'pinch'; pg.dist = Math.hypot(p[0].x-p[1].x, p[0].y-p[1].y); pg.z = st.z || 1;
-    } else {
-      pg.mode = 'pan'; pg.pX = st.panX || 0; pg.pY = st.panY || 0; pg.sx = e.clientX; pg.sy = e.clientY;
-    }
-    try { el.setPointerCapture(e.pointerId); } catch(_) {}
-  });
-  el.addEventListener('pointermove', e => {
-    if (!pg.mode || !pg.pts.has(e.pointerId)) return;
-    pg.pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    const st = getState(); if (!st) return;
-    const diam = el.offsetWidth || 76;
-    if (pg.mode === 'pinch' && pg.pts.size >= 2) {
-      const p = [...pg.pts.values()]; const d = Math.hypot(p[0].x-p[1].x, p[0].y-p[1].y);
-      const z = clamp(pg.z * d / (pg.dist || 1), 1, 8);
-      onUpdate({ z }); e.preventDefault();
-    } else if (pg.mode === 'pan') {
-      // pan expressed as fraction of container diameter, clamped to ±0.5
-      const dx = (e.clientX - pg.sx) / diam;
-      const dy = (e.clientY - pg.sy) / diam;
-      const panX = clamp(pg.pX + dx, -0.5, 0.5);
-      const panY = clamp(pg.pY + dy, -0.5, 0.5);
-      onUpdate({ panX, panY }); e.preventDefault();
-    }
-  });
-  const end = e => {
-    pg.pts.delete(e.pointerId);
-    if (pg.pts.size === 0) { pg.mode = null; if (getState()) onCommit(); }
-    else if (pg.mode === 'pinch' && pg.pts.size < 2) { const p = [...pg.pts.values()][0]; pg.mode = 'pan'; pg.sx = p.x; pg.sy = p.y; const st = getState(); if (st) { pg.pX = st.panX||0; pg.pY = st.panY||0; } }
-  };
-  el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+function wireCircleCrop(el,getState,onUpdate,onCommit){
+ el.dataset.circleCrop='true';el.dataset.cropReady=String(!!getState()?.src);let points=new Map(),start=null,moved=false,suppressUntil=0;
+ const block=e=>{if(Date.now()<suppressUntil){e.preventDefault();e.stopImmediatePropagation()}};el.addEventListener('click',block,true);el.addEventListener('contextmenu',block,true);el.addEventListener('dragstart',e=>e.preventDefault());
+ const begin=()=>{const st=getState(),img=el.querySelector('img');if(!st||!img)return;const d=el.getBoundingClientRect().width,g=circleCropGeometry(st,img.naturalWidth||d,img.naturalHeight||d,d),p=[...points.values()];start={x:p[0].x,y:p[0].y,panX:g.panX,panY:g.panY,z:st.z||1,d,dist:p.length>1?Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y):0};};
+ el.addEventListener('pointerdown',e=>{if(e.button!==0||!getState()?.src)return;e.preventDefault();e.stopPropagation();el.focus({preventScroll:true});if(!points.size){moved=false;suppressUntil=0}points.set(e.pointerId,{x:e.clientX,y:e.clientY});begin();try{el.setPointerCapture(e.pointerId)}catch(_){}});
+ el.addEventListener('pointermove',e=>{if(!start||!points.has(e.pointerId))return;e.preventDefault();points.set(e.pointerId,{x:e.clientX,y:e.clientY});const st=getState(),img=el.querySelector('img');if(!st||!img)return;const p=[...points.values()];let z=start.z,dx=e.clientX-start.x,dy=e.clientY-start.y;if(p.length>1&&start.dist){z=clamp(start.z*Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y)/start.dist,1,8);dx=0;dy=0;moved=true}else if(Math.hypot(dx,dy)>4)moved=true;if(!moved)return;const g=circleCropGeometry({cropVersion:2,z,panX:start.panX+dx/start.d,panY:start.panY+dy/start.d},img.naturalWidth||start.d,img.naturalHeight||start.d,start.d);onUpdate({cropVersion:2,z,panX:g.panX,panY:g.panY});suppressUntil=Date.now()+700;});
+ const end=e=>{if(!points.has(e.pointerId))return;points.delete(e.pointerId);if(points.size){begin();return}start=null;if(moved){suppressUntil=Date.now()+700;onCommit()}moved=false;};el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
+ el.addEventListener('keydown',e=>{if(!['+','=','-','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)||!getState()?.src)return;e.preventDefault();e.stopPropagation();const st=getState(),img=el.querySelector('img'),d=el.getBoundingClientRect().width,g=circleCropGeometry(st,img.naturalWidth||d,img.naturalHeight||d,d);const z=clamp((st.z||1)+(['+','='].includes(e.key)?0.1:e.key==='-'?-0.1:0),1,8);const next=circleCropGeometry({cropVersion:2,z,panX:g.panX+(e.key==='ArrowRight'?.02:e.key==='ArrowLeft'?-.02:0),panY:g.panY+(e.key==='ArrowDown'?.02:e.key==='ArrowUp'?-.02:0)},img.naturalWidth||d,img.naturalHeight||d,d);onUpdate({cropVersion:2,z,panX:next.panX,panY:next.panY});onCommit()});
 }
 
 function wireProfile() {
@@ -1577,7 +1539,7 @@ function wireProfile() {
 
 function applyAvatarImg() {
   const av = normAvatar(profile.avatar);
-  const avatarEl = $('avatar'), img = $('avatarImg');
+  const avatarEl = $('avatar'), img = $('avatarImg');avatarEl.dataset.cropReady=String(!!av?.src);
   if (av && av.src) {
     avatarEl.classList.add('has');
     const applyTransform = () => applyCircleImg(img, av, avatarEl.offsetWidth || 76);
