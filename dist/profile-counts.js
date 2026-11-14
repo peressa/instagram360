@@ -12,6 +12,8 @@ function parseProfileCount(value){
  const count=Math.round(Number(text)*factor);return Number.isSafeInteger(count)&&count>=0?count:null;
 }
 /* Verified Instagram web Spanish samples are in references/counts/.
+   Android video evidence only covers zero counts; native abbreviation parity is pending.
+   See references/counts/REVISION-ANDROID.md. All device variants currently share this web-derived formatter.
    9653 is exact and 10101 is compact; the 10000 boundary is inferred, not a published Meta contract.
    Counts beyond the observed follower range keep exact digits instead of invented units. */
 function formatProfileCount(value){

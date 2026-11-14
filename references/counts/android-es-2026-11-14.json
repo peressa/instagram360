@@ -1,0 +1,25 @@
+{
+  "reviewedOn": "2026-11-14",
+  "scope": "Public third-party video inspected in Chrome; not a test on a connected Android device.",
+  "samples": [
+    {
+      "url": "https://www.youtube.com/watch?v=blolQToZh-I&t=214s",
+      "creator": "WilDroid",
+      "publishedOn": "2026-03-13",
+      "frameSeconds": 214,
+      "handle": "wildroidw10",
+      "platformEvidence": "Physical handset, Android home screen at 00:05 and Android status icons; Instagram app profile in Spanish at 03:34.",
+      "screenshot": "android-wildroid-2026-03-13-t214.png",
+      "followers": 0,
+      "display": "0",
+      "postsDisplay": "0",
+      "followingDisplay": "0"
+    }
+  ],
+  "limits": [
+    "Publication date is known; recording date, Instagram build, Android version and Spanish region are not established.",
+    "Only zero counts were accepted. This does not verify four-digit separators, abbreviations, rounding or truncation.",
+    "No accepted native Android Spanish frame showing exactly 9999 or exactly 10000 followers.",
+    "The formatter still uses the previous web-derived behavior in every presentation variant. Native Android parity remains unverified."
+  ]
+}
