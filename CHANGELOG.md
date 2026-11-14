@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.0-beta.5 · 2026-11-14
+
+- Keep the library selection count, clear action and add-to-post button visible while browsing photos.
+- Includes batch dragging and inline carousel arrangement from beta.4.
+
 ## 0.1.0-beta.4 · 2026-11-14
 
 - Select multiple library photos and drag the batch onto an existing post or empty slot to create one carousel, with duplicate prevention and atomic undo.

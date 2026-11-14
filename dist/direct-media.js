@@ -24,7 +24,7 @@ function clearLibrarySelection(){librarySelection.clear();libraryAnchor=null;syn
 function addLibrarySelectionUI(title){
  title.querySelector(':scope > span')?.setAttribute('hidden','');
  const bar=dom('div','library-selection-bar'),copy=dom('span','library-selection-copy'),clear=action('Quitar selección',clearLibrarySelection),add=action('Agregar a esta publicación',()=>{if(libraryTargetPost!==null&&applyLibraryDrop(libraryTargetPost,[...librarySelection]))closeWorkspace()});
- clear.classList.add('library-selection-clear');add.classList.add('library-selection-add');clear.hidden=add.hidden=true;bar.append(copy,add,clear);title.append(bar);syncLibrarySelection();
+ clear.classList.add('library-selection-clear');add.classList.add('library-selection-add');clear.hidden=add.hidden=true;bar.append(copy,add,clear);document.querySelector('.studio-sidebar-top').append(bar);syncLibrarySelection();
 }
 function wireLibrarySelection(card,asset){
  card.dataset.assetId=asset.id;const button=dom('button','library-select');button.type='button';button.setAttribute('aria-label','Seleccionar '+asset.name);button.setAttribute('aria-pressed',String(librarySelection.has(asset.id)));button.title='Seleccionar foto · Shift para seleccionar un rango';button.addEventListener('click',e=>{e.stopPropagation();toggleLibraryPhoto(asset.id,e.shiftKey)});card.append(button);
