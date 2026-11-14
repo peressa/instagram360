@@ -560,7 +560,7 @@ const ghost = $('ghost'), ghostImg = ghost.querySelector('img');
 /* ---------- persistence (IndexedDB, single board) ---------- */
 let db = null, ok = false;
 async function openDB(){await persistence.ready;return {shared:true};}
-let sharedAppReady=false,sharedRenderPending=false;
+let sharedAppReady=false,sharedRenderPending=false,sharedStoryNeedsRefresh=false;
 const persistence=createSharedPersistence({onStatus:showSaveStatus,onRemote:applySharedDocument});
 function sharedMerge(current,incoming){
  if(Array.isArray(incoming))return incoming.map((item,index)=>sharedMerge(item?.id?current?.find?.(entry=>entry?.id===item.id):current?.[index],item));
@@ -568,7 +568,9 @@ function sharedMerge(current,incoming){
 }
 function applySharedDocument(document){
  if(!sharedAppReady)return;
+ const storyBefore=simStory?JSON.stringify(profile.highlights.find(h=>h.id===simStory.id)):null;
  lib=sharedMerge(lib,Object.values(document.assets));profile=sharedMerge(profile,document.state.profile.data);
+ if(simStory&&storyBefore!==JSON.stringify(profile.highlights.find(h=>h.id===simStory.id)))sharedStoryNeedsRefresh=true;
  const layout=document.state.layout;rows=layout.rows;total=rows*3;RW=layout.RW;RH=layout.RH;tiles=sharedMerge(tiles,layout.tiles);
  sharedRenderPending=true;if(!window.document.activeElement?.closest('input,textarea,[contenteditable]'))renderSharedView();
 }
@@ -579,6 +581,7 @@ function renderSharedView(){
  $('ratioSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('active',Number(b.dataset.rw)===RW&&Number(b.dataset.rh)===RH));
  render();renderTray();applyProfile();updateExportUI();
  if(simCurrentPost!==null&&!window.document.activeElement?.closest('input,textarea,[contenteditable]')){const index=simCurrentPost;if(tiles[index])showSimPost(index);else closeSimScreen();}
+ if(simStory&&sharedStoryNeedsRefresh){sharedStoryNeedsRefresh=false;const {id,position,paused}=simStory;if(profile.highlights.some(h=>h.id===id))showSimStory(id,position,paused);else closeSimScreen();}
 }
 function documentElementRatio(){window.document.documentElement.style.setProperty('--ratio',RW+' / '+RH);}
 
