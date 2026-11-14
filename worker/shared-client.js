@@ -88,7 +88,7 @@ async function sharedPortableBackup(data){
       if(!urls.has(value))urls.set(value,(async()=>{const response=await fetch(value);if(!response.ok)throw new Error('No se pudo descargar una foto');const blob=await response.blob();return new Promise(resolve=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.readAsDataURL(blob)})})());return urls.get(value);
     }
     if(Array.isArray(value))return Promise.all(value.map(visit));
-    if(value&&typeof value==='object'){const result={};for(const [key,item] of Object.entries(value))result[key]=await visit(item);return result}return value;
+    if(value&&typeof value==='object')return Object.fromEntries(await Promise.all(Object.entries(value).map(async([key,item])=>[key,await visit(item)])));return value;
   }
   return visit(data);
 }

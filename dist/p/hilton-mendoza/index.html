@@ -1638,7 +1638,7 @@ function initProfiles(){
   window.document.addEventListener('focusout',()=>setTimeout(()=>{if(sharedRenderPending&&!window.document.activeElement?.closest('input,textarea,[contenteditable]'))renderSharedView()},0));
   const copy=action('Copiar enlace',async()=>{try{await navigator.clipboard.writeText(location.origin+'/p/hilton-mendoza/');copy.textContent='Enlace copiado';setTimeout(()=>copy.textContent='Copiar enlace',1800)}catch{prompt('Enlace compartido',location.origin+'/p/hilton-mendoza/')}});copy.classList.add('share-project-link');document.querySelector('.canvas-tools').append(copy);
   const note=document.querySelector('.project-settings .editor-note');if(note)note.textContent='Proyecto compartido. Quien tenga el enlace puede editar; los cambios se guardan en la nube y aparecen en vivo. Fotografías: Hilton Mendoza.';
-  ['newProfile','duplicateProfile','renameProfile'].forEach(id=>$(id).hidden=true);
+  ['newProfile','duplicateProfile','renameProfile'].forEach(id=>$(id).remove());
   $('profileSelect').disabled=true;
   requestAnimationFrame(render);   // correct sizing once the stage has real dimensions
 })().catch(error=>{document.body.replaceChildren();const message=window.document.createElement('main');message.style.cssText='max-width:540px;margin:15vh auto;padding:24px;font-family:system-ui';message.textContent='No se pudo abrir la propuesta compartida. Revisá tu conexión y recargá la página.';document.body.append(message);console.error(error)});
