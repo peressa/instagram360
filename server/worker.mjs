@@ -86,6 +86,6 @@ export class ProjectRoom {
  async webSocketMessage(ws,message){
   try{if(typeof message!=='string'||message.length>MAX_JSON)throw Error('Edición demasiado grande.');const rate=ws.deserializeAttachment()||{bucket:Date.now(),messages:0};if(Date.now()-rate.bucket>1000){rate.bucket=Date.now();rate.messages=0}if(++rate.messages>20)throw Error('Demasiadas ediciones. Reintentá en un momento.');ws.serializeAttachment(rate);const data=JSON.parse(message);if(data.type==='ping'){ws.send('{"type":"pong"}');return}if(data.type!=='patch')throw Error('Mensaje inválido.');ws.send(JSON.stringify(this.patch(data)))}catch(error){ws.send(JSON.stringify({type:'error',error:error.message}))}
  }
- webSocketClose(ws,code,reason){try{ws.close(code,reason)}catch{}this.presence()}
+ webSocketClose(ws,code,reason){try{ws.close([1005,1006,1015].includes(code)?1000:code,reason)}catch{}this.presence()}
  webSocketError(ws){try{ws.close(1011,'Reconectando')}catch{}this.presence()}
 }

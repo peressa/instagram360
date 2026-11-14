@@ -49,5 +49,6 @@ const append=new Sync({clientId:'append',send:()=>true});append.snapshot({values
  assert.equal((await room.fetch(req('/media/'+'0'.repeat(64),{method:'PUT',headers:{'Content-Type':'image/png'},body:'wrong hash'}))).status,400);
  const routed=await router.fetch(new Request('https://test.invalid/p/test/'),{ASSETS:{fetch:r=>{assert.equal(new URL(r.url).pathname,'/');return new Response('app')}}});assert.equal(routed.headers.get('X-Robots-Tag'),'noindex, nofollow');assert.equal(routed.status,200);
  const wrongOrigin=await router.fetch(new Request('https://test.invalid/api/projects/test',{headers:{Origin:'https://foreign.invalid'}}),{});assert.equal(wrongOrigin.status,403);
+ let closeCode;room.webSocketClose({close:code=>closeCode=code},1005,'');assert.equal(closeCode,1000,'Reserved transport codes cannot be echoed in a close frame');
  database.close();console.log('Sharing passed: model privacy, schema, merge/conflict, two clients, offline outbox, undo, SQL persistence, media hashes, origin checks and idempotent writes.');
 })().catch(error=>{console.error(error);process.exitCode=1});
