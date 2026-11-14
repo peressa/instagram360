@@ -388,7 +388,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css?v=20261113.15"><link rel="stylesheet" href="workspace.css?v=20261113.15"><link rel="stylesheet" href="simulator.css?v=20261113.15">
+</style><link rel="stylesheet" href="studio.css?v=20261113.17"><link rel="stylesheet" href="workspace.css?v=20261113.17"><link rel="stylesheet" href="simulator.css?v=20261113.17">
 </head>
 <body>
 <div class="app">
@@ -534,7 +534,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 <dialog id="nameDialog" style="margin:auto;padding:28px;border:1px solid #43503e;border-radius:12px;background:#181c18;color:#fff;max-width:420px;width:90%"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required style="display:block;width:100%;padding:12px;margin:18px 0;background:#242a23;border:1px solid #43503e;color:#fff;border-radius:7px"><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="studio.js?v=20261113.15"></script><script src="persistence.js"></script><script src="workspace.js?v=20261113.15"></script><script src="simulator.js?v=20261113.15"></script><script>
+<script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="studio.js?v=20261113.17"></script><script src="persistence.js"></script><script src="workspace.js?v=20261113.17"></script><script src="simulator.js?v=20261113.17"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
@@ -1553,7 +1553,7 @@ function wireProfile() {
     const persist=()=>{profile[f]=readInlineProfileField(el);if(f==='posts')profile.autoPosts=false;saveProfile();syncEditor();document.querySelectorAll('[data-f="'+f+'"]').forEach(other=>{if(other!==el)other.textContent=profile[f]})};
     el.addEventListener('focus',()=>{initial={value:profile[f],display:el.innerText??el.textContent,autoPosts:profile.autoPosts};cancelled=false;closeWorkspace()});
     el.addEventListener('input',e=>{if(!e.isComposing)persist()});el.addEventListener('compositionend',persist);
-    el.addEventListener('blur',()=>{if(!cancelled)persist();cancelled=false;initial=null;applyProfile();syncEditor()});
+    el.addEventListener('blur',()=>{if(!cancelled)persist();cancelled=false;initial=null;document.querySelectorAll('[data-f="'+f+'"]').forEach(other=>other.textContent=f==='posts'&&profile.autoPosts?String(filled().length):profile[f]||'');syncEditor()});
     el.addEventListener('keydown',e=>{
       if(e.isComposing)return;
       if(e.key==='Escape'&&initial){e.preventDefault();e.stopPropagation();cancelled=true;profile[f]=initial.value;if(f==='posts')profile.autoPosts=initial.autoPosts;el.textContent=initial.display;saveProfile();el.blur();return}
@@ -1563,38 +1563,15 @@ function wireProfile() {
     el.addEventListener('paste',e=>{e.preventDefault();const text=normalizeInlineProfileValue(f,e.clipboardData?.getData('text/plain')||'');insertInlinePlainText(el,text)});
   });
 
-  const avatarEl = $('avatar'), avatarImg = $('avatarImg');
-  // click to upload (only when no image, or long-press replaced by crop interaction)
-  avatarEl.addEventListener('click', e => {
-    if (profile.avatar) return; // has image — pointer events handled by wireCircleCrop
-    $('avatarInput').click();
-  });
-  $('avatarInput').addEventListener('change', e => {
-    const file = e.target.files[0]; if (!file) return;
-    const r = new FileReader(); r.onload = ev => { profile.avatar = { src: ev.target.result, panX: 0, panY: 0, z: 1 }; applyProfile(); saveProfile(); };
-    r.readAsDataURL(file); $('avatarInput').value = '';
-  });
-  wireCircleCrop(avatarEl,
-    () => normAvatar(profile.avatar),
-    upd => { if (!profile.avatar) return; profile.avatar = Object.assign(normAvatar(profile.avatar), upd); applyAvatarImg(); },
-    () => saveProfile()
-  );
-  // double-tap / long-press to replace avatar
-  let avatarTapT = 0;
-  avatarEl.addEventListener('click', e => {
-    if (!profile.avatar) return;
-    const now = Date.now();
-    if (now - avatarTapT < 500) { $('avatarInput').click(); avatarTapT = 0; } else avatarTapT = now;
+  $('avatarInput').addEventListener('change',async e=>{
+    const file=e.target.files[0];e.target.value='';if(!file)return;
+    try{profile.avatar=await profileImageFromFile(file);applyAvatarImg();saveProfile();syncEditor()}catch(err){alert(err.message)}
   });
 
   $('hlToggle').addEventListener('click', () => { profile.hlOpen = !profile.hlOpen; applyHighlights(); saveProfile(); });
-  $('hlInput').addEventListener('change', e => {
-    const file = e.target.files[0]; if (!file || !hlTarget) return;
-    const r = new FileReader(); r.onload = ev => {
-      const h = profile.highlights.find(x => x.id === hlTarget);
-      if (h) { h.cover = { src: ev.target.result, panX: 0, panY: 0, z: 1 }; applyHighlights(); renderHighlightsEditor(); saveProfile(); }
-      hlTarget = null;
-    }; r.readAsDataURL(file); $('hlInput').value = '';
+  $('hlInput').addEventListener('change',async e=>{
+    const file=e.target.files[0],target=hlTarget;e.target.value='';hlTarget=null;if(!file||!target)return;
+    try{const cover=await profileImageFromFile(file),h=profile.highlights.find(x=>x.id===target);if(h){h.cover=cover;applyHighlights();renderHighlightsEditor();saveProfile()}}catch(err){alert(err.message)}
   });
 }
 

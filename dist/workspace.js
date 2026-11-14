@@ -37,7 +37,7 @@ function initDirectEditing(){
  }));
  phone.querySelectorAll('.prof-address,.prof-mutual').forEach(el=>bind(el,2,'address','Cambiar ubicación y enlaces'));
  bind(phone.querySelector('.profile-options'),-1,null,'Opciones del perfil y proyecto');
- bind($('avatar'),0,'avatar','Cambiar foto del perfil');
+ const avatar=$('avatar');avatar.tabIndex=0;avatar.setAttribute('role','button');avatar.setAttribute('aria-label','Cambiar foto del perfil');avatar.title='Tocá para cambiar la foto';avatar.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();closeWorkspace();$('avatarInput').click()},true);avatar.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('avatarInput').click()}});
 }
 function normalizeInlineProfileValue(field,value){
  const text=String(value??'').replace(/\r\n?/g,'\n').replace(/\u00a0/g,' ');
