@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.0-beta.3 · 2026-11-14
+
+- Keep carousel pagination labels accessible without showing them as text over the image.
+- Includes the multi-photo carousel, highlight player and desktop post improvements from beta.2.
+
 ## 0.1.0-beta.2 · 2026-11-14
 
 - Real multi-photo carousels with batch upload, cover/reorder/removal, desktop arrows and native mobile swipe. Likes and comments preserve the current slide.

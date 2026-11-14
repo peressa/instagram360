@@ -18,7 +18,7 @@ function buildPostMedia(media,tile,asset,index,start=0){
  const counter=dom('span','sim-carousel-count'),dots=dom('div','sim-carousel-dots');counter.setAttribute('aria-live','polite');
  const show=i=>{simCurrentSlide=Math.max(0,Math.min(items.length-1,i));track.scrollTo({left:track.clientWidth*simCurrentSlide,behavior:'smooth'});sync()};
  const previous=simButton('Foto anterior',()=>show(simCurrentSlide-1),igIcon('back')),next=simButton('Foto siguiente',()=>show(simCurrentSlide+1),svgLine('<path d="m9 5 7 7-7 7"/>'));previous.classList.add('sim-carousel-prev');next.classList.add('sim-carousel-next');
- items.forEach((_,i)=>dots.append(simButton('Ir a la foto '+(i+1),()=>show(i))));
+ items.forEach((_,i)=>{const dot=simButton('Ir a la foto '+(i+1),()=>show(i));dot.textContent='';dots.append(dot)});
  function sync(){counter.textContent=(simCurrentSlide+1)+' / '+items.length;previous.hidden=simCurrentSlide===0;next.hidden=simCurrentSlide===items.length-1;[...dots.children].forEach((dot,i)=>{dot.classList.toggle('active',i===simCurrentSlide);dot.setAttribute('aria-current',String(i===simCurrentSlide))});media.dataset.slideIndex=simCurrentSlide}
  simCurrentSlide=Math.max(0,Math.min(items.length-1,start));media.append(track,counter,previous,next,dots);sync();
  track.addEventListener('scroll',()=>{if(!track.isConnected||simCurrentPost!==index)return;const i=Math.round(track.scrollLeft/track.clientWidth);if(Number.isFinite(i)){simCurrentSlide=Math.max(0,Math.min(items.length-1,i));sync()}},{passive:true});
