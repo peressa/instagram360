@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0-beta.5 · 2026-11-14
+
+- Choose a PNG capture area: complete profile, profile header, highlight covers, feed grid, open post or current highlight story. Preview the chosen area and preserve the device and theme.
+- Capture directly from post/story viewers; retain the current carousel photo and pause highlight playback until export closes, respecting existing manual pauses.
+- Render an inert copy without resizing, scrolling or re-rendering the editor; remove capture copies on success or failure and prevent Escape from also closing the underlying viewer.
+- Apply the same export controls to local, shared and legacy Hilton projects. Verify all six downloads on desktop and Android/iPhone layouts, including dark mode and state preservation.
+
 ## 0.2.0-beta.4 · 2026-11-14
 
 - Merge profile metadata from both page and embed sources; preserve known empty bios, exact zeros and precise available counts. Support Spanish count/biography metadata and safe same-profile canonical redirects.

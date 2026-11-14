@@ -388,8 +388,8 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css?v=20261114.import4"><link rel="stylesheet" href="workspace.css?v=20261114.import4"><link rel="stylesheet" href="simulator.css?v=20261114.import4"><link rel="stylesheet" href="sharing.css?v=20261114.import4">
-<link rel="stylesheet" href="/export-ui.css?v=20261114.import4"><link rel="stylesheet" href="/instagram-import.css?v=20261114.import4"></head>
+</style><link rel="stylesheet" href="studio.css?v=20261114.capture5"><link rel="stylesheet" href="workspace.css?v=20261114.capture5"><link rel="stylesheet" href="simulator.css?v=20261114.capture5"><link rel="stylesheet" href="sharing.css?v=20261114.capture5">
+<link rel="stylesheet" href="/export-ui.css?v=20261114.capture5"><link rel="stylesheet" href="/instagram-import.css?v=20261114.capture5"></head>
 <body>
 <div class="app">
   <div class="header">
@@ -496,14 +496,16 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
     <h3 id="exportTitle">¿Qué querés guardar?</h3>
     <p class="export-intro">Una captura para compartir o las fotos para publicar.</p>
     <div class="expmode" id="expMode" role="group" aria-label="Tipo de descarga">
-      <button type="button" data-m="feed" class="active" aria-pressed="true"><strong>Captura del perfil</strong><small>Todo el perfil en una imagen</small></button>
+      <button type="button" data-m="feed" class="active" aria-pressed="true"><strong>Captura de Instagram</strong><small>Elegí qué parte guardar</small></button>
       <button type="button" data-m="images" aria-pressed="false"><strong>Fotos para publicar</strong><small>Fotos separadas y carruseles</small></button>
     </div>
     <div id="paneFeed">
       <p id="captureContext" class="capture-context"></p>
-      <p class="sub">Incluye el perfil completo y todas las publicaciones visibles, con el dispositivo y el tema que elegiste.</p>
+      <label class="capture-choice" for="captureTarget">¿Qué parte querés capturar?
+        <select id="captureTarget" aria-describedby="captureDescription"><option value="full">Perfil completo</option><option value="profile">Encabezado del perfil</option><option value="highlights">Portadas de destacados</option><option value="feed">Feed · grilla de publicaciones</option><option value="post">Publicación abierta</option><option value="story">Historia destacada abierta</option></select>
+      </label><p class="sub" id="captureDescription"></p>
       <div class="feed-preview" id="feedPreview" aria-label="Vista previa de la captura"><div class="feed-loading">Preparando vista previa…</div></div>
-      <details class="export-options"><summary>Opciones de la captura</summary><div class="opt"><label><input type="checkbox" id="showOrder"> Numerar el orden para publicar</label></div><p class="sub">El 1 indica la primera foto que tenés que publicar, abajo a la derecha.</p></details>
+      <details class="export-options" id="captureOrderOptions"><summary>Opciones de la captura</summary><div class="opt"><label><input type="checkbox" id="showOrder"> Numerar el orden para publicar</label></div><p class="sub">El 1 indica la primera foto que tenés que publicar, abajo a la derecha.</p></details>
       <div class="actions"><button class="btn" id="exportCancel2">Volver</button><button class="btn btn-accent" id="feedGo">Guardar captura</button></div>
       <p class="exp-ios-hint">iPhone: abrí la descarga → Compartir → Guardar en Fotos.</p>
     </div>
@@ -524,7 +526,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 <dialog id="nameDialog" style="margin:auto;padding:28px;border:1px solid #43503e;border-radius:12px;background:#181c18;color:#fff;max-width:420px;width:90%"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required style="display:block;width:100%;padding:12px;margin:18px 0;background:#242a23;border:1px solid #43503e;color:#fff;border-radius:7px"><div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="shared-model.js?v=20261114.import4"></script><script src="live-sync.js?v=20261114.import4"></script><script src="sharing.js?v=20261114.import4"></script><script src="/instagram-model.js?v=20261114.import4"></script><script src="/instagram-saved-page.js?v=20261114.import4"></script><script src="/instagram-import.js?v=20261114.import4"></script><script src="/export-ui.js?v=20261114.import4"></script><script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261114.import4"></script><script src="profile-counts.js?v=20261114.import4"></script><script src="reliability.js?v=20261114.import4"></script><script src="post-media.js?v=20261114.import4"></script><script src="direct-media.js?v=20261114.import4"></script><script src="highlight-media.js?v=20261114.import4"></script><script src="story-player.js?v=20261114.import4"></script><script src="studio.js?v=20261114.import4"></script><script src="persistence.js"></script><script src="workspace.js?v=20261114.import4"></script><script src="simulator.js?v=20261114.import4"></script><script>
+<script src="shared-model.js?v=20261114.capture5"></script><script src="live-sync.js?v=20261114.capture5"></script><script src="sharing.js?v=20261114.capture5"></script><script src="/instagram-model.js?v=20261114.capture5"></script><script src="/instagram-saved-page.js?v=20261114.capture5"></script><script src="/instagram-import.js?v=20261114.capture5"></script><script src="/export-ui.js?v=20261114.capture5"></script><script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261114.capture5"></script><script src="profile-counts.js?v=20261114.capture5"></script><script src="reliability.js?v=20261114.capture5"></script><script src="post-media.js?v=20261114.capture5"></script><script src="direct-media.js?v=20261114.capture5"></script><script src="highlight-media.js?v=20261114.capture5"></script><script src="story-player.js?v=20261114.capture5"></script><script src="studio.js?v=20261114.capture5"></script><script src="persistence.js"></script><script src="workspace.js?v=20261114.capture5"></script><script src="simulator.js?v=20261114.capture5"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
@@ -1096,6 +1098,9 @@ function openExport() {
   const es = exportSize(); $('expDims').textContent = es.W + '×' + es.H;
   if (sel.size === 0) filled().forEach(i => sel.add(i));   // default to everything selected
   showExportError('');
+  prepareCaptureChoice();
+  exportModal.classList.add('open');
+  syncStoryPlayback();
   setExportMode('feed');
   refreshSelectionUI();
   exportModal.classList.add('open');
@@ -1107,6 +1112,8 @@ function openExport() {
 function closeExport() {
   if(exportBusy)return;
   exportModal.classList.remove('open');
+  ++feedPreviewVersion;
+  syncStoryPlayback();
   if (exportTrigger && exportTrigger.focus) exportTrigger.focus();
   exportTrigger = null;
 }
@@ -1390,7 +1397,7 @@ $('exportGo').addEventListener('click', () => {
 });
 $('feedGo').addEventListener('click',()=>runExportTask(downloadProfile,$('feedGo')));
 exportModal.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeExport(); return; }
+  if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closeExport(); return; }
   if (e.key !== 'Tab') return;
   const f = [...exportModal.querySelectorAll('button:not([disabled]), [href], input, select')].filter(el => el.offsetParent !== null);
   if (!f.length) return;
@@ -1435,21 +1442,14 @@ function wrapLines(ctx, text, maxW) {
 function roundRectPath(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 
 let profileCaptureQueue=Promise.resolve();
-function renderProfileCanvas(){const order=$('showOrder').checked,next=profileCaptureQueue.then(()=>captureProfileCanvasNow(order));profileCaptureQueue=next.catch(()=>{});return next}
-async function captureProfileCanvasNow(showOrder){
- const stage=document.querySelector('.stage'),previous=document.body.dataset.canvas,top=stage.scrollTop,left=stage.scrollLeft;
- document.body.dataset.canvas='profile';document.body.classList.add('exporting');render();applyProfile();
- try {
-   const phone=document.querySelector('.phone');await Promise.all([...phone.querySelectorAll('img')].filter(i=>i.getAttribute('src')).map(i=>i.decode().catch(()=>{})));
-   return await html2canvas(phone,{height:Math.ceil(phone.scrollHeight),scale:2,backgroundColor:null,logging:false,useCORS:false,onclone:doc=>{doc.body.classList.add('client-preview','exporting');const p=doc.querySelector('.phone');p.style.margin='0';const nav=p.querySelector('.ig-bottom');if(nav)nav.style.position='static';p.querySelectorAll('.cell:not(.has)').forEach(c=>c.remove());p.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));decorateExportOrder(doc,showOrder);}});
- } finally {document.body.classList.remove('exporting');document.body.dataset.canvas=previous;render();applyProfile();stage.scrollTop=top;stage.scrollLeft=left;}
-}
-function downloadProfileCanvas(c) {return new Promise((resolve,reject)=>{try{c.toBlob(blob=>{if(!blob){reject(new Error('No se pudo crear la imagen.'));return}dl(blob,`${(profile.handle||'perfil').replace(/[^\w.-]/g,'_')}_perfil.png`);resolve()},'image/png')}catch(error){reject(error)}});}
-async function downloadProfile(){const c=await renderProfileCanvas();await downloadProfileCanvas(c);}
+function renderProfileCanvas(target='full'){const order=$('showOrder').checked,next=profileCaptureQueue.then(()=>captureProfileCanvasNow(order,target));profileCaptureQueue=next.catch(()=>{});return next}
+async function captureProfileCanvasNow(showOrder,target='full'){return captureSelectedCanvas(target,showOrder)}
+function downloadProfileCanvas(c,target='full') {return new Promise((resolve,reject)=>{try{c.toBlob(blob=>{if(!blob){reject(new Error('No se pudo crear la imagen.'));return}dl(blob,`${(profile.handle||'perfil').replace(/[^\w.-]/g,'_')}_${CAPTURE_AREAS[target]?.file||'perfil'}.png`);resolve()},'image/png')}catch(error){reject(error)}});}
+async function downloadProfile(){const target=$('captureTarget')?.value||'full';const c=await renderProfileCanvas(target);await downloadProfileCanvas(c,target);}
 let feedPreviewVersion=0;
 async function showFeedPreview(){
- const version=++feedPreviewVersion,el=$('feedPreview');el.replaceChildren(dom('div','feed-loading','Preparando vista previa…'));
- try{const c=await renderProfileCanvas();if(version!==feedPreviewVersion)return;const img=new Image();img.className='feed-img';img.alt='Así se guardará tu perfil de Instagram';img.src=c.toDataURL('image/png');el.replaceChildren(img)}
+ const target=$('captureTarget').value,version=++feedPreviewVersion,el=$('feedPreview');el.replaceChildren(dom('div','feed-loading','Preparando vista previa…'));
+ try{const c=await renderProfileCanvas(target);if(version!==feedPreviewVersion)return;const img=new Image();img.className='feed-img';img.alt='Vista previa: '+CAPTURE_AREAS[target].label;img.src=c.toDataURL('image/png');el.replaceChildren(img)}
  catch(error){if(version!==feedPreviewVersion)return;el.replaceChildren(dom('p','feed-loading','No se pudo cargar la vista previa. Podés volver a intentar con Guardar captura.'))}
 }
 

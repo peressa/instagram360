@@ -18,3 +18,14 @@
 @media(max-width:420px){#exportModal{padding:10px}#exportModal .card{padding:20px;max-height:calc(100dvh - 20px);border-radius:20px}#exportModal h3{font-size:21px}#expMode{gap:8px;margin-bottom:16px}#expMode button{padding:11px}#expMode strong{font-size:12px}#expMode small{font-size:10px}#exportModal .feed-preview{max-height:220px}#exportModal .actions{bottom:-20px}#exportModal .actions .btn{font-size:11px;padding-inline:11px}}
 
 @media(max-width:360px){.direct-workspace .device-switch select{width:88px;max-width:88px;font-size:9px}.direct-workspace .device-switch .theme-toggle{width:32px}.direct-workspace .canvas-tools .btn{font-size:9px;padding-inline:8px}.direct-workspace .canvas-tools{gap:4px}}
+
+#exportModal .capture-choice{display:grid;gap:7px;font-size:12px;font-weight:600;margin-bottom:12px}#exportModal .capture-choice select{width:100%;max-width:none;min-height:44px;padding:10px 12px;font:inherit;color:#4a4240;background:#fff;border:1px solid #ddd3cd;border-radius:10px}#exportModal select:focus-visible{outline:2px solid #9e667b;outline-offset:2px}
+.sim-post-screen>.sim-topbar>.capture-action{margin-left:auto}.phone.web-layout .sim-post-screen>.sim-topbar>.capture-action{right:54px;top:12px}.capture-action svg{width:22px;height:22px}
+.capture-host{position:fixed;left:-20000px;top:0;width:var(--capture-width);pointer-events:none;z-index:-1}
+.capture-host .phone.capture-copy{width:var(--capture-width)!important;max-width:none!important;height:auto!important;min-height:0!important;zoom:1!important;margin:0!important;overflow:visible;border:0;border-radius:0;box-shadow:none}
+.capture-host .ig-main{flex:none!important;height:auto!important;overflow:visible!important}.capture-host .ig-bottom{position:static!important}
+.capture-host .cell{outline:none!important;box-shadow:none!important}.capture-host .hl-label{outline:none!important}.capture-host [contenteditable]{outline:none!important;background:transparent!important}
+.capture-host.capture-viewer .phone.capture-copy{height:var(--capture-height)!important;overflow:hidden}
+.capture-host.capture-viewer .sim-screen{display:flex!important}.capture-host.capture-viewer .phone.web-layout>.sim-screen{display:grid!important}
+.capture-host[data-area=post] .phone.mobile-layout>.sim-post-screen{bottom:auto;height:auto;overflow:visible}.capture-host[data-area=post] .phone.mobile-layout .sim-post-card{flex:none;overflow:visible;max-height:none;height:auto}
+.capture-host[data-area=post] .phone.mobile-layout{overflow:visible!important}.capture-host[data-area=story] .phone.capture-copy{background:#000}.capture-host[data-area=story] .sim-story-frame{border-radius:0}

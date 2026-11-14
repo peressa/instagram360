@@ -9,7 +9,7 @@ const phone=new Node('div'),body=new Node('body');body.dataset.panel='feed';cons
 const doc={body,hidden:false,activeElement:null,querySelector:s=>s==='.phone'?phone:null,querySelectorAll:()=>[],createTextNode:s=>s};
 let writes=0;const ctx=vm.createContext({Intl,DEFAULT_AVATAR:'avatar',document:doc,dom:(tag,cls,text)=>{const n=new Node(tag);n.className=cls;n.textContent=text??'';n.style.setProperty=()=>{};return n},profile:{handle:'qa',followers:'123456',following:'1',posts:'9'},tiles:[{imgId:'a',likes:'12,5 mil',comments:'1,2 mil'}],lib:[{id:'a',w:1080,h:1440}],svgLine:x=>x,igIcon:x=>x,setSafeAvatar(){},buildInlinePostMedia(){},requestAnimationFrame(){},save(){writes++},crypto:{randomUUID:()=> 'id'},clearTimeout(){},$:()=>button});
 const run=s=>vm.runInContext(s,ctx),load=f=>run(fs.readFileSync('dist/'+f+'.js','utf8'));
-load('profile-counts');load('reliability');load('simulator');
+load('profile-counts');load('reliability');load('export-ui');load('simulator');
 run("createSimScreen=()=>{const screen=dom('section'),head=dom('div'),content=dom('div');head.append(simButton('Volver al perfil',()=>{}));screen.append(head,content);simScreen=screen;return {screen,head,content}};buildPostMedia=(media,tile,asset,index,slide)=>{simCurrentSlide=slide}");
 run('showSimPost(0)');let screen=run('simScreen'),input=screen.querySelector('[aria-label="Comentario"]');input.value='Borrador exacto 🙂';input.emit('input');assert.equal(ctx.tiles[0].commentDraft,input.value);
 screen.querySelector('[aria-label="Guardar publicación"]').emit('click');screen=run('simScreen');assert.equal(screen.querySelector('[aria-label="Comentario"]').value,'Borrador exacto 🙂','Bookmark changes preserve draft');
