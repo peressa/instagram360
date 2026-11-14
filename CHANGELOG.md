@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0-beta.4 · 2026-11-14
+
+- Merge profile metadata from both page and embed sources; preserve known empty bios, exact zeros and precise available counts. Support Spanish count/biography metadata and safe same-profile canonical redirects.
+- Import highlight titles, covers and image stories when present in profile data, and hydrate them into the local editable project.
+- Add a free saved-HTML supplement for missing bio, visible exact counters and highlights. Parse the file only in an inert browser template, verify the target profile and never execute or upload its scripts.
+- Distinguish unavailable highlights, covers-only highlights and included story sequences; preserve existing media during enrichment and disclose source limitations.
+
 ## 0.2.0-beta.3 · 2026-11-14
 
 - Import a public Instagram profile by URL or username from Photos, with a preview before creating a separate local project.

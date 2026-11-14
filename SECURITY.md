@@ -10,3 +10,6 @@ Local projects stay in the visitor's browser. Explicitly shared projects are sto
 
 
 Explicit Instagram URL imports request only public profile/embed pages and allowlisted image CDNs through the Worker. Instagram credentials/cookies are not forwarded or collected. Public preview metadata may be cached for five minutes; image responses have a ten-minute browser cache. Imported copies are local until explicitly shared. The image proxy rejects arbitrary hosts, HTTP, credentials, custom ports and redirects, accepts only supported image MIME types and bounds response sizes. See docs/INSTAGRAM-IMPORT.md.
+
+
+Optional saved Instagram HTML is read only in an inert browser template and is never inserted as live page content. Its scripts and event handlers are not executed, the canonical profile must match the requested handle, and raw HTML/cookies/session configuration are never sent to the Worker. Only whitelisted extracted profile values are kept locally; image URLs use the existing CDN-only proxy.

@@ -4,7 +4,7 @@ Open **Fotos → Importar Instagram**, paste the profile URL and choose **Buscar
 
 This is a best-effort public-page importer, not an authenticated Instagram integration or synchronization service. It reads the profile's public HTML metadata and public embed JSON without executing provider scripts. It does not query private endpoints, collect passwords, forward Instagram cookies or bypass login/challenge/rate restrictions. Instagram can change the format, return a partial feed or block server-side access. Such cases are reported; a complete account import is not guaranteed.
 
-Available data includes identity, avatar, biography, supplied profile counts, captions, dates, supplied interaction totals, post order and available carousel images. Missing counts use `—`; abbreviated source counts remain source abbreviations rather than invented exact totals. Highlights, private information, individual comments and unavailable links are not reconstructed. Videos use their poster image only. This is a snapshot, not a continuing connection to Instagram.
+Available data includes identity, avatar, biography, supplied profile counts, captions, dates, supplied interaction totals, post order and available carousel images. Missing counts use `—`; abbreviated source counts remain source abbreviations rather than invented exact totals. Highlight titles, covers and image story sequences are imported only when actually present in a source. Private information, individual comments and unavailable links are not reconstructed. Videos use their poster image only. This is a snapshot, not a continuing connection to Instagram.
 
 ## Implementation
 
@@ -21,3 +21,14 @@ The frontend uses common root assets on both the main editor and the existing Hi
 ## Verification
 
 `tests/instagram-import.cjs` covers synthetic public metadata and nested embed JSON, Unicode captions, carousel ordering, partial data, unknown counters, local project shape, URL validation, foreign Origins and redirect rejection. It makes no live Instagram calls. Browser smoke tests use public profiles and check actual image loading, independent local saving, carousel navigation and reload in desktop/mobile layouts. Real account images/data must not be bundled in fixtures or releases.
+
+
+## Free saved-page enrichment
+
+When Cloudflare receives incomplete public metadata, the user can select a saved HTML page of the same profile. `dist/instagram-saved-page.js` parses it in an inert, never-inserted `<template>`, verifies the canonical Instagram handle and extracts only whitelisted profile fields, visible count labels/tooltips and highlight links/images. Provider scripts are not executed and raw HTML is never uploaded. Extracted image URLs still use the same bounded CDN proxy when previewed or imported; cookies and page tokens are not forwarded.
+
+The supplement preserves available URL-imported media and adds/replaces corresponding profile/highlight fields. A complete visible count wins over an abbreviated candidate. Known empty biographies and zero values remain meaningful. Wrong-profile HTML is rejected. Expand the bio and wait for highlight covers before saving; partially rendered pages can remain incomplete.
+
+Saved profile DOM commonly contains highlight covers/titles rather than the complete story sequences. Structured story image data is supported if present, with at most 50 highlights, 100 stories per highlight and 200 story frames overall. Covers-only highlights retain an empty story array; the reader does not turn a cover into an invented story. Local image-file references are not read from disk implicitly and are reported as missing. There is no guarantee of a full automatic highlight import by URL without another data source.
+
+Verification includes real visible public profile header data with six highlights, exact count tooltips and an expanded biography, plus synthetic included story sequences and an inert-script probe. No real account export or session data is committed to the repository.

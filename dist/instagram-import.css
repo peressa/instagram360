@@ -3,3 +3,5 @@
 
 .ig-import-thumbs{max-height:190px;overflow:auto;scrollbar-width:thin}.ig-import-footer{position:sticky;bottom:-28px;background:#fff;padding-top:12px}.ig-import-footer>.btn{display:flex;width:100%;margin:0 0 6px}.ig-import-footer .ig-import-privacy{margin-bottom:0}
 @media(max-width:480px){.ig-import-thumbs{max-height:170px}.ig-import-footer{bottom:-22px}}
+
+.ig-import-saved{margin:16px 0 10px;padding:12px;border:1px solid #eaded7;border-radius:12px;background:#faf8f6;font-size:12px;line-height:1.6}.ig-import-saved summary{cursor:pointer;font-weight:600}.ig-import-saved p{margin:10px 0;color:#776d69}.ig-import-saved .btn{width:100%;background:#fff}.ig-import-highlights{display:flex;gap:12px;overflow:auto;padding:12px 0}.ig-import-highlights>div{flex:none;width:64px;text-align:center;font-size:11px}.ig-import-highlights img{display:block;width:58px;height:58px;object-fit:cover;border-radius:50%;margin:auto auto 6px}.ig-import-highlights span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

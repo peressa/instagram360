@@ -72,6 +72,20 @@ Límites propios de esta beta: 25 MB por imagen, 200 MB/500 imágenes almacenada
 3. Revisá el nombre, la bio, las cifras, las miniaturas y las advertencias. La vista previa indica cuántas publicaciones y fotos entregó Instagram.
 4. Tocá **Importar como proyecto nuevo**. Se descargan las imágenes y se abre una copia editable guardada en tu navegador. El proyecto que tenías abierto se conserva. Si querés compartir la copia, usá **Compartir** después.
 
-Se traen los datos públicos disponibles y las fotos de los carruseles que entrega Instagram. No incluye destacados, mensajes, comentarios individuales ni estadísticas privadas. Los videos se representan con su portada. Las cifras no disponibles quedan como `—`; las abreviaturas entregadas por Instagram no se convierten en cifras exactas inventadas.
+Se traen los datos públicos disponibles y las fotos de los carruseles que entrega Instagram. Se importan nombres, portadas y las imágenes de historias destacadas que estén incluidas en la fuente. No se importan mensajes, comentarios individuales ni estadísticas privadas. Los videos se representan con su portada. Las cifras no disponibles quedan como `—`; las abreviaturas entregadas por Instagram no se convierten en cifras exactas inventadas.
 
 Instagram puede entregar sólo parte del feed, exigir iniciar sesión o bloquear temporalmente la lectura. La app lo indica y no pide tu contraseña ni intenta saltar esas restricciones. Si una foto no se puede descargar, no se guarda una importación incompleta: volvé a buscar el perfil para renovar los enlaces. [Detalles y límites](INSTAGRAM-IMPORT.md).
+
+
+## Completar bio, cifras y destacados sin servicios pagos
+
+La lectura por enlace puede omitir datos que sí aparecen cuando abrís Instagram en tu navegador. Para completar la copia:
+
+1. En PC, abrí ese perfil en Instagram. Expandí la bio con **más** y esperá que se vean los destacados.
+2. Guardá la página como HTML con **Ctrl+S**. Si está disponible, elegí el tipo **sólo HTML**, que conserva los enlaces originales de las imágenes.
+3. En la vista previa de IG360, abrí **Completar bio, cifras y destacados sin servicios pagos → Elegir HTML del perfil**. Seleccioná ese archivo.
+4. Revisá los datos recuperados y el número de destacados/historias antes de importar la copia nueva.
+
+El archivo se procesa en tu navegador: no se sube al servidor ni se ejecutan sus scripts. Se verifica que corresponda al mismo perfil. Las cifras visibles con un valor completo se priorizan frente a versiones abreviadas; no se reconstruyen dígitos desconocidos.
+
+Una página de perfil normalmente aporta las portadas y nombres de los destacados, pero no necesariamente sus historias internas. La app indica **cuántas historias vienen incluidas**, incluso si son cero. Si el navegador reemplazó las URLs por archivos locales, algunas portadas no se podrán descargar: podés cambiarlas después tocando sus círculos. No hay un servicio de pago ni una conexión de cuenta de Instagram detrás de esta opción.

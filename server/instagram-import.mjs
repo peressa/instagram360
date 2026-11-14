@@ -2,13 +2,19 @@ import Model from '../dist/instagram-model.js';
 const json=(data,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
 async function bounded(response,max){const reader=response.body?.getReader();if(!reader)return new Uint8Array();let size=0;const chunks=[];for(;;){const part=await reader.read();if(part.done)break;size+=part.value.byteLength;if(size>max){await reader.cancel();throw Error('La respuesta de Instagram supera el tamaño admitido.')}chunks.push(part.value)}const bytes=new Uint8Array(size);let at=0;for(const chunk of chunks){bytes.set(chunk,at);at+=chunk.length}return bytes}
 async function rate(request,env,scope,limit){const key=scope+':'+Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(request.headers.get('CF-Connecting-IP')||'local'))),b=>b.toString(16).padStart(2,'0')).join('');return env.PROJECTS.getByName('__instagram_import_limits').fetch('https://internal/rate?limit='+limit+'&key='+encodeURIComponent(key))}
-async function page(url){const response=await fetch(url,{redirect:'manual',headers:{Accept:'text/html','Accept-Language':'en-US,en;q=0.9','User-Agent':'Instagram360/0.2 (+https://ig360.peressa.dev)'},signal:AbortSignal.timeout(15000)});if(!response.ok)throw Error('Instagram no permite leer este perfil ahora. Probá más tarde o revisá que sea público.');return new TextDecoder().decode(await bounded(response,4*1024*1024))}
+export async function page(url){
+ const original=new URL(url),signal=AbortSignal.timeout(15000);for(let redirects=0;redirects<=2;redirects++){
+  const response=await fetch(url,{redirect:'manual',headers:{Accept:'text/html','Accept-Language':'en-US,en;q=0.9','User-Agent':'Instagram360/0.2 (+https://ig360.peressa.dev)'},signal});
+  if([301,302,303,307,308].includes(response.status)){await response.body?.cancel();const next=new URL(response.headers.get('Location')||'',url);if(next.protocol!=='https:'||!['www.instagram.com','instagram.com'].includes(next.hostname)||next.port||next.username||next.password||next.pathname.replace(/\/$/,'')!==original.pathname.replace(/\/$/,''))throw Error('Instagram solicita acceso fuera del perfil público.');url=next.href;continue}
+  if(!response.ok)throw Error('Instagram no permite leer este perfil ahora. Probá más tarde o revisá que sea público.');return new TextDecoder().decode(await bounded(response,4*1024*1024));
+ }throw Error('Instagram redirigió demasiadas veces el perfil público.');
+}
 export async function instagramImport(request,env){
  const url=new URL(request.url),origin=request.headers.get('Origin');if(origin&&origin!==url.origin)return json({error:'Origen no permitido.'},403);
  try{
   if(url.pathname==='/api/instagram/preview'&&request.method==='POST'){
    const body=JSON.parse(new TextDecoder().decode(await bounded(request,4096))),handle=Model.username(body.profileURL),allowed=await rate(request,env,'preview',30);if(!allowed.ok)return json({error:'Se alcanzó el límite de consultas de esta hora. Reintentá más tarde.'},429);
-   const cacheKey=new Request(url.origin+'/api/instagram/cache/v2/'+handle);let cache=null;try{cache=caches.default;const hit=await cache.match(cacheKey);if(hit)return hit}catch{}
+   const cacheKey=new Request(url.origin+'/api/instagram/cache/v4/'+handle);let cache=null;try{cache=caches.default;const hit=await cache.match(cacheKey);if(hit)return hit}catch{}
    const results=await Promise.allSettled([page('https://www.instagram.com/'+handle+'/'),page('https://www.instagram.com/'+handle+'/embed/')]);
    if(results.every(r=>r.status==='rejected'))return json({error:'Instagram bloqueó la lectura o el perfil no está disponible. No se importó ningún dato. Reintentá más tarde.'},502);
    const data=Model.parse(handle,results[0].status==='fulfilled'?results[0].value:'',results[1].status==='fulfilled'?results[1].value:'');

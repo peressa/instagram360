@@ -18,6 +18,7 @@ Preview: `127.0.0.1:8765`. Use `--port 9000` for another port. For a phone on yo
 | `dist/studio.js`, `studio.css` | Profile presentation, contextual editors and device variants |
 | `dist/simulator.js`, `simulator.css` | Local posts, comments, stories and navigation |
 | `server/instagram-import.mjs`, `dist/instagram-model.js` | Public Instagram preview parsing, bounded fetches and CDN-only media proxy |
+| `dist/instagram-saved-page.js` | Browser-local, inert saved-page enrichment and identity verification |
 | `dist/instagram-import.js`, `instagram-import.css` | Preview dialog, image hydration and isolated local project creation |
 | `worker/main.mjs` | Generic project routing and compatibility with the existing Hilton namespace |
 | `server/worker.mjs` | Shared project routing, SQLite Durable Objects, media and WebSockets |
