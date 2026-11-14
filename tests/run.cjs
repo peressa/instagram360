@@ -1,7 +1,7 @@
 const {spawnSync}=require('node:child_process');
 const {readFileSync}=require('node:fs');
 const vm=require('node:vm');
-for(const name of ['reliability','grid-resize','highlight-media','backup','persistence','simulator','circle-crop','profile-counts']){
+for(const name of ['shared-static','reliability','grid-resize','highlight-media','backup','persistence','simulator','circle-crop','profile-counts']){
   const result=spawnSync(process.execPath,['tests/'+name+'.cjs'],{stdio:'inherit'});
   if(result.status!==0)process.exit(result.status||1);
 }

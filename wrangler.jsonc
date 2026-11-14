@@ -2,8 +2,34 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "instagram360",
   "compatibility_date": "2026-11-13",
-  "assets": { "directory": "./dist" },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/shared/*"
+    ]
+  },
   "routes": [
-    { "pattern": "ig360.peressa.dev", "custom_domain": true }
+    {
+      "pattern": "ig360.peressa.dev",
+      "custom_domain": true
+    }
+  ],
+  "main": "worker/shared-project.mjs",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SHARED_PROJECTS",
+        "class_name": "SharedProject"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "shared-projects-v1",
+      "new_sqlite_classes": [
+        "SharedProject"
+      ]
+    }
   ]
 }
