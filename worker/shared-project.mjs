@@ -120,5 +120,6 @@ export class SharedProject extends DurableObject {
     return json({error:'Not found'},404);
   }
   webSocketMessage(socket,message){if(message==='ping')socket.send('pong');}
-  webSocketClose(socket,code){socket.close(code,'');}
+  webSocketClose(socket,code){try{socket.close([1005,1006,1015].includes(code)?1000:code,'')}catch{}}
+  webSocketError(socket){try{socket.close(1011,'Connection interrupted')}catch{}}
 }
