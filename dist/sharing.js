@@ -3,7 +3,7 @@ const sharedRoute=location.pathname.match(/^\/p\/([a-z0-9-]+)\/?$/)?.[1]||null;
 let liveProject=null,sharingReady=false;
 function identifySharedPosts(){const seen=new Set();for(const t of tiles){if(!t)continue;if(!t._sharedId||seen.has(t._sharedId))t._sharedId=crypto.randomUUID();seen.add(t._sharedId)}for(const h of profile.highlights)for(const s of h.stories||[])if(!s.id)s.id=crypto.randomUUID()}
 function sharedLocalChanged(store,record){if(liveProject&&sharingReady&&activeProfile==='shared:'+sharedRoute&&(store==='assets'||store==='state'&&['layout','profile'].includes(record?.key)))liveProject.note()}
-function sharedDestination(id){const entry=profileCatalog.find(p=>p.id===id);return entry?.sharedSlug?'/p/'+entry.sharedSlug+'/':'/'}
+function sharedDestination(id){const entry=profileCatalog.find(p=>p.id===id);return entry?.sharedSlug?'/p/'+entry.sharedSlug+'/':'/?project='+encodeURIComponent(id)}
 function initializeSharedCatalog(){
  if(sharedRoute){activeProfile='shared:'+sharedRoute;if(!profileCatalog.some(p=>p.id===activeProfile))profileCatalog.push({id:activeProfile,name:sharedRoute,sharedSlug:sharedRoute})}
  else if(profileCatalog.find(p=>p.id===activeProfile)?.sharedSlug){activeProfile=profileCatalog.find(p=>!p.sharedSlug)?.id||'default';if(!profileCatalog.some(p=>p.id===activeProfile))profileCatalog.push({id:activeProfile,name:'Mi perfil'})}

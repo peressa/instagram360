@@ -6,10 +6,11 @@ An open source visual studio for designing and presenting Instagram profiles. Ed
 
 [Live demo](https://ig360.peressa.dev) · [Latest beta](https://github.com/peressa/instagram360/releases) · [Guía en español](docs/USAGE.md) · [Contribute](CONTRIBUTING.md)
 
-![Instagram 360 desktop workspace with an original example profile](docs/screenshots/desktop.jpg)
+![Instagram 360 project gallery with independent profile previews](docs/screenshots/projects-desktop.jpg)
 
 ## What you can do
 
+- Browse saved projects with profile previews; open, duplicate or create a project directly from the home screen. The editor keeps the large Instagram mockup and a small return-to-projects control.
 - Start a project with a separate project name and Instagram display name, then use the contextual guide to discover editable areas.
 - Edit names, biography and counts directly on the profile.
 - Replace avatars/highlight covers and drag to crop inside their circles.
@@ -48,11 +49,11 @@ Open **http://127.0.0.1:8765**. Run `node tests/run.cjs` (or `npm test`). Any st
 
 ## Try a complete example
 
-Download [the example backup](examples/studio360.json) and import it from the profile's three-dot menu → **Proyecto y ajustes → Importar**. It creates a separate project with synthetic data and original graphics. See [usage and backups](docs/USAGE.md).
+Download [the example backup](examples/studio360.json) and choose **Importar respaldo** from the home screen. It creates a separate project with synthetic data and original graphics. See [usage and backups](docs/USAGE.md).
 
 ## Beta status
 
-**v0.2.0-beta.4** improves biography/count extraction, supports available highlights and adds a free saved-HTML supplement. Public Instagram profile import starts at **Fotos → Importar Instagram**. Preview the available data and create a separate local editable copy, including available carousels. Public availability depends on Instagram; see [import limits](docs/INSTAGRAM-IMPORT.md). It also includes simplified profile exports and an Instagram dark-mode shortcut. It also supports editable project links such as `https://ig360.peressa.dev/p/my-project/`. Choose **Compartir**, pick an available address and create the link. Anyone with it can view and edit without an account. Profile, library, grid, carousels, highlights and submitted comments synchronize; comment drafts, simulated messages and preview preferences stay local. See [collaboration and deployment](docs/COLLABORATION.md).
+**v0.2.0-beta.8** adds a home screen for opening, duplicating and creating projects while keeping the editor focused on the mockup. Profile import improves biography/count extraction, supports available highlights and adds a free saved-HTML supplement. Public Instagram profile import starts at **Fotos → Importar Instagram**. Preview the available data and create a separate local editable copy, including available carousels. Public availability depends on Instagram; see [import limits](docs/INSTAGRAM-IMPORT.md). It also includes simplified profile exports and an Instagram dark-mode shortcut. It also supports editable project links such as `https://ig360.peressa.dev/p/my-project/`. Choose **Compartir**, pick an available address and create the link. Anyone with it can view and edit without an account. Profile, library, grid, carousels, highlights and submitted comments synchronize; comment drafts, simulated messages and preview preferences stay local. See [collaboration and deployment](docs/COLLABORATION.md).
 
 Different fields merge automatically. Competing edits to the same field require an explicit choice; this is field-level collaboration, not character-level collaborative text. Pending edits survive disconnections in that browser. Keep JSON backups. Shared projects currently have no owner accounts, access revocation or public deletion UI.
 

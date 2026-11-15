@@ -1,10 +1,11 @@
 function instagramMediaURLs(data){return [...new Set([data.profile.avatar,...data.posts.flatMap(p=>p.media.map(m=>m.url)),...(data.profile.highlights||[]).flatMap(h=>[h.cover,...(h.stories||[]).map(s=>s.src)])].filter(Boolean))]}
 function instagramMediaProxy(url){return '/api/instagram/media?url='+encodeURIComponent(url)}
 async function createImportedLocalProject(data){
+ if(typeof isProjectsHome==='function'&&isProjectsHome()){const id=await projectsSaveCopy(data,data.name);location.assign(projectEditorURL({id}));return}
  await flushProfile();if(!validBackup(data))throw Error('No se pudo preparar un proyecto válido con este perfil.');
  const id=crypto.randomUUID(),database=await new Promise((resolve,reject)=>{const request=indexedDB.open('rio360_'+id,1);request.onupgradeneeded=()=>{request.result.createObjectStore('assets',{keyPath:'id'});request.result.createObjectStore('state',{keyPath:'key'})};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(Error('No se pudo crear el proyecto en este navegador.'))});
  try{await new Promise((resolve,reject)=>{const tx=database.transaction(['assets','state'],'readwrite');for(const asset of data.assets)tx.objectStore('assets').put(asset);for(const record of [{key:'layout',...data.layout},{key:'profile',data:data.profile},{key:'view',data:data.view}])tx.objectStore('state').put(record);tx.oncomplete=resolve;tx.onerror=tx.onabort=()=>reject(Error('No hay espacio suficiente para guardar la importación.'))})}finally{database.close()}
- let catalog;try{catalog=JSON.parse(localStorage.getItem('rio360_profiles')||'[]')}catch{catalog=[]}if(!Array.isArray(catalog))catalog=[];catalog.push({id,name:data.name});localStorage.setItem('rio360_profiles',JSON.stringify(catalog));localStorage.setItem('rio360_active',id);location.assign('/');
+ let catalog;try{catalog=JSON.parse(localStorage.getItem('rio360_profiles')||'[]')}catch{catalog=[]}if(!Array.isArray(catalog))catalog=[];catalog.push({id,name:data.name});localStorage.setItem('rio360_profiles',JSON.stringify(catalog));localStorage.setItem('rio360_active',id);location.assign('/?project='+encodeURIComponent(id));
 }
 function instagramProjectData(preview,images){
  const p=preview.profile,assets=[],ids=new Map();for(const [url,image]of images){if(url===p.avatar&&!preview.posts.some(post=>post.media.some(m=>m.url===url)))continue;const asset={id:crypto.randomUUID(),name:'Instagram · '+p.handle+' · '+(assets.length+1),...image};assets.push(asset);ids.set(url,asset.id)}

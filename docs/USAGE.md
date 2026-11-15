@@ -2,9 +2,13 @@
 
 Abrí [la demo](https://ig360.peressa.dev). No hace falta iniciar sesión ni conectar una cuenta.
 
-En la primera visita aparece **Empezá tu primer proyecto**. El **nombre del proyecto** organiza tus propuestas; el **nombre del perfil en Instagram** es el texto visible en el mockup. Son independientes: renombrar el proyecto no cambia el perfil, y editar el perfil no renombra el proyecto. La bienvenida puede cerrarse para explorar y no vuelve a aparecer al recargar. Los enlaces compartidos abren directamente la propuesta.
+La pantalla inicial muestra **Tus proyectos**, con una vista compacta del perfil y sus primeras publicaciones. Usá **Abrir**, tocá la miniatura o elegí **Duplicar** para trabajar en una copia independiente. Las miniaturas se actualizan al volver al inicio o recargar. Los enlaces compartidos abren directamente la propuesta.
 
-Para crear otra propuesta, abrí los tres puntos → **Proyecto y ajustes → + Nuevo proyecto**. También podés elegir **Importar un perfil existente** desde ese diálogo; la app avisa que la copia por enlace puede quedar incompleta.
+Para empezar, tocá **+ Nuevo proyecto**. El **nombre del proyecto** organiza tus propuestas; el **nombre del perfil en Instagram** es el texto visible en el mockup. Son independientes: renombrar el proyecto no cambia el perfil, y editar el perfil no renombra el proyecto. También podés elegir **Importar un perfil existente** desde ese diálogo, o **Importar respaldo** desde el inicio.
+
+Dentro del editor, **← Proyectos** vuelve a la galería después de guardar. El mockup conserva su espacio y sus controles flotantes. Las direcciones locales con `?project=…` abren un proyecto guardado en este navegador; para verlo desde otro dispositivo o con otras personas, usá **Compartir** o llevá un respaldo.
+
+**Duplicar** conserva fotos, recortes, textos, carruseles, destacados y borradores locales. La copia tiene su propio guardado y no modifica el original. Al duplicar un proyecto compartido, se descargan sus imágenes y se crea una copia privada en este navegador.
 
 1. Si el perfil está vacío, usá **Subir primeras fotos** o **Importar Instagram** dentro del feed. También podés tocar **Fotos**, subir imágenes y arrastrarlas al perfil. También podés tocar una miniatura para agregarla.
 2. Tocá el nombre, usuario, bio o cifras para escribir. El valor completo de las cifras aparece al editar. Enter termina los campos de una línea; Esc restaura la edición anterior.

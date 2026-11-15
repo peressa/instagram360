@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0-beta.8 · 2026-11-15
+
+- Open the app on a project gallery with profile previews, separate project names and Open/Duplicate actions. Create projects and import backups without opening the photo library.
+- Give local projects explicit editor URLs and a small return-to-projects control. Preserve direct shared links, editor space, existing data namespaces and the Hilton route.
+- Read previews without creating or mutating source databases; include recovery drafts, saved crops and current shared snapshots with a labelled local fallback.
+- Duplicate into an independent private local project with an atomic asset/state transaction, catalog rollback and image hydration for shared sources. Never copy synchronization credentials or redirect a copy to its source.
+- Verify desktop/mobile creation, import, duplication, independent editing, reload and navigation, plus storage failure and missing-preview regressions.
+
 ## 0.2.0-beta.7 · 2026-11-15
 
 - Welcome new local users with a compact project dialog that separates the organizing project name from the visible Instagram profile name. Configure the first empty project in place; keep returning and shared sessions unobstructed.

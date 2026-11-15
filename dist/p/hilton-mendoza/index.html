@@ -388,8 +388,8 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 @media(max-width:700px){.app{height:auto;min-height:100dvh;overflow:visible}.header{padding:16px;gap:14px}.logo small{font-size:8px}.projectbar{padding:20px 16px;flex-direction:column;gap:15px}.projectbar h1{font-size:23px}.profile-actions{max-width:100%;width:100%}.profile-actions .btn{font-size:11px;padding:9px}.shell{overflow:visible;padding:0}.main{overflow:visible;border:0;border-radius:0}.stage{overflow:visible;padding-bottom:100px}.footer{position:fixed;bottom:0;z-index:15}.controls{gap:5px}.controls .btn{font-size:10px}#mobileBar{padding-bottom:35px}}
 
 
-</style><link rel="stylesheet" href="studio.css?v=20261115.guide7"><link rel="stylesheet" href="workspace.css?v=20261115.guide7"><link rel="stylesheet" href="simulator.css?v=20261115.guide7">
-<link rel="stylesheet" href="/first-use.css?v=20261115.guide7"><link rel="stylesheet" href="/export-ui.css?v=20261115.guide7"><link rel="stylesheet" href="/instagram-import.css?v=20261115.guide7"></head>
+</style><link rel="stylesheet" href="studio.css?v=20261115.home8"><link rel="stylesheet" href="workspace.css?v=20261115.home8"><link rel="stylesheet" href="simulator.css?v=20261115.home8">
+<link rel="stylesheet" href="/first-use.css?v=20261115.home8"><link rel="stylesheet" href="/export-ui.css?v=20261115.home8"><link rel="stylesheet" href="/instagram-import.css?v=20261115.home8"><link rel="stylesheet" href="/projects.css?v=20261115.home8"><script src="/projects.js?v=20261115.home8"></script></head>
 <body>
 <div class="app">
   <div class="header">
@@ -526,7 +526,7 @@ body{font-family:Inter,"Segoe UI",sans-serif}.header{min-height:76px}.logo{displ
 <dialog id="nameDialog" class="project-name-dialog"><form method="dialog"><label id="nameLabel" for="nameInput"></label><input id="nameInput" maxlength="80" required><div class="actions"><button class="btn" value="cancel" formnovalidate>Cancelar</button><button class="btn btn-accent" value="ok">Guardar</button></div></form></dialog><div id="ghost"><img alt=""></div>
 <canvas id="canvas"></canvas>
 
-<script src="/instagram-model.js?v=20261115.guide7"></script><script src="/instagram-saved-page.js?v=20261115.guide7"></script><script src="/instagram-import.js?v=20261115.guide7"></script><script src="/first-use.js?v=20261115.guide7"></script><script src="/export-ui.js?v=20261115.guide7"></script><script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261115.guide7"></script><script src="profile-counts.js?v=20261115.guide7"></script><script src="reliability.js?v=20261115.guide7"></script><script src="post-media.js?v=20261115.guide7"></script><script src="direct-media.js?v=20261115.guide7"></script><script src="highlight-media.js?v=20261115.guide7"></script><script src="story-player.js?v=20261115.guide7"></script><script src="studio.js?v=20261115.guide7"></script><script src="persistence.js"></script><script src="shared-client.js"></script><script src="workspace.js?v=20261115.guide7"></script><script src="simulator.js?v=20261115.guide7"></script><script>
+<script src="/instagram-model.js?v=20261115.home8"></script><script src="/instagram-saved-page.js?v=20261115.home8"></script><script src="/instagram-import.js?v=20261115.home8"></script><script src="/first-use.js?v=20261115.home8"></script><script src="/export-ui.js?v=20261115.home8"></script><script src="icons.js"></script><script src="vendor/html2canvas.min.js"></script><script src="circle-crop.js?v=20261115.home8"></script><script src="profile-counts.js?v=20261115.home8"></script><script src="reliability.js?v=20261115.home8"></script><script src="post-media.js?v=20261115.home8"></script><script src="direct-media.js?v=20261115.home8"></script><script src="highlight-media.js?v=20261115.home8"></script><script src="story-player.js?v=20261115.home8"></script><script src="studio.js?v=20261115.home8"></script><script src="persistence.js"></script><script src="shared-client.js"></script><script src="workspace.js?v=20261115.home8"></script><script src="simulator.js?v=20261115.home8"></script><script>
 "use strict";
 const $ = id => document.getElementById(id);
 let profileCatalog; let activeProfile;
@@ -1621,6 +1621,7 @@ function initProfiles(){
   render(); renderTray(); updateExportUI(); syncZoom();
   hist = []; pos = -1; commit();
   initProjectGuidance(false);
+  installProjectsReturn();
   sharedAppReady=true;
   window.document.addEventListener('focusout',()=>setTimeout(()=>{if(sharedRenderPending&&!window.document.activeElement?.closest('input,textarea,[contenteditable]'))renderSharedView()},0));
   const copy=action('Copiar enlace',async()=>{try{await navigator.clipboard.writeText(location.origin+'/p/hilton-mendoza/');copy.textContent='Enlace copiado';setTimeout(()=>copy.textContent='Copiar enlace',1800)}catch{prompt('Enlace compartido',location.origin+'/p/hilton-mendoza/')}});copy.classList.add('share-project-link');document.querySelector('.canvas-tools').append(copy);
