@@ -2,6 +2,10 @@
 
 Abrí [la demo](https://ig360.peressa.dev). No hace falta iniciar sesión ni conectar una cuenta.
 
+En la primera visita aparece **Empezá tu primer proyecto**. El **nombre del proyecto** organiza tus propuestas; el **nombre del perfil en Instagram** es el texto visible en el mockup. Son independientes: renombrar el proyecto no cambia el perfil, y editar el perfil no renombra el proyecto. La bienvenida puede cerrarse para explorar y no vuelve a aparecer al recargar. Los enlaces compartidos abren directamente la propuesta.
+
+Para crear otra propuesta, abrí los tres puntos → **Proyecto y ajustes → + Nuevo proyecto**. También podés elegir **Importar un perfil existente** desde ese diálogo; la app avisa que la copia por enlace puede quedar incompleta.
+
 1. Si el perfil está vacío, usá **Subir primeras fotos** o **Importar Instagram** dentro del feed. También podés tocar **Fotos**, subir imágenes y arrastrarlas al perfil. También podés tocar una miniatura para agregarla.
 2. Tocá el nombre, usuario, bio o cifras para escribir. El valor completo de las cifras aparece al editar. Enter termina los campos de una línea; Esc restaura la edición anterior.
 3. Tocá el avatar o una portada para cambiar su imagen. Arrastrá dentro del círculo para encuadrar; pellizcá o usá +/− con el círculo enfocado para acercar.
@@ -10,6 +14,12 @@ Abrí [la demo](https://ig360.peressa.dev). No hace falta iniciar sesión ni con
 6. Tocá **Exportar → Captura de Instagram**, elegí **qué parte querés capturar**, revisá la vista previa y tocá **Guardar captura**. Podés guardar el perfil completo, sólo el encabezado, las portadas de destacados o el feed. Para descargar las imágenes por separado, elegí **Fotos para publicar**.
 
 Los tres puntos del perfil abren las herramientas: apariencia, publicaciones, propuestas, importación y respaldos. El mockup sigue siendo el espacio principal. Podés fijar hasta tres publicaciones desde sus tres puntos: se ubican al inicio. Al desfijar, se recupera su posición guardada cuando está disponible. Los proyectos antiguos con más de tres fijados conservan sus fotos y mantienen las primeras tres fijaciones.
+
+## Qué se puede editar
+
+Al pasar el mouse sobre un texto o un círculo aparece una pista discreta. En PC y móvil, tocá los textos para escribir y el avatar o una portada para cambiar su foto; arrastrá dentro del círculo para encuadrar. Tocá el nombre del destacado para editarlo y **▶** para abrir sus historias.
+
+Desde los tres puntos → **Proyecto y ajustes → Cómo editar el perfil**, podés leer la guía y elegir **Mostrar en el perfil**. Se resaltan temporalmente las zonas editables; la siguiente interacción devuelve el mockup a su aspecto normal. Estas pistas no aparecen en las capturas.
 
 ## Capturar una publicación o una historia
 
@@ -78,7 +88,7 @@ Límites propios de esta beta: 25 MB por imagen, 200 MB/500 imágenes almacenada
 ## Importar un Instagram por enlace
 
 1. Tocá **Fotos → Importar Instagram**.
-2. Pegá el enlace del perfil público, por ejemplo `https://www.instagram.com/usuario/`, y tocá **Buscar perfil**. También acepta `@usuario`.
+2. Leé el aviso previo: Instagram puede entregar sólo parte del perfil y omitir bio, cifras o destacados. Pegá el enlace público, por ejemplo `https://www.instagram.com/usuario/`, y tocá **Buscar perfil**. También acepta `@usuario`.
 3. Revisá el nombre, la bio, las cifras, las miniaturas y las advertencias. La vista previa indica cuántas publicaciones y fotos entregó Instagram.
 4. Tocá **Importar como proyecto nuevo**. Se descargan las imágenes y se abre una copia editable guardada en tu navegador. El proyecto que tenías abierto se conserva. Si querés compartir la copia, usá **Compartir** después.
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0-beta.7 · 2026-11-15
+
+- Welcome new local users with a compact project dialog that separates the organizing project name from the visible Instagram profile name. Configure the first empty project in place; keep returning and shared sessions unobstructed.
+- Use explicit project labels for selection/rename, retain independent names in backups, and create subsequent projects with fresh defaults without inheriting current data.
+- Add an on-demand editing guide, temporary editable-area highlights and subtle hover cues; enlarge mobile highlight playback targets while preserving clean exports.
+- Explain partial Instagram imports before the URL/search form and in the project dialog, without an extra confirmation step or paid service.
+- Verify creation, cancellation, reload, independent renaming, project switching, import validation and export on desktop and a 390px mobile viewport.
+
 ## 0.2.0-beta.6 · 2026-11-15
 
 - Add contextual upload/import actions only to a truly empty feed; keep them out of captures and populated profiles.

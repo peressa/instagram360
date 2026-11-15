@@ -4,16 +4,17 @@
 
 An open source visual studio for designing and presenting Instagram profiles. Edit directly on the mockup, arrange your images and export your proposal. Created and maintained by [Juan Peressa](https://peressa.dev).
 
-[Live demo](https://ig360.peressa.dev) · [Latest beta](https://github.com/peressa/instagram360/releases/tag/v0.1.0-beta.7) · [Guía en español](docs/USAGE.md) · [Contribute](CONTRIBUTING.md)
+[Live demo](https://ig360.peressa.dev) · [Latest beta](https://github.com/peressa/instagram360/releases) · [Guía en español](docs/USAGE.md) · [Contribute](CONTRIBUTING.md)
 
 ![Instagram 360 desktop workspace with an original example profile](docs/screenshots/desktop.jpg)
 
 ## What you can do
 
+- Start a project with a separate project name and Instagram display name, then use the contextual guide to discover editable areas.
 - Edit names, biography and counts directly on the profile.
 - Replace avatars/highlight covers and drag to crop inside their circles.
 - Arrange a feed by dragging, preserving photos when resizing the grid.
-- Create multi-photo carousels by selecting and dragging a batch from the library. Arrange photos directly on the open post; browse with desktop arrows or native touch swipes.
+- Create multi-photo carousels with the selection's Create carousel action, or by dragging a batch from the library. Arrange photos directly on the open post; browse with desktop arrows or native touch swipes.
 - Preview mobile, desktop and tablet variants, light/dark and owner/visitor views.
 - Drag library photos onto highlights; arrange and remove stories directly inside their viewer, with progress, pause/resume and navigation across highlights.
 - Keep proposals locally, with JSON backup/import and recovery drafts.

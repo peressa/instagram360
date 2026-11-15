@@ -15,6 +15,7 @@ function instagramProjectData(preview,images){
 function openInstagramImporter(){
  const dialog=dom('dialog','instagram-import-dialog'),close=action('×',()=>dialog.close());close.className='ig-import-close';close.setAttribute('aria-label','Cerrar importación');
  dialog.append(close,dom('h2','','Importar Instagram'),dom('p','ig-import-intro','Pegá el enlace de un perfil público para convertirlo en un proyecto editable.'));
+ const limits=dom('aside','ig-import-limits');limits.setAttribute('aria-label','Límites de la importación');limits.append(dom('strong','','La importación puede quedar incompleta'),dom('p','','Instagram puede entregar sólo algunas publicaciones y omitir la bio, las cifras o los destacados. Vas a revisar lo disponible antes de crear el proyecto.'));dialog.append(limits);
  const form=dom('form','ig-import-form'),label=dom('label','','Enlace del perfil'),input=dom('input');input.type='text';input.autocomplete='off';input.spellcheck=false;input.maxLength=2048;input.placeholder='https://www.instagram.com/usuario/';input.setAttribute('aria-label','Enlace del perfil');label.append(input);const search=action('Buscar perfil',()=>{});search.type='submit';search.classList.add('btn-accent');form.append(label,search);dialog.append(form);
  const status=dom('p','ig-import-status');status.setAttribute('role','status');const result=dom('div','ig-import-result');dialog.append(status,result);let preview=null,controller=null,busy=false,committing=false;
  const importing=action('Importar como proyecto nuevo',async()=>{
