@@ -42,9 +42,10 @@ async function captureSelectedCanvas(target,showOrder){
   const fills=source.querySelectorAll('.sim-story-progress i');copy.querySelectorAll('.sim-story-progress i').forEach((fill,i)=>{fill.style.transform=getComputedStyle(fills[i]).transform});
  }else copy.querySelectorAll('.sim-screen').forEach(el=>el.remove());
  if(target==='profile')copy.querySelector('.hl-wrap')?.remove();
- copy.querySelectorAll('.cell:not(.has),.capture-action,.sim-inline-media,.sim-inline-toggle,.hl-add,.hl-toggle,.hl-del,.hl-story-button,.avatar-plus,.tools,.grip,.check,.plus,.row-grips').forEach(el=>el.remove());
+ copy.querySelectorAll('.cell:not(.has),.profile-start,.capture-action,.sim-inline-media,.sim-inline-toggle,.hl-add,.hl-toggle,.hl-del,.hl-story-button,.avatar-plus,.tools,.grip,.check,.plus,.row-grips').forEach(el=>el.remove());
  copy.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
  copy.querySelectorAll('input').forEach(el=>{if(el.type==='file')el.remove();else if(el.closest('.sim-comment-form'))el.value=''});
+ copy.querySelectorAll('.start-description').forEach(el=>{el.textContent='El contenido de este perfil aparecerá aquí.'});
  document.body.append(host);
  try{
   const element=target==='full'?copy:copy.querySelector(area.selector);

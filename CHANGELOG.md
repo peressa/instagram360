@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0-beta.6 · 2026-11-15
+
+- Add contextual upload/import actions only to a truly empty feed; keep them out of captures and populated profiles.
+- Show the browser-local save location persistently, with a small save-details dialog and direct portable backup download. Preserve truthful cloud labels for the existing Hilton project and distinguish local copies from live synchronization.
+- Create a new carousel directly from a library selection, preserving selection order and all existing posts. Grow a full grid when possible as one undoable change; retain selection and data on capacity/validation failures.
+- Apply these improvements to local, shared and legacy editors without adding a header or changing the two Hilton Reels badge exceptions.
+
 ## 0.2.0-beta.5 · 2026-11-14
 
 - Choose a PNG capture area: complete profile, profile header, highlight covers, feed grid, open post or current highlight story. Preview the chosen area and preserve the device and theme.

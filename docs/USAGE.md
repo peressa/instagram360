@@ -2,7 +2,7 @@
 
 Abrí [la demo](https://ig360.peressa.dev). No hace falta iniciar sesión ni conectar una cuenta.
 
-1. Tocá **Fotos**, subí imágenes y arrastralas al perfil. También podés tocar una miniatura para agregarla.
+1. Si el perfil está vacío, usá **Subir primeras fotos** o **Importar Instagram** dentro del feed. También podés tocar **Fotos**, subir imágenes y arrastrarlas al perfil. También podés tocar una miniatura para agregarla.
 2. Tocá el nombre, usuario, bio o cifras para escribir. El valor completo de las cifras aparece al editar. Enter termina los campos de una línea; Esc restaura la edición anterior.
 3. Tocá el avatar o una portada para cambiar su imagen. Arrastrá dentro del círculo para encuadrar; pellizcá o usá +/− con el círculo enfocado para acercar.
 4. Cambiá entre **iPhone, Android, PC, tablet o web móvil** con el selector flotante. El botón de la luna/sol a su lado activa o desactiva el **modo oscuro de Instagram**; se recuerda en este navegador y se respeta en las capturas.
@@ -19,7 +19,9 @@ Abrí la publicación o historia en el mockup y tocá el botón **↓ Guardar ca
 
 ## Carruseles y destacados
 
-En **Fotos**, seleccioná imágenes con los círculos y arrastrá el grupo a una publicación para agregarlas al carrusel. El orden de selección marca el orden de agregado; Shift selecciona un rango en PC. Si soltás sobre un casillero vacío, creás un solo carrusel. Las fotos que ya están en esa publicación no se duplican.
+En **Fotos**, seleccioná dos o más imágenes con los círculos y tocá **Crear carrusel** para crear una publicación nueva en ese orden. Las publicaciones actuales se conservan. Si la grilla está llena, se amplía automáticamente hasta el máximo de 27 casilleros; la creación y esa ampliación se deshacen juntas. El visor se abre con las miniaturas listas para ordenar. Al estar agregando fotos a una publicación o destacado abierto, se muestra la acción correspondiente en lugar de crear otro carrusel.
+
+También podés arrastrar el grupo a una publicación para agregarlo a su carrusel. El orden de selección marca el orden de agregado; Shift selecciona un rango en PC. Si soltás sobre un casillero vacío, creás un solo carrusel. Las fotos que ya están en esa publicación no se duplican.
 
 Abrí la publicación y tocá **Fotos · n** sobre la imagen: arrastrá las miniaturas para ordenar; la primera es la portada de la grilla. En celular, mantené pulsada una miniatura y arrastrala. Con teclado, enfocá una miniatura y usá Alt + ←/→. El **+** abre la biblioteca sin cerrar la publicación: arrastrá las fotos a la imagen o a una miniatura para insertarlas antes. También podés usar **Agregar a esta publicación** con la selección hecha. Quitar una foto del carrusel la mantiene en la biblioteca. Cada agregado en grupo se puede deshacer como un solo cambio. Se conserva la edición desde los tres puntos para cargar archivos directamente. En PC usá las flechas de la imagen; en celular deslizá horizontalmente. Las flechas exteriores de PC cambian de publicación, las interiores cambian de foto. El ZIP incluye las portadas y una carpeta `carousel_XX` con la secuencia completa, ajustada sin recortar a la proporción de exportación.
 
@@ -30,6 +32,8 @@ El botón de reproducción de cada destacado abre sus historias. Tocá a los lad
 Descargá [studio360.json](../examples/studio360.json) desde GitHub (Download raw file). Abrí los tres puntos → **Proyecto y ajustes → Importar** y elegí ese archivo. Se crea una propuesta nueva. Incluye gráficos originales y datos ficticios, reutilizables bajo MIT.
 
 ## Guardado y cambio de dirección
+
+El indicador **Guardado en este navegador** permanece en una esquina fuera del mockup. Tocándolo, podés ver dónde se conserva el proyecto y **Descargar respaldo**, sin buscar en los ajustes. En Hilton indica **Guardado en la nube**; en otros proyectos compartidos, el indicador de conexión informa la sincronización y el guardado local sigue mostrando la copia de este navegador.
 
 Los perfiles se guardan en este navegador y dominio. Para moverlos, abrí las herramientas → **Guardar respaldo** en la dirección anterior; luego **Importar** en la nueva. Repetí para cada propuesta. Borrar los datos del navegador puede eliminar proyectos y fotos; conservá los JSON descargados.
 

@@ -21,7 +21,7 @@ function initWorkspace(){
  const wrap=dom('div','canvas-column');toolbar.before(wrap);wrap.append(toolbar,stage);
  device.addEventListener('change',()=>{const p=document.querySelector('.phone');p.dataset.device=device.value;$('canvasWidth').value='auto';closeSimScreen();render();saveViewSettings()});
  const notice=dom('div','save-notice');notice.id='saveNotice';notice.hidden=true;notice.setAttribute('role','status');const copy=dom('span');copy.id='saveNoticeText';notice.append(copy,action('Reintentar',retrySave),action('Guardar respaldo',()=>$('backupProfile').click()));document.querySelector('.shell').before(notice);
- const saved=$('saved');saved.classList.add('canvas-save');document.querySelector('.canvas-column').append(saved);saved.setAttribute('role','status');saved.setAttribute('aria-live','polite');if(workspaceSaveState)showSaveStatus(workspaceSaveState);
+ initSaveIndicator();if(workspaceSaveState)showSaveStatus(workspaceSaveState);
  document.addEventListener('pointerdown',e=>{if(document.body.dataset.panel!=='feed'&&!sidebar.contains(e.target)&&!e.target.closest('#openPhotos'))closeWorkspace()});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.dataset.panel!=='feed'&&!document.querySelector('dialog[open]')){e.preventDefault();e.stopImmediatePropagation();closeWorkspace();(document.querySelector('.sim-inline-toggle')||photos).focus()}});
  initSimulator();initDirectEditing();initExportExperience();initInstagramImportUI();
@@ -71,7 +71,6 @@ function showSaveStatus({pending,failed,lastSaved}) {
   workspaceSaveState={pending,failed,lastSaved};
   storageFailed=failed;
   const el=$('saved');if(!el)return;
-  el.style.opacity='1';el.dataset.state=failed?'error':pending?'pending':'saved';
-  el.textContent=failed?'No se pudo guardar':pending?'Sincronizando…':'Guardado en la nube';el.title=lastSaved?'Guardado en la nube · '+lastSaved.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}):'Guardado en la nube';
+  paintSaveStatus({pending,failed,lastSaved},true);
   const notice=$('saveNotice');if(notice){notice.hidden=!failed;$('saveNoticeText').textContent='Sin conexión o guardado pendiente. Tus cambios se conservan en este dispositivo y se reintentan al conectar.';}
 }

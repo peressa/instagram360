@@ -12,7 +12,8 @@ function syncLibrarySelection(){
  const assets=new Set(lib.map(a=>a.id));for(const id of librarySelection)if(!assets.has(id))librarySelection.delete(id);
  const ids=[...librarySelection];document.querySelectorAll('.chip[data-asset-id]').forEach(card=>{const i=ids.indexOf(card.dataset.assetId),button=card.querySelector('.library-select');card.classList.toggle('library-selected',i>=0);if(button){button.setAttribute('aria-pressed',String(i>=0));button.textContent=i>=0?String(i+1):''}});
  const clear=document.querySelector('.library-selection-clear'),add=document.querySelector('.library-selection-add');if(clear)clear.hidden=!ids.length;if(add){add.hidden=!ids.length||(libraryTargetPost===null&&libraryTargetStory===null);add.textContent=libraryTargetStory!==null?'Agregar a este destacado':'Agregar a esta publicación'}
- const copy=document.querySelector('.library-selection-copy');if(copy)copy.textContent=ids.length?ids.length+(ids.length===1?' seleccionada · Arrastrala a una publicación o destacado.':' seleccionadas · Arrastralas a una publicación o destacado.'):'Seleccioná varias con el círculo y arrastralas juntas.';
+ const create=document.querySelector('.library-selection-create');if(create)create.hidden=ids.length<2||libraryTargetPost!==null||libraryTargetStory!==null;
+ const copy=document.querySelector('.library-selection-copy');if(copy)copy.textContent=ids.length>=2&&libraryTargetPost===null&&libraryTargetStory===null?ids.length+' fotos seleccionadas. Tus publicaciones actuales se conservan.':ids.length?ids.length+(ids.length===1?' seleccionada · Arrastrala a una publicación o destacado.':' seleccionadas · Arrastralas a una publicación o destacado.'):'Seleccioná varias con el círculo y arrastralas juntas.';
 }
 function toggleLibraryPhoto(id,range=false){
  const ids=lib.map(a=>a.id),start=ids.indexOf(libraryAnchor),end=ids.indexOf(id);
@@ -24,7 +25,7 @@ function clearLibrarySelection(){librarySelection.clear();libraryAnchor=null;syn
 function addLibrarySelectionUI(title){
  title.querySelector(':scope > span')?.setAttribute('hidden','');
  const bar=dom('div','library-selection-bar'),copy=dom('span','library-selection-copy'),clear=action('Quitar selección',clearLibrarySelection),add=action('Agregar a esta publicación',()=>{if(libraryTargetStory!==null?applyHighlightDrop(libraryTargetStory,[...librarySelection]):libraryTargetPost!==null&&applyLibraryDrop(libraryTargetPost,[...librarySelection]))closeWorkspace()});
- clear.classList.add('library-selection-clear');add.classList.add('library-selection-add');clear.hidden=add.hidden=true;bar.append(copy,add,clear);document.querySelector('.studio-sidebar-top').append(bar);syncLibrarySelection();
+ clear.classList.add('library-selection-clear');add.classList.add('library-selection-add');const create=action('Crear carrusel',createLibraryCarousel);create.classList.add('library-selection-create');create.hidden=true;clear.hidden=add.hidden=true;bar.append(copy,create,add,clear);document.querySelector('.studio-sidebar-top').append(bar);syncLibrarySelection();
 }
 function wireLibrarySelection(card,asset){
  card.dataset.assetId=asset.id;const button=dom('button','library-select');button.type='button';button.setAttribute('aria-label','Seleccionar '+asset.name);button.setAttribute('aria-pressed',String(librarySelection.has(asset.id)));button.title='Seleccionar foto · Shift para seleccionar un rango';button.addEventListener('click',e=>{e.stopPropagation();toggleLibraryPhoto(asset.id,e.shiftKey)});card.append(button);

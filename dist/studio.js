@@ -47,7 +47,7 @@ function filterProfileGrid(){
  if(locked){privateEl.innerHTML=igIcon('lock');privateEl.append(dom('strong','','Esta cuenta es privada'),dom('p','','Sigue a esta cuenta para ver sus fotos y videos.'))}
  let visible=0;[...grid.children].forEach((cell,i)=>{const t=tiles[i];let yes=currentProfileTab==='posts'||currentProfileTab==='reels'&&t?.kind==='reel'||currentProfileTab==='video'&&t?.kind==='video'||currentProfileTab==='reposts'&&t?.kind==='repost'||currentProfileTab==='tagged'&&t?.kind==='tagged';cell.hidden=!yes;if(t&&yes)visible++});
  const empty=phone.querySelector('.empty-state');empty.hidden=locked||!previewing||visible>0;
- if(!empty.hidden){empty.innerHTML=igIcon(currentProfileTab==='posts'?'Instagram':'Reels');empty.append(dom('strong','',currentProfileTab==='posts'?'Aún no hay publicaciones':'Aún no hay contenido'),dom('p','','El contenido de este perfil aparecerá aquí.'))}
+ if(!empty.hidden){empty.innerHTML=igIcon(currentProfileTab==='posts'?'Instagram':'Reels');empty.append(dom('strong','',currentProfileTab==='posts'?'Aún no hay publicaciones':'Aún no hay contenido'),dom('p','','El contenido de este perfil aparecerá aquí.'));if(currentProfileTab==='posts'&&!tiles.some(Boolean))renderProfileStart(empty)}
 }
 function decorateGrid(){
  [...grid.children].forEach((cell,i)=>{const t=tiles[i];if(!t)return;let badge=t.pinned?'pin':postMediaIds(t).length>1||t.kind==='carousel'?'carousel':t.kind==='reel'?'Reels':t.kind==='video'?'Video largo':null;
